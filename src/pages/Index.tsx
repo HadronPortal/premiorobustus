@@ -1,7 +1,9 @@
+import { Button } from "@/components/ui/button";
+
 const Index = () => {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background">
-      <h1 className="text-2xl font-semibold text-foreground">Projeto em branco</h1>
+      <Button className="bg-blue-500 hover:bg-blue-600 text-white">Botão Azul</Button>
     </div>
   );
 };
