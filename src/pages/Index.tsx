@@ -6,6 +6,9 @@ const Index = () => {
       <Button className="bg-blue-btn text-blue-btn-foreground hover:bg-blue-btn/90">
         Botão Azul
       </Button>
+      <Button className="bg-orange-500 text-white hover:bg-orange-600">
+        Botão Laranja
+      </Button>
       <Button variant="destructive">
         Botão Vermelho
       </Button>
