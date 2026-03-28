@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
 import { useCart } from "@/hooks/useCart";
@@ -9,41 +9,79 @@ import {
   Smartphone, Headphones, Watch, Laptop, Star, Clock,
   ChevronRight, ChevronLeft, Flame, Heart, MapPin,
   User, Monitor, Cpu, Gamepad2, Speaker, Camera, Tv,
-  Plus, PercentCircle, Tag,
+  Plus, Tag, Menu, X, Mail, CreditCard, Lock, Award,
+  ArrowRight, Sparkles, TrendingUp, Eye,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import banner1 from "@/assets/banner-1.jpg";
-import banner2 from "@/assets/banner-2.jpg";
-import banner3 from "@/assets/banner-3.jpg";
 
 type Product = Tables<"products">;
 type Category = Tables<"categories">;
 
-const BANNERS = [
-  { image: banner1, title: "SUPER PROMOÇÃO", subtitle: "Smartphones com até 50% OFF", price: "899,90", pix: "à vista no PIX" },
-  { image: banner2, title: "A HORA É AGORA", subtitle: "Acessórios & Wearables em promoção", price: "719,90", pix: "à vista no PIX" },
-  { image: banner3, title: "MEGA OFERTA", subtitle: "Notebooks para todos os perfis", price: "2.499,90", pix: "à vista no PIX" },
+const HERO_SLIDES = [
+  {
+    tag: "LANÇAMENTO",
+    title: "O futuro na palma\nda sua mão",
+    subtitle: "Smartphones premium com tecnologia de ponta e os melhores preços do mercado.",
+    cta: "Comprar agora",
+    price: "1.299",
+    gradient: "from-primary/20 via-background to-background",
+  },
+  {
+    tag: "OFERTA ESPECIAL",
+    title: "Performance\nsem limites",
+    subtitle: "Notebooks e acessórios para transformar sua experiência digital.",
+    cta: "Ver ofertas",
+    price: "2.499",
+    gradient: "from-primary/15 via-background to-background",
+  },
+  {
+    tag: "MEGA DEAL",
+    title: "Tecnologia\npara todos",
+    subtitle: "Wearables, games e periféricos com desconto exclusivo.",
+    cta: "Aproveitar",
+    price: "899",
+    gradient: "from-primary/25 via-background to-background",
+  },
 ];
-
-const CATEGORY_ICONS: Record<string, any> = {
-  Smartphones: Smartphone,
-  Acessórios: Headphones,
-  Smartwatches: Watch,
-  Notebooks: Laptop,
-};
 
 const DEPT_ICONS = [
-  { icon: Cpu, label: "Hardware" },
+  { icon: Smartphone, label: "Smartphones" },
+  { icon: Laptop, label: "Notebooks" },
+  { icon: Headphones, label: "Acessórios" },
   { icon: Gamepad2, label: "Games" },
-  { icon: Smartphone, label: "Celular &\nSmartphone" },
-  { icon: Laptop, label: "Computadores" },
   { icon: Monitor, label: "Monitores" },
-  { icon: Tv, label: "TV" },
-  { icon: Speaker, label: "Áudio" },
-  { icon: Camera, label: "Câmeras" },
-  { icon: Headphones, label: "Periféricos" },
   { icon: Watch, label: "Wearables" },
+  { icon: Cpu, label: "Hardware" },
+  { icon: Tv, label: "TV & Áudio" },
 ];
+
+const REVIEWS = [
+  { name: "Carlos M.", text: "Produto chegou rápido e em perfeito estado. Recomendo demais!", rating: 5 },
+  { name: "Ana S.", text: "Melhor loja de eletrônicos que já comprei. Preço justo e atendimento top.", rating: 5 },
+  { name: "Pedro L.", text: "Entrega antes do prazo, embalagem impecável. Voltarei a comprar com certeza!", rating: 5 },
+];
+
+/* ═══ Countdown Hook ═══ */
+const useCountdown = () => {
+  const [time, setTime] = useState({ d: 5, h: 9, m: 46, s: 32 });
+  useEffect(() => {
+    const t = setInterval(() => {
+      setTime((prev) => {
+        let { d, h, m, s } = prev;
+        s--;
+        if (s < 0) { s = 59; m--; }
+        if (m < 0) { m = 59; h--; }
+        if (h < 0) { h = 23; d--; }
+        if (d < 0) return { d: 0, h: 0, m: 0, s: 0 };
+        return { d, h, m, s };
+      });
+    }, 1000);
+    return () => clearInterval(t);
+  }, []);
+  return time;
+};
+
+const pad = (n: number) => String(n).padStart(2, "0");
 
 const StorePage = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -51,11 +89,13 @@ const StorePage = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
-  const [bannerIndex, setBannerIndex] = useState(0);
+  const [heroIndex, setHeroIndex] = useState(0);
+  const [mobileMenu, setMobileMenu] = useState(false);
   const { addItem, itemCount } = useCart();
+  const countdown = useCountdown();
 
   useEffect(() => {
-    const timer = setInterval(() => setBannerIndex((i) => (i + 1) % BANNERS.length), 5000);
+    const timer = setInterval(() => setHeroIndex((i) => (i + 1) % HERO_SLIDES.length), 6000);
     return () => clearInterval(timer);
   }, []);
 
@@ -82,76 +122,94 @@ const StorePage = () => {
   });
 
   const promoProducts = products.filter((p) => p.promotional_price !== null);
-  const bestSellers = products.slice(0, 4);
+  const bestSellers = products.slice(0, 8);
   const isHome = !selectedCategory && !searchQuery;
 
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-4">
-          <div className="h-12 w-12 rounded-full border-2 border-primary border-t-transparent animate-spin" />
-          <p className="text-muted-foreground text-sm tracking-widest uppercase">Carregando...</p>
+          <div className="relative h-16 w-16">
+            <div className="absolute inset-0 rounded-full border-2 border-primary/20" />
+            <div className="absolute inset-0 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+            <Zap className="absolute inset-0 m-auto h-6 w-6 text-primary animate-pulse" />
+          </div>
+          <p className="text-muted-foreground text-sm tracking-[0.3em] uppercase font-medium">Carregando</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* ═══ TOP BAR ═══ */}
-      <header className="bg-card border-b border-border">
-        {/* Row 1: Logo + Search + Actions */}
-        <div className="container mx-auto flex items-center gap-4 px-4 py-3">
-          {/* Location */}
-          <div className="hidden lg:flex items-center gap-1.5 text-muted-foreground text-xs flex-shrink-0 cursor-pointer hover:text-foreground transition-colors">
-            <MapPin className="h-4 w-4 text-primary" />
-            <div>
-              <span className="text-[10px]">Enviar para:</span>
-              <p className="font-semibold text-foreground text-xs">Digite o CEP</p>
-            </div>
-          </div>
+    <div className="min-h-screen bg-background overflow-x-hidden">
+      {/* ═══ ANNOUNCEMENT BAR ═══ */}
+      <div className="bg-primary py-1.5">
+        <div className="container mx-auto px-4 flex items-center justify-center gap-2">
+          <Sparkles className="h-3.5 w-3.5 text-primary-foreground" />
+          <p className="text-[11px] font-semibold text-primary-foreground tracking-wide">
+            FRETE GRÁTIS em compras acima de R$ 299 • Use o cupom <span className="font-black">SMART10</span>
+          </p>
+          <Sparkles className="h-3.5 w-3.5 text-primary-foreground" />
+        </div>
+      </div>
+
+      {/* ═══ HEADER ═══ */}
+      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/50">
+        <div className="container mx-auto px-4 flex items-center gap-4 h-16">
+          {/* Mobile menu toggle */}
+          <button className="lg:hidden" onClick={() => setMobileMenu(!mobileMenu)}>
+            {mobileMenu ? <X className="h-6 w-6 text-foreground" /> : <Menu className="h-6 w-6 text-foreground" />}
+          </button>
 
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 flex-shrink-0">
-            <div className="h-10 w-10 rounded-xl bg-primary flex items-center justify-center">
-              <Zap className="h-6 w-6 text-primary-foreground" />
+          <Link to="/" className="flex items-center gap-2.5 flex-shrink-0">
+            <div className="h-9 w-9 rounded-xl bg-primary flex items-center justify-center shadow-[0_0_20px_hsl(142_71%_45%_/_0.3)]">
+              <Zap className="h-5 w-5 text-primary-foreground" />
             </div>
-            <span className="text-2xl font-extrabold tracking-tight text-foreground hidden sm:block">
+            <span className="text-xl font-extrabold tracking-tight text-foreground hidden sm:block">
               Smart<span className="text-primary">Cell</span>
             </span>
           </Link>
 
-          {/* Search bar */}
-          <div className="flex-1 max-w-3xl relative">
+          {/* Desktop Nav */}
+          <nav className="hidden lg:flex items-center gap-1 ml-6">
+            {["Home", "Smartphones", "Eletrônicos", "Ofertas", "Contato"].map((item) => (
+              <button
+                key={item}
+                onClick={() => { setSelectedCategory(null); setSearchQuery(""); }}
+                className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors relative group"
+              >
+                {item}
+                <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-primary rounded-full group-hover:w-4/5 transition-all duration-300" />
+              </button>
+            ))}
+          </nav>
+
+          {/* Search */}
+          <div className="flex-1 max-w-xl ml-auto relative">
             <Input
-              placeholder="Busque no SmartCell..."
+              placeholder="O que você procura?"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pr-14 bg-foreground/5 border-primary/30 h-11 rounded-lg text-sm placeholder:text-muted-foreground focus:border-primary"
+              className="pr-12 bg-card border-border/50 h-10 rounded-xl text-sm placeholder:text-muted-foreground/60 focus:border-primary focus:shadow-[0_0_0_3px_hsl(142_71%_45%_/_0.1)]"
             />
-            <button className="absolute right-0 top-0 h-11 w-12 bg-primary rounded-r-lg flex items-center justify-center hover:bg-primary/90 transition-colors">
-              <Search className="h-5 w-5 text-primary-foreground" />
+            <button className="absolute right-1 top-1 h-8 w-10 bg-primary rounded-lg flex items-center justify-center hover:bg-primary/90 transition-colors">
+              <Search className="h-4 w-4 text-primary-foreground" />
             </button>
           </div>
 
-          {/* Right actions */}
-          <div className="flex items-center gap-2">
-            <Link to="/admin/login" className="hidden md:flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer px-2">
-              <User className="h-5 w-5" />
-              <div className="hidden lg:block">
-                <span className="text-[10px]">Entre ou</span>
-                <p className="font-semibold text-foreground text-xs">Cadastre-se</p>
-              </div>
+          {/* Actions */}
+          <div className="flex items-center gap-1">
+            <Link to="/admin/login" className="hidden md:flex h-9 w-9 items-center justify-center rounded-xl hover:bg-accent transition-colors">
+              <User className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
             </Link>
-            <button className="hidden md:flex h-10 w-10 items-center justify-center rounded-lg hover:bg-accent transition-colors">
-              <Heart className="h-5 w-5 text-muted-foreground" />
+            <button className="hidden md:flex h-9 w-9 items-center justify-center rounded-xl hover:bg-accent transition-colors">
+              <Heart className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
             </button>
-            <Link to="/cart" className="relative">
-              <div className="h-10 w-10 rounded-lg hover:bg-accent flex items-center justify-center transition-colors">
-                <ShoppingCart className="h-5 w-5 text-foreground" />
-              </div>
+            <Link to="/cart" className="relative h-9 w-9 rounded-xl hover:bg-accent flex items-center justify-center transition-colors">
+              <ShoppingCart className="h-5 w-5 text-foreground" />
               {itemCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-[10px] font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-[10px] font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-[0_0_10px_hsl(142_71%_45%_/_0.4)]">
                   {itemCount}
                 </span>
               )}
@@ -159,178 +217,103 @@ const StorePage = () => {
           </div>
         </div>
 
-        {/* Row 2: Navigation */}
-        <div className="border-t border-border bg-card/80">
-          <div className="container mx-auto px-4">
-            <nav className="flex items-center gap-0.5 overflow-x-auto py-2 scrollbar-hide">
-              <button className="flex items-center gap-1.5 px-4 py-1.5 rounded-md bg-primary text-primary-foreground text-sm font-bold whitespace-nowrap">
-                <Package className="h-4 w-4" /> Departamentos
-              </button>
-              <button
-                onClick={() => { setSelectedCategory(null); setSearchQuery(""); }}
-                className={`px-3 py-1.5 rounded-md text-sm font-semibold whitespace-nowrap transition-colors ${
-                  !selectedCategory ? "text-primary" : "text-muted-foreground hover:text-foreground hover:bg-accent"
-                }`}
-              >
-                Mais Vendidos
-              </button>
-              {categories.map((c) => (
+        {/* Mobile Menu */}
+        {mobileMenu && (
+          <div className="lg:hidden border-t border-border bg-background/95 backdrop-blur-xl animate-fade-in">
+            <nav className="container mx-auto px-4 py-4 flex flex-col gap-1">
+              {["Home", "Smartphones", "Eletrônicos", "Ofertas", "Contato"].map((item) => (
                 <button
-                  key={c.id}
-                  onClick={() => {
-                    setSelectedCategory(c.id);
-                    setSearchQuery("");
-                    document.getElementById("products")?.scrollIntoView({ behavior: "smooth" });
-                  }}
-                  className={`px-3 py-1.5 rounded-md text-sm font-medium whitespace-nowrap transition-colors ${
-                    selectedCategory === c.id
-                      ? "text-primary"
-                      : "text-muted-foreground hover:text-foreground hover:bg-accent"
-                  }`}
+                  key={item}
+                  onClick={() => { setMobileMenu(false); setSelectedCategory(null); setSearchQuery(""); }}
+                  className="px-4 py-3 text-sm font-medium text-foreground hover:bg-accent rounded-xl text-left transition-colors"
                 >
-                  {c.name}
+                  {item}
                 </button>
               ))}
             </nav>
           </div>
-        </div>
+        )}
       </header>
 
-      {/* ═══ BANNER CAROUSEL (KaBuM-style) ═══ */}
+      {/* ═══ HERO SECTION ═══ */}
       {isHome && (
-        <section className="relative">
-          <div className="relative h-[300px] md:h-[380px] overflow-hidden">
-            {BANNERS.map((banner, i) => (
+        <section className="relative overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_hsl(142_71%_45%_/_0.08),_transparent_50%)]" />
+          <div className="absolute top-20 right-10 h-72 w-72 bg-primary/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-10 left-10 h-48 w-48 bg-primary/5 rounded-full blur-3xl" />
+
+          <div className="container mx-auto px-4 py-16 md:py-24 relative">
+            {HERO_SLIDES.map((slide, i) => (
               <div
                 key={i}
-                className={`absolute inset-0 transition-opacity duration-700 ${i === bannerIndex ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+                className={`transition-all duration-700 ${i === heroIndex ? "opacity-100" : "opacity-0 absolute inset-0 pointer-events-none"}`}
               >
-                <img src={banner.image} alt={banner.title} className="h-full w-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-r from-background via-background/70 to-transparent" />
-                <div className="absolute inset-0 flex items-center">
-                  <div className="container mx-auto px-4 flex items-center justify-between">
-                    <div className="max-w-md">
-                      <span className="inline-block bg-primary text-primary-foreground text-xs font-black px-3 py-1 rounded-md mb-3 uppercase tracking-wider">
-                        {banner.title}
+                {i === heroIndex && (
+                  <div className="flex flex-col lg:flex-row items-center gap-12">
+                    <div className="flex-1 text-center lg:text-left">
+                      <span className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 text-primary text-xs font-bold px-3 py-1.5 rounded-full mb-6 uppercase tracking-wider">
+                        <Zap className="h-3 w-3" /> {slide.tag}
                       </span>
-                      <p className="text-lg md:text-2xl font-bold text-foreground mb-2">{banner.subtitle}</p>
-                      <p className="text-muted-foreground text-sm">Aproveite os <strong className="text-foreground">melhores preços</strong></p>
-                      <Button
-                        className="mt-4 rounded-lg font-bold"
-                        onClick={() => document.getElementById("products")?.scrollIntoView({ behavior: "smooth" })}
-                      >
-                        Garanta já <ChevronRight className="ml-1 h-4 w-4" />
-                      </Button>
-                    </div>
-                    <div className="hidden md:block text-right">
-                      <p className="text-muted-foreground text-sm">a partir de</p>
-                      <p className="text-4xl font-black text-primary">
-                        R$ <span className="text-5xl">{banner.price}</span>
+                      <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-foreground leading-[0.95] mb-6 whitespace-pre-line">
+                        {slide.title}
+                      </h1>
+                      <p className="text-base md:text-lg text-muted-foreground max-w-lg mb-8 leading-relaxed mx-auto lg:mx-0">
+                        {slide.subtitle}
                       </p>
-                      <p className="text-xs text-muted-foreground mt-1">{banner.pix}</p>
+                      <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
+                        <Button
+                          size="lg"
+                          className="rounded-xl font-bold text-base px-8 h-12 shadow-[0_0_30px_-5px_hsl(142_71%_45%_/_0.4)] hover:shadow-[0_0_40px_-5px_hsl(142_71%_45%_/_0.6)] transition-all"
+                          onClick={() => document.getElementById("products")?.scrollIntoView({ behavior: "smooth" })}
+                        >
+                          {slide.cta} <ArrowRight className="ml-2 h-4 w-4" />
+                        </Button>
+                        <p className="text-sm text-muted-foreground">
+                          A partir de <span className="text-2xl font-black text-primary">R$ {slide.price}</span>
+                        </p>
+                      </div>
+                    </div>
+                    {/* Decorative card */}
+                    <div className="hidden lg:block flex-shrink-0">
+                      <div className="relative w-80 h-80">
+                        <div className="absolute inset-0 bg-primary/10 rounded-3xl rotate-6 border border-primary/20" />
+                        <div className="absolute inset-0 bg-card rounded-3xl border border-border/50 backdrop-blur-sm flex items-center justify-center">
+                          <Smartphone className="h-32 w-32 text-primary/30" />
+                        </div>
+                        <div className="absolute -bottom-4 -right-4 bg-primary text-primary-foreground text-sm font-bold px-4 py-2 rounded-xl shadow-lg">
+                          até 50% OFF
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             ))}
 
-            <button
-              onClick={() => setBannerIndex((i) => (i - 1 + BANNERS.length) % BANNERS.length)}
-              className="absolute left-3 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-background/70 backdrop-blur flex items-center justify-center hover:bg-background/90 transition-colors z-10"
-            >
-              <ChevronLeft className="h-5 w-5 text-foreground" />
-            </button>
-            <button
-              onClick={() => setBannerIndex((i) => (i + 1) % BANNERS.length)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-background/70 backdrop-blur flex items-center justify-center hover:bg-background/90 transition-colors z-10"
-            >
-              <ChevronRight className="h-5 w-5 text-foreground" />
-            </button>
-
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-              {BANNERS.map((_, i) => (
-                <button key={i} onClick={() => setBannerIndex(i)} className={`h-2 rounded-full transition-all ${i === bannerIndex ? "w-8 bg-primary" : "w-2 bg-foreground/30"}`} />
+            {/* Dots */}
+            <div className="flex items-center justify-center lg:justify-start gap-2 mt-10">
+              {HERO_SLIDES.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setHeroIndex(i)}
+                  className={`h-2 rounded-full transition-all duration-300 ${i === heroIndex ? "w-8 bg-primary shadow-[0_0_10px_hsl(142_71%_45%_/_0.5)]" : "w-2 bg-muted-foreground/30"}`}
+                />
               ))}
             </div>
           </div>
-
-          {/* ── Ofertas do dia + A hora é agora (side-by-side like KaBuM) ── */}
-          {promoProducts.length > 0 && (
-            <div className="container mx-auto px-4 -mt-2 relative z-10">
-              <div className="grid md:grid-cols-2 gap-4">
-                {/* Ofertas do dia */}
-                <div className="bg-card border border-border rounded-xl p-4">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-bold text-foreground text-sm flex items-center gap-2">
-                      <PercentCircle className="h-4 w-4 text-primary" /> Ofertas do dia
-                    </h3>
-                    <ChevronRight className="h-4 w-4 text-primary" />
-                  </div>
-                  <div className="space-y-3">
-                    {promoProducts.slice(0, 2).map((p) => {
-                      const disc = Math.round((1 - Number(p.promotional_price) / Number(p.price)) * 100);
-                      return (
-                        <div key={p.id} className="flex items-center gap-3 group cursor-pointer" onClick={() => addItem(p)}>
-                          <div className="h-16 w-16 rounded-lg bg-secondary/30 overflow-hidden flex-shrink-0">
-                            {p.images?.[0] ? (
-                              <img src={p.images[0]} alt={p.name} className="h-full w-full object-cover" />
-                            ) : (
-                              <div className="h-full w-full flex items-center justify-center"><Package className="h-6 w-6 text-muted-foreground/30" /></div>
-                            )}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-xs text-foreground font-medium line-clamp-1 group-hover:text-primary transition-colors">{p.name}</p>
-                            <p className="text-sm font-bold text-primary mt-0.5">R$ {Number(p.promotional_price).toFixed(2)}</p>
-                          </div>
-                          <span className="text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-md flex-shrink-0">-{disc}%</span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* A hora é agora */}
-                <div className="bg-card border border-border rounded-xl p-4">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-bold text-foreground text-sm flex items-center gap-2">
-                      <Flame className="h-4 w-4 text-primary" /> A hora é agora
-                    </h3>
-                    <ChevronRight className="h-4 w-4 text-primary" />
-                  </div>
-                  <div className="space-y-3">
-                    {bestSellers.slice(0, 2).map((p) => (
-                      <div key={p.id} className="flex items-center gap-3 group cursor-pointer" onClick={() => addItem(p)}>
-                        <div className="h-16 w-16 rounded-lg bg-secondary/30 overflow-hidden flex-shrink-0">
-                          {p.images?.[0] ? (
-                            <img src={p.images[0]} alt={p.name} className="h-full w-full object-cover" />
-                          ) : (
-                            <div className="h-full w-full flex items-center justify-center"><Package className="h-6 w-6 text-muted-foreground/30" /></div>
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-xs text-foreground font-medium line-clamp-1 group-hover:text-primary transition-colors">{p.name}</p>
-                          <p className="text-sm font-bold text-primary mt-0.5">R$ {Number(p.promotional_price ?? p.price).toFixed(2)}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
         </section>
       )}
 
-      {/* ═══ DEPARTMENT ICONS (horizontal scrollable, KaBuM-style) ═══ */}
+      {/* ═══ CATEGORIES ═══ */}
       {isHome && (
-        <section className="container mx-auto px-4 py-8">
-          <div className="flex items-center gap-6 overflow-x-auto pb-2 scrollbar-hide justify-center">
+        <section className="container mx-auto px-4 py-12">
+          <div className="grid grid-cols-4 md:grid-cols-8 gap-4">
             {DEPT_ICONS.map(({ icon: Icon, label }) => (
-              <button key={label} className="flex flex-col items-center gap-2 min-w-[80px] group">
-                <div className="h-16 w-16 rounded-full bg-primary/10 border-2 border-primary/20 flex items-center justify-center group-hover:bg-primary/20 group-hover:border-primary/40 transition-all">
-                  <Icon className="h-7 w-7 text-primary" />
+              <button key={label} className="group flex flex-col items-center gap-3">
+                <div className="h-16 w-16 md:h-20 md:w-20 rounded-2xl bg-card border border-border/50 flex items-center justify-center group-hover:border-primary/50 group-hover:bg-primary/5 group-hover:shadow-[0_0_25px_-5px_hsl(142_71%_45%_/_0.2)] transition-all duration-300 group-hover:-translate-y-1">
+                  <Icon className="h-7 w-7 md:h-8 md:w-8 text-muted-foreground group-hover:text-primary transition-colors" />
                 </div>
-                <span className="text-[11px] font-medium text-muted-foreground text-center leading-tight group-hover:text-foreground transition-colors whitespace-pre-line">
+                <span className="text-[11px] md:text-xs font-medium text-muted-foreground text-center group-hover:text-foreground transition-colors">
                   {label}
                 </span>
               </button>
@@ -339,78 +322,111 @@ const StorePage = () => {
         </section>
       )}
 
-      {/* ═══ "A HORA É AGORA" product grid (KaBuM-style) ═══ */}
-      {isHome && bestSellers.length > 0 && (
-        <section className="bg-card/40 border-y border-border">
-          <div className="container mx-auto px-4 py-8">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
-                <Flame className="h-5 w-5 text-primary" /> A hora é agora
-              </h2>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+      {/* ═══ FLASH DEALS WITH COUNTDOWN ═══ */}
+      {isHome && promoProducts.length > 0 && (
+        <section className="bg-gradient-to-r from-primary/5 via-card to-primary/5 border-y border-border/50">
+          <div className="container mx-auto px-4 py-10">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <Flame className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-foreground">Ofertas Relâmpago</h2>
+                  <p className="text-xs text-muted-foreground">Aproveite antes que acabe!</p>
+                </div>
+              </div>
+              {/* Countdown */}
+              <div className="flex items-center gap-2">
                 <Clock className="h-4 w-4 text-primary" />
-                <span>Termina em: <strong className="text-foreground">5d 09h 46m</strong></span>
+                <span className="text-xs text-muted-foreground mr-1">Termina em:</span>
+                {[
+                  { v: countdown.d, l: "d" },
+                  { v: countdown.h, l: "h" },
+                  { v: countdown.m, l: "m" },
+                  { v: countdown.s, l: "s" },
+                ].map(({ v, l }) => (
+                  <div key={l} className="bg-card border border-border rounded-lg px-2.5 py-1.5 text-center min-w-[44px]">
+                    <span className="text-base font-bold text-foreground">{pad(v)}</span>
+                    <span className="text-[9px] text-muted-foreground ml-0.5">{l}</span>
+                  </div>
+                ))}
               </div>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-              {products.slice(0, 5).map((product, i) => (
-                <ProductCard key={product.id} product={product} addItem={addItem} index={i} />
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+              {promoProducts.slice(0, 5).map((product, i) => (
+                <ProductCard key={product.id} product={product} addItem={addItem} index={i} showDiscount />
               ))}
             </div>
           </div>
         </section>
       )}
 
-      {/* ═══ PROMOÇÕES ═══ */}
-      {isHome && promoProducts.length > 0 && (
-        <section className="container mx-auto px-4 py-8">
-          <div className="flex items-center gap-2 mb-6">
-            <Tag className="h-5 w-5 text-primary" />
-            <h2 className="text-lg font-bold text-foreground">Ofertas do Dia</h2>
-            <span className="ml-2 bg-primary/15 text-primary text-[10px] font-bold px-2.5 py-0.5 rounded-md uppercase">
-              Tempo limitado
-            </span>
+      {/* ═══ BEST SELLERS ═══ */}
+      {isHome && bestSellers.length > 0 && (
+        <section className="container mx-auto px-4 py-12">
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                <TrendingUp className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-foreground">Mais Vendidos</h2>
+                <p className="text-xs text-muted-foreground">Os favoritos dos nossos clientes</p>
+              </div>
+            </div>
+            <button className="text-sm text-primary font-semibold flex items-center gap-1 hover:gap-2 transition-all">
+              Ver todos <ChevronRight className="h-4 w-4" />
+            </button>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            {promoProducts.map((product, i) => (
-              <ProductCard key={product.id} product={product} addItem={addItem} index={i} showDiscount />
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {bestSellers.slice(0, 8).map((product, i) => (
+              <ProductCard key={product.id} product={product} addItem={addItem} index={i} showRating />
             ))}
           </div>
         </section>
       )}
 
-      {/* ═══ MAIS VENDIDOS ═══ */}
-      {isHome && (
-        <section className="bg-card/40 border-y border-border">
-          <div className="container mx-auto px-4 py-8">
-            <div className="flex items-center gap-2 mb-6">
-              <Star className="h-5 w-5 text-primary" />
-              <h2 className="text-lg font-bold text-foreground">Mais Vendidos</h2>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-              {bestSellers.map((product, i) => (
-                <ProductCard key={product.id} product={product} addItem={addItem} index={i} showRating />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
       {/* ═══ ALL PRODUCTS ═══ */}
-      <section id="products" className="container mx-auto px-4 py-8">
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-3">
-          <div className="flex items-center gap-2">
-            <Package className="h-5 w-5 text-primary" />
-            <h2 className="text-lg font-bold text-foreground">
-              {selectedCategory ? categories.find((c) => c.id === selectedCategory)?.name : searchQuery ? `Resultados para "${searchQuery}"` : "Todos os Produtos"}
-            </h2>
-            <span className="text-xs text-muted-foreground">({filtered.length})</span>
+      <section id="products" className="container mx-auto px-4 py-12">
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-3">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
+              <Package className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-foreground">
+                {selectedCategory ? categories.find((c) => c.id === selectedCategory)?.name : searchQuery ? `Resultados para "${searchQuery}"` : "Todos os Produtos"}
+              </h2>
+              <p className="text-xs text-muted-foreground">{filtered.length} produtos encontrados</p>
+            </div>
           </div>
-          {(selectedCategory || searchQuery) && (
-            <Button variant="ghost" size="sm" onClick={() => { setSelectedCategory(null); setSearchQuery(""); }}>
-              Limpar filtros
-            </Button>
-          )}
+          {/* Category filters */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-1">
+            <button
+              onClick={() => { setSelectedCategory(null); setSearchQuery(""); }}
+              className={`px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all border ${
+                !selectedCategory
+                  ? "bg-primary text-primary-foreground border-primary shadow-[0_0_15px_-3px_hsl(142_71%_45%_/_0.4)]"
+                  : "border-border text-muted-foreground hover:text-foreground hover:border-foreground/20"
+              }`}
+            >
+              Todos
+            </button>
+            {categories.map((c) => (
+              <button
+                key={c.id}
+                onClick={() => { setSelectedCategory(c.id); setSearchQuery(""); }}
+                className={`px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all border ${
+                  selectedCategory === c.id
+                    ? "bg-primary text-primary-foreground border-primary shadow-[0_0_15px_-3px_hsl(142_71%_45%_/_0.4)]"
+                    : "border-border text-muted-foreground hover:text-foreground hover:border-foreground/20"
+                }`}
+              >
+                {c.name}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
@@ -420,85 +436,166 @@ const StorePage = () => {
         </div>
 
         {filtered.length === 0 && (
-          <div className="text-center py-20">
-            <Package className="h-16 w-16 mx-auto mb-4 text-muted-foreground/30" />
-            <h3 className="text-lg font-semibold text-foreground mb-1">Nenhum produto encontrado</h3>
-            <p className="text-sm text-muted-foreground">Tente outra categoria ou busca</p>
+          <div className="text-center py-24">
+            <div className="h-20 w-20 mx-auto mb-6 rounded-2xl bg-card border border-border flex items-center justify-center">
+              <Search className="h-8 w-8 text-muted-foreground/30" />
+            </div>
+            <h3 className="text-lg font-bold text-foreground mb-2">Nenhum produto encontrado</h3>
+            <p className="text-sm text-muted-foreground mb-6">Tente outra categoria ou busca diferente</p>
+            <Button variant="outline" className="rounded-xl" onClick={() => { setSelectedCategory(null); setSearchQuery(""); }}>
+              Ver todos os produtos
+            </Button>
           </div>
         )}
       </section>
 
-      {/* ═══ TRUST BAR ═══ */}
-      <section className="border-y border-border bg-card/60">
-        <div className="container mx-auto px-4 py-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              { icon: Truck, label: "Frete para todo Brasil" },
-              { icon: Shield, label: "Compra 100% segura" },
-              { icon: Zap, label: "Envio rápido" },
-              { icon: Star, label: "Garantia inclusa" },
-            ].map(({ icon: Icon, label }) => (
-              <div key={label} className="flex items-center gap-3 justify-center">
-                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                  <Icon className="h-5 w-5 text-primary" />
+      {/* ═══ SOCIAL PROOF ═══ */}
+      {isHome && (
+        <section className="bg-card border-y border-border/50">
+          <div className="container mx-auto px-4 py-12">
+            <div className="text-center mb-10">
+              <h2 className="text-2xl font-bold text-foreground mb-2">O que nossos clientes dizem</h2>
+              <p className="text-sm text-muted-foreground">+10.000 clientes satisfeitos em todo o Brasil</p>
+            </div>
+            <div className="grid md:grid-cols-3 gap-6">
+              {REVIEWS.map((r, i) => (
+                <div
+                  key={i}
+                  className="bg-background border border-border/50 rounded-2xl p-6 hover:border-primary/30 transition-all duration-300 hover:-translate-y-1"
+                >
+                  <div className="flex items-center gap-1 mb-3">
+                    {Array.from({ length: r.rating }).map((_, j) => (
+                      <Star key={j} className="h-4 w-4 text-primary fill-primary" />
+                    ))}
+                  </div>
+                  <p className="text-sm text-foreground mb-4 leading-relaxed">"{r.text}"</p>
+                  <div className="flex items-center gap-2">
+                    <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                      <User className="h-4 w-4 text-primary" />
+                    </div>
+                    <span className="text-xs font-semibold text-foreground">{r.name}</span>
+                  </div>
                 </div>
-                <span className="text-xs font-medium text-muted-foreground">{label}</span>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
+        </section>
+      )}
+
+      {/* ═══ TRUST BENEFITS ═══ */}
+      <section className="container mx-auto px-4 py-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          {[
+            { icon: Truck, title: "Entrega Rápida", desc: "Para todo o Brasil" },
+            { icon: Shield, title: "Compra Segura", desc: "Dados protegidos" },
+            { icon: Award, title: "Garantia", desc: "Todos os produtos" },
+            { icon: CreditCard, title: "Parcele em 12x", desc: "Sem juros" },
+          ].map(({ icon: Icon, title, desc }) => (
+            <div key={title} className="flex items-center gap-4 p-4 rounded-2xl bg-card border border-border/50 hover:border-primary/30 transition-colors">
+              <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <Icon className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-foreground">{title}</p>
+                <p className="text-xs text-muted-foreground">{desc}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
+      {/* ═══ NEWSLETTER ═══ */}
+      {isHome && (
+        <section className="bg-gradient-to-r from-primary/10 via-card to-primary/10 border-y border-border/50">
+          <div className="container mx-auto px-4 py-14">
+            <div className="max-w-xl mx-auto text-center">
+              <div className="h-12 w-12 mx-auto mb-4 rounded-xl bg-primary/10 flex items-center justify-center">
+                <Mail className="h-6 w-6 text-primary" />
+              </div>
+              <h2 className="text-2xl font-bold text-foreground mb-2">Fique por dentro das novidades</h2>
+              <p className="text-sm text-muted-foreground mb-6">Receba ofertas exclusivas e lançamentos em primeira mão.</p>
+              <div className="flex gap-2 max-w-md mx-auto">
+                <Input
+                  placeholder="Seu melhor e-mail"
+                  className="flex-1 h-11 rounded-xl bg-background border-border/50 focus:border-primary"
+                />
+                <Button className="rounded-xl h-11 px-6 font-bold shadow-[0_0_20px_-5px_hsl(142_71%_45%_/_0.3)]">
+                  Inscrever
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* ═══ FOOTER ═══ */}
-      <footer className="bg-card border-t border-border">
-        <div className="container mx-auto px-4 py-10">
-          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+      <footer className="bg-card border-t border-border/50">
+        <div className="container mx-auto px-4 py-12">
+          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-10 mb-10">
             <div>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-                  <Zap className="h-4 w-4 text-primary-foreground" />
+              <div className="flex items-center gap-2.5 mb-5">
+                <div className="h-9 w-9 rounded-xl bg-primary flex items-center justify-center shadow-[0_0_15px_hsl(142_71%_45%_/_0.3)]">
+                  <Zap className="h-5 w-5 text-primary-foreground" />
                 </div>
-                <span className="font-bold text-foreground">SmartCell</span>
+                <span className="text-lg font-extrabold text-foreground">
+                  Smart<span className="text-primary">Cell</span>
+                </span>
               </div>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                A melhor loja de tecnologia do Brasil. Qualidade e preço justo.
+                A melhor loja de tecnologia do Brasil. Qualidade, preço justo e entrega garantida.
               </p>
             </div>
             <div>
-              <h4 className="text-sm font-semibold text-foreground mb-3">Atendimento</h4>
-              <ul className="space-y-2 text-xs text-muted-foreground">
-                <li className="hover:text-foreground cursor-pointer transition-colors">Central de Ajuda</li>
-                <li className="hover:text-foreground cursor-pointer transition-colors">Trocas e Devoluções</li>
-                <li className="hover:text-foreground cursor-pointer transition-colors">Fale Conosco</li>
+              <h4 className="text-sm font-bold text-foreground mb-4">Atendimento</h4>
+              <ul className="space-y-2.5 text-xs text-muted-foreground">
+                <li className="hover:text-primary cursor-pointer transition-colors">Central de Ajuda</li>
+                <li className="hover:text-primary cursor-pointer transition-colors">Trocas e Devoluções</li>
+                <li className="hover:text-primary cursor-pointer transition-colors">Fale Conosco</li>
               </ul>
             </div>
             <div>
-              <h4 className="text-sm font-semibold text-foreground mb-3">Institucional</h4>
-              <ul className="space-y-2 text-xs text-muted-foreground">
-                <li className="hover:text-foreground cursor-pointer transition-colors">Sobre nós</li>
-                <li className="hover:text-foreground cursor-pointer transition-colors">Políticas de Privacidade</li>
-                <li className="hover:text-foreground cursor-pointer transition-colors">Termos de Uso</li>
+              <h4 className="text-sm font-bold text-foreground mb-4">Institucional</h4>
+              <ul className="space-y-2.5 text-xs text-muted-foreground">
+                <li className="hover:text-primary cursor-pointer transition-colors">Sobre nós</li>
+                <li className="hover:text-primary cursor-pointer transition-colors">Políticas de Privacidade</li>
+                <li className="hover:text-primary cursor-pointer transition-colors">Termos de Uso</li>
               </ul>
             </div>
             <div>
-              <h4 className="text-sm font-semibold text-foreground mb-3">Pagamento</h4>
-              <ul className="space-y-2 text-xs text-muted-foreground">
-                <li>Cartão de Crédito</li>
-                <li>Boleto Bancário</li>
-                <li>PIX</li>
-              </ul>
+              <h4 className="text-sm font-bold text-foreground mb-4">Formas de Pagamento</h4>
+              <div className="flex flex-wrap gap-2">
+                {["Visa", "Master", "PIX", "Boleto"].map((p) => (
+                  <span key={p} className="text-[10px] font-semibold text-muted-foreground bg-background border border-border rounded-lg px-3 py-1.5">
+                    {p}
+                  </span>
+                ))}
+              </div>
+              <div className="mt-4 flex items-center gap-2">
+                <Lock className="h-4 w-4 text-primary" />
+                <span className="text-[10px] text-muted-foreground">Ambiente seguro</span>
+              </div>
             </div>
           </div>
-          <div className="border-t border-border pt-6 text-center">
+          <div className="border-t border-border/50 pt-6 text-center">
             <p className="text-xs text-muted-foreground">© 2026 SmartCell Store. Todos os direitos reservados.</p>
           </div>
         </div>
       </footer>
+
+      {/* ═══ MOBILE FIXED BUY BUTTON ═══ */}
+      <div className="fixed bottom-0 left-0 right-0 lg:hidden bg-background/90 backdrop-blur-xl border-t border-border/50 p-3 z-40">
+        <Link to="/cart">
+          <Button className="w-full rounded-xl h-12 font-bold text-base shadow-[0_0_25px_-5px_hsl(142_71%_45%_/_0.4)]">
+            <ShoppingCart className="mr-2 h-5 w-5" />
+            Ver Carrinho {itemCount > 0 && `(${itemCount})`}
+          </Button>
+        </Link>
+      </div>
     </div>
   );
 };
 
-/* ═════════════ Product Card (KaBuM-style) ═════════════ */
+/* ═════════════ PRODUCT CARD ═════════════ */
 
 interface ProductCardProps {
   product: Product;
@@ -512,70 +609,75 @@ const ProductCard = ({ product, addItem, index, showDiscount, showRating }: Prod
   const price = product.promotional_price ?? product.price;
   const hasPromo = product.promotional_price !== null;
   const discount = hasPromo ? Math.round((1 - Number(product.promotional_price) / Number(product.price)) * 100) : 0;
-  const rating = 4.5 + (index % 5) * 0.1; // simulate
+  const rating = 4.5 + (index % 5) * 0.1;
 
   return (
     <div
-      className="group bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_30px_-12px_hsl(142_71%_45%_/_0.15)] animate-fade-in flex flex-col"
-      style={{ animationDelay: `${index * 50}ms`, opacity: 0, animationFillMode: "forwards" }}
+      className="group bg-card border border-border/50 rounded-2xl overflow-hidden hover:border-primary/40 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_15px_40px_-15px_hsl(142_71%_45%_/_0.15)] animate-fade-in flex flex-col"
+      style={{ animationDelay: `${index * 60}ms`, opacity: 0, animationFillMode: "forwards" }}
     >
       {/* Image */}
-      <div className="relative aspect-square bg-secondary/20 overflow-hidden">
+      <div className="relative aspect-square bg-gradient-to-br from-secondary/20 to-secondary/5 overflow-hidden">
         {product.images?.[0] ? (
-          <img src={product.images[0]} alt={product.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+          <img src={product.images[0]} alt={product.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
         ) : (
           <div className="h-full w-full flex items-center justify-center">
-            <Package className="h-12 w-12 text-muted-foreground/20" />
+            <Package className="h-14 w-14 text-muted-foreground/15" />
           </div>
         )}
 
-        {/* Top badges */}
-        <div className="absolute top-2 left-2 flex items-center gap-1.5">
-          {showRating && (
-            <span className="bg-primary/90 text-primary-foreground text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-0.5">
-              <Star className="h-2.5 w-2.5 fill-current" /> {rating.toFixed(1)}
+        {/* Badges */}
+        <div className="absolute top-2.5 left-2.5 flex flex-col gap-1.5">
+          {showDiscount && hasPromo && (
+            <span className="bg-primary text-primary-foreground text-[10px] font-black px-2.5 py-1 rounded-lg shadow-[0_0_10px_hsl(142_71%_45%_/_0.3)]">
+              -{discount}%
             </span>
           )}
-          {showDiscount && hasPromo && (
-            <span className="bg-primary text-primary-foreground text-[10px] font-bold px-2 py-0.5 rounded-md">
-              -{discount}%
+          {showRating && (
+            <span className="bg-background/80 backdrop-blur text-foreground text-[10px] font-bold px-2 py-1 rounded-lg flex items-center gap-1">
+              <Star className="h-2.5 w-2.5 text-primary fill-primary" /> {rating.toFixed(1)}
             </span>
           )}
         </div>
 
         {/* Wishlist */}
-        <button className="absolute top-2 right-2 h-7 w-7 rounded-full bg-background/60 backdrop-blur flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background/90">
-          <Heart className="h-3.5 w-3.5 text-foreground" />
+        <button className="absolute top-2.5 right-2.5 h-8 w-8 rounded-xl bg-background/60 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-background/90 hover:scale-110">
+          <Heart className="h-4 w-4 text-foreground" />
         </button>
 
-        {/* Quick-add overlay */}
-        <div className="absolute inset-x-0 bottom-0 p-2.5 bg-gradient-to-t from-background/95 to-transparent translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+        {/* Quick view */}
+        <div className="absolute inset-0 bg-background/60 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
           <Button
-            className="w-full rounded-lg font-semibold text-xs h-8"
+            className="rounded-xl font-bold shadow-[0_0_20px_-5px_hsl(142_71%_45%_/_0.4)]"
             disabled={product.stock <= 0}
             onClick={(e) => { e.stopPropagation(); addItem(product); }}
           >
-            <Plus className="h-3 w-3 mr-1" />
-            {product.stock > 0 ? "Comprar" : "Esgotado"}
+            <Plus className="h-4 w-4 mr-1.5" />
+            {product.stock > 0 ? "Adicionar ao carrinho" : "Esgotado"}
           </Button>
         </div>
       </div>
 
       {/* Info */}
-      <div className="p-3 flex flex-col flex-1">
-        <h3 className="text-xs font-medium text-foreground line-clamp-2 group-hover:text-primary transition-colors leading-snug mb-auto">
+      <div className="p-4 flex flex-col flex-1">
+        <h3 className="text-xs md:text-sm font-medium text-foreground line-clamp-2 group-hover:text-primary transition-colors leading-snug mb-auto">
           {product.name}
         </h3>
-        <div className="mt-2">
+        <div className="mt-3">
           {hasPromo && (
-            <span className="text-[10px] text-muted-foreground line-through">
+            <span className="text-[10px] text-muted-foreground line-through block">
               R$ {Number(product.price).toFixed(2)}
             </span>
           )}
-          <p className="text-base font-extrabold text-primary">
+          <p className="text-lg font-black text-primary">
             R$ {Number(price).toFixed(2)}
           </p>
-          <p className="text-[10px] text-muted-foreground">à vista no PIX</p>
+          <p className="text-[10px] text-muted-foreground mt-0.5">
+            à vista no <span className="font-bold text-primary">PIX</span>
+          </p>
+          {product.stock <= 5 && product.stock > 0 && (
+            <p className="text-[10px] text-destructive font-semibold mt-1">Últimas {product.stock} unidades!</p>
+          )}
         </div>
       </div>
     </div>
