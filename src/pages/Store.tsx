@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
 import { useCart } from "@/hooks/useCart";
@@ -8,9 +8,18 @@ import { Input } from "@/components/ui/input";
 import {
   ShoppingCart, Plus, Package, Search, Zap, Truck, Shield,
   Smartphone, Headphones, Watch, Laptop, Star, Tag, Clock,
-  ChevronRight, Flame, PercentCircle,
+  ChevronRight, ChevronLeft, Flame, PercentCircle,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import banner1 from "@/assets/banner-1.jpg";
+import banner2 from "@/assets/banner-2.jpg";
+import banner3 from "@/assets/banner-3.jpg";
+
+const BANNERS = [
+  { image: banner1, title: "Smartphones com até 50% OFF", subtitle: "Os melhores celulares com preço imbatível", cta: "Ver Smartphones" },
+  { image: banner2, title: "Acessórios & Wearables", subtitle: "Smartwatches, fones e muito mais em promoção", cta: "Conferir Ofertas" },
+  { image: banner3, title: "Notebooks para todos", subtitle: "MacBook, Lenovo, Samsung — parcele em até 12x", cta: "Ver Notebooks" },
+];
 
 type Product = Tables<"products">;
 type Category = Tables<"categories">;
