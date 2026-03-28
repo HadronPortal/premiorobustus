@@ -37,7 +37,14 @@ const StorePage = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
+  const [bannerIndex, setBannerIndex] = useState(0);
   const { addItem, itemCount } = useCart();
+
+  // Auto-rotate banners
+  useEffect(() => {
+    const timer = setInterval(() => setBannerIndex((i) => (i + 1) % BANNERS.length), 5000);
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
