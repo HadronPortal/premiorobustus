@@ -238,32 +238,30 @@ const StorePage = () => {
         )}
       </header>
 
-      {/* ═══ HERO SECTION ═══ */}
+      {/* ═══ HERO BANNER CAROUSEL ═══ */}
       {isHome && (
-        <section className="relative overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_hsl(142_71%_45%_/_0.08),_transparent_50%)]" />
-          <div className="absolute top-20 right-10 h-72 w-72 bg-primary/5 rounded-full blur-3xl" />
-          <div className="absolute bottom-10 left-10 h-48 w-48 bg-primary/5 rounded-full blur-3xl" />
-
-          <div className="container mx-auto px-4 py-16 md:py-24 relative">
+        <section className="relative">
+          <div className="relative h-[400px] md:h-[500px] lg:h-[550px] overflow-hidden">
             {HERO_SLIDES.map((slide, i) => (
               <div
                 key={i}
-                className={`transition-all duration-700 ${i === heroIndex ? "opacity-100" : "opacity-0 absolute inset-0 pointer-events-none"}`}
+                className={`absolute inset-0 transition-opacity duration-700 ${i === heroIndex ? "opacity-100" : "opacity-0 pointer-events-none"}`}
               >
-                {i === heroIndex && (
-                  <div className="flex flex-col lg:flex-row items-center gap-12">
-                    <div className="flex-1 text-center lg:text-left">
-                      <span className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 text-primary text-xs font-bold px-3 py-1.5 rounded-full mb-6 uppercase tracking-wider">
+                <img src={slide.image} alt={slide.tag} className="h-full w-full object-cover" width={1920} height={800} />
+                <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent" />
+                <div className="absolute inset-0 flex items-center">
+                  <div className="container mx-auto px-4">
+                    <div className="max-w-xl">
+                      <span className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 text-primary text-xs font-bold px-3 py-1.5 rounded-full mb-5 uppercase tracking-wider backdrop-blur-sm">
                         <Zap className="h-3 w-3" /> {slide.tag}
                       </span>
-                      <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-foreground leading-[0.95] mb-6 whitespace-pre-line">
+                      <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-foreground leading-[0.95] mb-4 whitespace-pre-line">
                         {slide.title}
                       </h1>
-                      <p className="text-base md:text-lg text-muted-foreground max-w-lg mb-8 leading-relaxed mx-auto lg:mx-0">
+                      <p className="text-sm md:text-base text-muted-foreground max-w-md mb-6 leading-relaxed">
                         {slide.subtitle}
                       </p>
-                      <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
+                      <div className="flex flex-col sm:flex-row items-start gap-4">
                         <Button
                           size="lg"
                           className="rounded-xl font-bold text-base px-8 h-12 shadow-[0_0_30px_-5px_hsl(142_71%_45%_/_0.4)] hover:shadow-[0_0_40px_-5px_hsl(142_71%_45%_/_0.6)] transition-all"
@@ -271,35 +269,39 @@ const StorePage = () => {
                         >
                           {slide.cta} <ArrowRight className="ml-2 h-4 w-4" />
                         </Button>
-                        <p className="text-sm text-muted-foreground">
-                          A partir de <span className="text-2xl font-black text-primary">R$ {slide.price}</span>
-                        </p>
-                      </div>
-                    </div>
-                    {/* Decorative card */}
-                    <div className="hidden lg:block flex-shrink-0">
-                      <div className="relative w-80 h-80">
-                        <div className="absolute inset-0 bg-primary/10 rounded-3xl rotate-6 border border-primary/20" />
-                        <div className="absolute inset-0 bg-card rounded-3xl border border-border/50 backdrop-blur-sm flex items-center justify-center">
-                          <Smartphone className="h-32 w-32 text-primary/30" />
-                        </div>
-                        <div className="absolute -bottom-4 -right-4 bg-primary text-primary-foreground text-sm font-bold px-4 py-2 rounded-xl shadow-lg">
-                          até 50% OFF
+                        <div className="text-left">
+                          <p className="text-xs text-muted-foreground">a partir de</p>
+                          <p className="text-3xl font-black text-primary">R$ {slide.price}</p>
+                          <p className="text-[10px] text-muted-foreground">à vista no PIX</p>
                         </div>
                       </div>
                     </div>
                   </div>
-                )}
+                </div>
               </div>
             ))}
 
+            {/* Navigation arrows */}
+            <button
+              onClick={() => setHeroIndex((i) => (i - 1 + HERO_SLIDES.length) % HERO_SLIDES.length)}
+              className="absolute left-4 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-background/50 backdrop-blur-sm flex items-center justify-center hover:bg-background/80 transition-colors z-10 border border-border/30"
+            >
+              <ChevronLeft className="h-5 w-5 text-foreground" />
+            </button>
+            <button
+              onClick={() => setHeroIndex((i) => (i + 1) % HERO_SLIDES.length)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-background/50 backdrop-blur-sm flex items-center justify-center hover:bg-background/80 transition-colors z-10 border border-border/30"
+            >
+              <ChevronRight className="h-5 w-5 text-foreground" />
+            </button>
+
             {/* Dots */}
-            <div className="flex items-center justify-center lg:justify-start gap-2 mt-10">
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-10">
               {HERO_SLIDES.map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setHeroIndex(i)}
-                  className={`h-2 rounded-full transition-all duration-300 ${i === heroIndex ? "w-8 bg-primary shadow-[0_0_10px_hsl(142_71%_45%_/_0.5)]" : "w-2 bg-muted-foreground/30"}`}
+                  className={`h-2 rounded-full transition-all duration-300 ${i === heroIndex ? "w-8 bg-primary shadow-[0_0_10px_hsl(142_71%_45%_/_0.5)]" : "w-2 bg-foreground/30"}`}
                 />
               ))}
             </div>
