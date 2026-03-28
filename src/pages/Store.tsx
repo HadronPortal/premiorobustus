@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
 import { useCart } from "@/hooks/useCart";
 import { Button } from "@/components/ui/button";
+import { Package } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ShoppingCart, Plus, Minus, Store as StoreIcon } from "lucide-react";
