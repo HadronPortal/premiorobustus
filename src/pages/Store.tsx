@@ -170,58 +170,63 @@ const StorePage = () => {
         </div>
       </header>
 
-      {/* Hero Banner */}
+      {/* Banner Carousel */}
       {!selectedCategory && !searchQuery && (
-        <section className="relative overflow-hidden bg-gradient-to-br from-primary/20 via-background to-background">
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[100px]" />
-          <div className="container mx-auto px-4 py-16 md:py-24 relative">
-            <div className="grid md:grid-cols-2 gap-8 items-center">
-              <div className="animate-fade-in-up">
-                <Badge className="mb-4 bg-primary/20 text-primary border-primary/30 px-3 py-1 text-xs font-bold uppercase tracking-wider">
-                  <Flame className="h-3 w-3 mr-1" /> Super Promoção
-                </Badge>
-                <h1 className="text-4xl md:text-6xl font-extrabold text-foreground leading-[1.1] tracking-tight mb-4">
-                  As melhores
-                  <span className="text-primary"> ofertas</span> em
-                  tecnologia
-                </h1>
-                <p className="text-base md:text-lg text-muted-foreground max-w-md mb-8 leading-relaxed">
-                  Smartphones, notebooks e acessórios com os melhores preços do mercado. Aproveite!
-                </p>
-                <div className="flex flex-wrap gap-3">
-                  <Button
-                    size="lg"
-                    className="text-sm px-6 py-5 rounded-lg font-bold animate-pulse-glow"
-                    onClick={() => document.getElementById("products")?.scrollIntoView({ behavior: "smooth" })}
-                  >
-                    Ver Ofertas <ChevronRight className="ml-1 h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    className="text-sm px-6 py-5 rounded-lg font-bold border-border hover:bg-accent"
-                    onClick={() => document.getElementById("categories")?.scrollIntoView({ behavior: "smooth" })}
-                  >
-                    Categorias
-                  </Button>
-                </div>
-              </div>
-              <div className="hidden md:flex items-center justify-center">
-                <div className="relative">
-                  <div className="w-72 h-72 rounded-full bg-primary/10 flex items-center justify-center">
-                    <div className="w-56 h-56 rounded-full bg-primary/15 flex items-center justify-center">
-                      <Smartphone className="h-28 w-28 text-primary/60" />
+        <section className="relative overflow-hidden">
+          <div className="relative h-[280px] md:h-[400px]">
+            {BANNERS.map((banner, i) => (
+              <div
+                key={i}
+                className={`absolute inset-0 transition-opacity duration-700 ${i === bannerIndex ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+              >
+                <img src={banner.image} alt={banner.title} className="h-full w-full object-cover" width={1920} height={640} />
+                <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/60 to-transparent" />
+                <div className="absolute inset-0 flex items-center">
+                  <div className="container mx-auto px-4">
+                    <div className="max-w-lg">
+                      <Badge className="mb-3 bg-primary/20 text-primary border-primary/30 px-3 py-1 text-xs font-bold uppercase">
+                        <Flame className="h-3 w-3 mr-1" /> Promoção
+                      </Badge>
+                      <h2 className="text-3xl md:text-5xl font-extrabold text-foreground leading-tight mb-3">
+                        {banner.title}
+                      </h2>
+                      <p className="text-sm md:text-base text-muted-foreground mb-6">{banner.subtitle}</p>
+                      <Button
+                        size="lg"
+                        className="rounded-lg font-bold animate-pulse-glow"
+                        onClick={() => document.getElementById("products")?.scrollIntoView({ behavior: "smooth" })}
+                      >
+                        {banner.cta} <ChevronRight className="ml-1 h-4 w-4" />
+                      </Button>
                     </div>
                   </div>
-                  <div className="absolute -top-4 -right-4 bg-card border border-border rounded-xl px-4 py-2 shadow-lg animate-fade-in">
-                    <span className="text-xs text-muted-foreground">até</span>
-                    <span className="block text-xl font-extrabold text-primary">50% OFF</span>
-                  </div>
-                  <div className="absolute -bottom-2 -left-4 bg-card border border-border rounded-xl px-4 py-2 shadow-lg animate-fade-in" style={{ animationDelay: "200ms" }}>
-                    <span className="text-xs text-muted-foreground flex items-center gap-1"><Truck className="h-3 w-3" /> Frete Grátis</span>
-                  </div>
                 </div>
               </div>
+            ))}
+
+            {/* Nav arrows */}
+            <button
+              onClick={() => setBannerIndex((i) => (i - 1 + BANNERS.length) % BANNERS.length)}
+              className="absolute left-3 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-background/60 backdrop-blur flex items-center justify-center hover:bg-background/80 transition-colors z-10"
+            >
+              <ChevronLeft className="h-5 w-5 text-foreground" />
+            </button>
+            <button
+              onClick={() => setBannerIndex((i) => (i + 1) % BANNERS.length)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-background/60 backdrop-blur flex items-center justify-center hover:bg-background/80 transition-colors z-10"
+            >
+              <ChevronRight className="h-5 w-5 text-foreground" />
+            </button>
+
+            {/* Dots */}
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+              {BANNERS.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setBannerIndex(i)}
+                  className={`h-2 rounded-full transition-all ${i === bannerIndex ? "w-6 bg-primary" : "w-2 bg-foreground/30"}`}
+                />
+              ))}
             </div>
           </div>
         </section>
