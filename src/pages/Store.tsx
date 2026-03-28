@@ -13,34 +13,37 @@ import {
   ArrowRight, Sparkles, TrendingUp, Eye,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import banner1 from "@/assets/banner-1.jpg";
+import banner2 from "@/assets/banner-2.jpg";
+import banner3 from "@/assets/banner-3.jpg";
 
 type Product = Tables<"products">;
 type Category = Tables<"categories">;
 
 const HERO_SLIDES = [
   {
+    image: banner1,
     tag: "LANÇAMENTO",
     title: "O futuro na palma\nda sua mão",
     subtitle: "Smartphones premium com tecnologia de ponta e os melhores preços do mercado.",
     cta: "Comprar agora",
     price: "1.299",
-    gradient: "from-primary/20 via-background to-background",
   },
   {
+    image: banner2,
     tag: "OFERTA ESPECIAL",
     title: "Performance\nsem limites",
     subtitle: "Notebooks e acessórios para transformar sua experiência digital.",
     cta: "Ver ofertas",
     price: "2.499",
-    gradient: "from-primary/15 via-background to-background",
   },
   {
+    image: banner3,
     tag: "MEGA DEAL",
     title: "Tecnologia\npara todos",
     subtitle: "Wearables, games e periféricos com desconto exclusivo.",
     cta: "Aproveitar",
     price: "899",
-    gradient: "from-primary/25 via-background to-background",
   },
 ];
 
