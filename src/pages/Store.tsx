@@ -6,12 +6,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   ShoppingCart, Package, Search, Zap, Truck, Shield,
-  Smartphone, Headphones, Watch, Laptop, Star, Clock,
+  Star, Clock,
   ChevronRight, ChevronLeft, Flame, Heart, MapPin,
-  User, Monitor, Cpu, Gamepad2, Speaker, Camera, Tv,
-  Plus, Tag, Menu, X, Mail, CreditCard, Lock, Award,
+  User, Plus, Tag, Menu, X, Mail, CreditCard, Lock, Award,
   ArrowRight, Sparkles, TrendingUp, Eye,
 } from "lucide-react";
+import iconSmartphone from "@/assets/icon-smartphone.png";
+import iconNotebook from "@/assets/icon-notebook.png";
+import iconHeadphones from "@/assets/icon-headphones.png";
+import iconGamepad from "@/assets/icon-gamepad.png";
+import iconMonitor from "@/assets/icon-monitor.png";
+import iconSmartwatch from "@/assets/icon-smartwatch.png";
+import iconHardware from "@/assets/icon-hardware.png";
+import iconTv from "@/assets/icon-tv.png";
 import { Link } from "react-router-dom";
 import banner1 from "@/assets/banner-1.jpg";
 import banner2 from "@/assets/banner-2.jpg";
