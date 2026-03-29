@@ -320,10 +320,10 @@ const StorePage = () => {
       {isHome && (
         <section className="container mx-auto px-4 py-12">
           <div className="grid grid-cols-4 md:grid-cols-8 gap-4">
-            {DEPT_ICONS.map(({ icon: Icon, label }) => (
+            {DEPT_ICONS.map(({ img, label }) => (
               <button key={label} className="group flex flex-col items-center gap-3">
-                <div className="h-16 w-16 md:h-20 md:w-20 rounded-2xl bg-card border border-border/50 flex items-center justify-center group-hover:border-primary/50 group-hover:bg-primary/5 group-hover:shadow-[0_0_25px_-5px_hsl(142_71%_45%_/_0.2)] transition-all duration-300 group-hover:-translate-y-1">
-                  <Icon className="h-7 w-7 md:h-8 md:w-8 text-muted-foreground group-hover:text-primary transition-colors" />
+                <div className="h-16 w-16 md:h-20 md:w-20 rounded-2xl bg-card border border-border/50 flex items-center justify-center group-hover:border-primary/50 group-hover:bg-primary/5 group-hover:shadow-[0_0_25px_-5px_hsl(142_71%_45%_/_0.2)] transition-all duration-300 group-hover:-translate-y-1 p-2">
+                  <img src={img} alt={label} loading="lazy" width={64} height={64} className="h-full w-full object-contain drop-shadow-lg group-hover:scale-110 transition-transform duration-300" />
                 </div>
                 <span className="text-[11px] md:text-xs font-medium text-muted-foreground text-center group-hover:text-foreground transition-colors">
                   {label}
