@@ -55,14 +55,14 @@ const HERO_SLIDES = [
 ];
 
 const DEPT_ICONS = [
-  { icon: Smartphone, label: "Smartphones" },
-  { icon: Laptop, label: "Notebooks" },
-  { icon: Headphones, label: "Acessórios" },
-  { icon: Gamepad2, label: "Games" },
-  { icon: Monitor, label: "Monitores" },
-  { icon: Watch, label: "Wearables" },
-  { icon: Cpu, label: "Hardware" },
-  { icon: Tv, label: "TV & Áudio" },
+  { img: iconSmartphone, label: "Smartphones" },
+  { img: iconNotebook, label: "Notebooks" },
+  { img: iconHeadphones, label: "Acessórios" },
+  { img: iconGamepad, label: "Games" },
+  { img: iconMonitor, label: "Monitores" },
+  { img: iconSmartwatch, label: "Wearables" },
+  { img: iconHardware, label: "Hardware" },
+  { img: iconTv, label: "TV & Áudio" },
 ];
 
 const REVIEWS = [
