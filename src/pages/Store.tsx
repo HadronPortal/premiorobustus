@@ -637,71 +637,66 @@ const ProductCard = ({ product, addItem, index, showDiscount, showRating }: Prod
 
   return (
     <div
-      className="group bg-card border border-border/50 rounded-2xl overflow-hidden hover:border-primary/40 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_15px_40px_-15px_hsl(142_71%_45%_/_0.15)] animate-fade-in flex flex-col"
+      className="group bg-white border border-[#E0E0E0] rounded-sm overflow-hidden hover:shadow-lg transition-all duration-300 animate-fade-in flex flex-col"
       style={{ animationDelay: `${index * 60}ms`, opacity: 0, animationFillMode: "forwards" }}
     >
       {/* Image */}
-      <div className="relative aspect-square bg-gradient-to-br from-secondary/20 to-secondary/5 overflow-hidden">
+      <div className="relative aspect-square p-4 flex items-center justify-center overflow-hidden">
         {product.images?.[0] ? (
-          <img src={product.images[0]} alt={product.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
+          <img src={product.images[0]} alt={product.name} className="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-110" />
         ) : (
           <div className="h-full w-full flex items-center justify-center">
             <Package className="h-14 w-14 text-muted-foreground/15" />
           </div>
         )}
 
-        {/* Badges */}
-        <div className="absolute top-2.5 left-2.5 flex flex-col gap-1.5">
-          {showDiscount && hasPromo && (
-            <span className="bg-primary text-primary-foreground text-[10px] font-black px-2.5 py-1 rounded-lg shadow-[0_0_10px_hsl(142_71%_45%_/_0.3)]">
-              -{discount}%
-            </span>
-          )}
-          {showRating && (
-            <span className="bg-background/80 backdrop-blur text-foreground text-[10px] font-bold px-2 py-1 rounded-lg flex items-center gap-1">
-              <Star className="h-2.5 w-2.5 text-primary fill-primary" /> {rating.toFixed(1)}
-            </span>
-          )}
-        </div>
+        {/* Discount Badge */}
+        {showDiscount && hasPromo && (
+          <div className="absolute top-2 left-2 bg-[#FF6500] text-white text-[10px] font-black px-2 py-1 rounded-sm">
+            {discount}% OFF
+          </div>
+        )}
 
         {/* Wishlist */}
-        <button className="absolute top-2.5 right-2.5 h-8 w-8 rounded-xl bg-background/60 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-background/90 hover:scale-110">
-          <Heart className="h-4 w-4 text-foreground" />
+        <button className="absolute top-2 right-2 h-8 w-8 rounded-full bg-white shadow-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 hover:text-primary">
+          <Heart className="h-5 w-5" />
         </button>
-
-        {/* Quick view */}
-        <div className="absolute inset-0 bg-background/60 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
-          <Button
-            className="rounded-xl font-bold shadow-[0_0_20px_-5px_hsl(142_71%_45%_/_0.4)]"
-            disabled={product.stock <= 0}
-            onClick={(e) => { e.stopPropagation(); addItem(product); }}
-          >
-            <Plus className="h-4 w-4 mr-1.5" />
-            {product.stock > 0 ? "Adicionar ao carrinho" : "Esgotado"}
-          </Button>
-        </div>
       </div>
 
       {/* Info */}
-      <div className="p-4 flex flex-col flex-1">
-        <h3 className="text-xs md:text-sm font-medium text-foreground line-clamp-2 group-hover:text-primary transition-colors leading-snug mb-auto">
+      <div className="p-4 pt-0 flex flex-col flex-1">
+        <h3 className="text-sm font-bold text-[#42464D] line-clamp-2 leading-tight mb-2 min-h-[2.5rem] group-hover:text-secondary transition-colors">
           {product.name}
         </h3>
-        <div className="mt-3">
+        
+        <div className="flex items-center gap-1 mb-2">
+          {Array.from({ length: 5 }).map((_, j) => (
+            <Star key={j} className={`h-3 w-3 ${j < 4 ? "text-[#FFB800] fill-[#FFB800]" : "text-[#E0E0E0] fill-[#E0E0E0]"}`} />
+          ))}
+          <span className="text-[10px] text-muted-foreground font-bold">(120)</span>
+        </div>
+
+        <div className="mt-auto">
           {hasPromo && (
-            <span className="text-[10px] text-muted-foreground line-through block">
+            <span className="text-xs text-muted-foreground line-through block font-medium">
               R$ {Number(product.price).toFixed(2)}
             </span>
           )}
-          <p className="text-lg font-black text-primary">
+          <p className="text-xl font-black text-[#FF6500]">
             R$ {Number(price).toFixed(2)}
           </p>
-          <p className="text-[10px] text-muted-foreground mt-0.5">
-            à vista no <span className="font-bold text-primary">PIX</span>
+          <p className="text-[10px] font-bold text-[#42464D] mb-4">
+            À vista no <span className="text-secondary font-black">PIX</span>
           </p>
-          {product.stock <= 5 && product.stock > 0 && (
-            <p className="text-[10px] text-destructive font-semibold mt-1">Últimas {product.stock} unidades!</p>
-          )}
+          
+          <Button
+            className="w-full bg-secondary hover:bg-secondary/90 text-white font-black text-xs h-10 rounded-sm uppercase tracking-wider gap-2"
+            disabled={product.stock <= 0}
+            onClick={(e) => { e.stopPropagation(); addItem(product); }}
+          >
+            <ShoppingCart className="h-4 w-4" />
+            COMPRAR
+          </Button>
         </div>
       </div>
     </div>
