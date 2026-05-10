@@ -29,7 +29,7 @@ type Category = Tables<"categories">;
 
 const HERO_SLIDES = [
   {
-    image: "https://temas.lojavirtual.com.br/tema-eletronicos/img/banner-principal-1.jpg",
+    image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1920&auto=format&fit=crop",
     tag: "OFERTA NINJA",
     title: "GALAXY S24 ULTRA",
     subtitle: "A inteligência artificial chegou ao seu smartphone. Aproveite agora!",
@@ -37,7 +37,7 @@ const HERO_SLIDES = [
     price: "7.499",
   },
   {
-    image: "https://temas.lojavirtual.com.br/tema-eletronicos/img/banner-principal-2.jpg",
+    image: "https://images.unsplash.com/photo-1587831990711-23ca6441447b?q=80&w=1920&auto=format&fit=crop",
     tag: "HARDWARE",
     title: "PROCESSADOR RYZEN 7",
     subtitle: "Performance imbatível para seus jogos e trabalhos pesados.",
