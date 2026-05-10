@@ -63,14 +63,14 @@ const HERO_SLIDES = [
 ];
 
 const DEPT_ICONS = [
-  { img: iconSmartphone, label: "Smartphones" },
-  { img: iconNotebook, label: "Notebooks" },
-  { img: iconHeadphones, label: "Acessórios" },
-  { img: iconGamepad, label: "Games" },
-  { img: iconMonitor, label: "Monitores" },
-  { img: iconSmartwatch, label: "Wearables" },
-  { img: iconHardware, label: "Hardware" },
-  { img: iconTv, label: "TV & Áudio" },
+  { img: "https://images.kabum.com.br/produtos/fotos/fotos_mini/1690464673.jpg", label: "Hardwares" },
+  { img: "https://images.kabum.com.br/produtos/fotos/fotos_mini/1690464645.jpg", label: "Periféricos" },
+  { img: "https://images.kabum.com.br/produtos/fotos/fotos_mini/1690464653.jpg", label: "Computadores" },
+  { img: "https://images.kabum.com.br/produtos/fotos/fotos_mini/1690464635.jpg", label: "Placas de Vídeo" },
+  { img: "https://images.kabum.com.br/produtos/fotos/fotos_mini/1690464663.jpg", label: "Processadores" },
+  { img: "https://images.kabum.com.br/produtos/fotos/fotos_mini/1690464683.jpg", label: "Monitores" },
+  { img: "https://images.kabum.com.br/produtos/fotos/fotos_mini/1690464693.jpg", label: "Headsets" },
+  { img: "https://images.kabum.com.br/produtos/fotos/fotos_mini/1690464703.jpg", label: "Teclados" },
 ];
 
 const REVIEWS = [
@@ -268,70 +268,30 @@ const StorePage = () => {
       {/* ═══ HERO BANNER CAROUSEL ═══ */}
       {isHome && (
         <section className="relative">
-          <div className="relative h-[400px] md:h-[500px] lg:h-[550px] overflow-hidden">
+          <div className="relative h-[300px] md:h-[400px] overflow-hidden bg-background">
             {HERO_SLIDES.map((slide, i) => (
               <div
                 key={i}
                 className={`absolute inset-0 transition-opacity duration-700 ${i === heroIndex ? "opacity-100" : "opacity-0 pointer-events-none"}`}
               >
-                <img src={slide.image} alt={slide.tag} className="h-full w-full object-cover" width={1920} height={800} />
-                <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent" />
-                <div className="absolute inset-0 flex items-center">
-                  <div className="container mx-auto px-4">
-                    <div className="max-w-xl">
-                      <span className="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 text-primary text-xs font-bold px-3 py-1.5 rounded-full mb-5 uppercase tracking-wider backdrop-blur-sm">
-                        <Zap className="h-3 w-3" /> {slide.tag}
-                      </span>
-                      <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-foreground leading-[0.95] mb-4 whitespace-pre-line">
-                        {slide.title}
-                      </h1>
-                      <p className="text-sm md:text-base text-muted-foreground max-w-md mb-6 leading-relaxed">
-                        {slide.subtitle}
-                      </p>
-                      <div className="flex flex-col sm:flex-row items-start gap-4">
-                        <Button
-                          size="lg"
-                          className="rounded-xl font-bold text-base px-8 h-12 shadow-[0_0_30px_-5px_hsl(142_71%_45%_/_0.4)] hover:shadow-[0_0_40px_-5px_hsl(142_71%_45%_/_0.6)] transition-all"
-                          onClick={() => document.getElementById("products")?.scrollIntoView({ behavior: "smooth" })}
-                        >
-                          {slide.cta} <ArrowRight className="ml-2 h-4 w-4" />
-                        </Button>
-                        <div className="text-left">
-                          <p className="text-xs text-muted-foreground">a partir de</p>
-                          <p className="text-3xl font-black text-primary">R$ {slide.price}</p>
-                          <p className="text-[10px] text-muted-foreground">à vista no PIX</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <img src={slide.image} alt={slide.tag} className="h-full w-full object-cover" />
+                <div className="absolute inset-0 bg-black/10" />
               </div>
             ))}
 
             {/* Navigation arrows */}
             <button
               onClick={() => setHeroIndex((i) => (i - 1 + HERO_SLIDES.length) % HERO_SLIDES.length)}
-              className="absolute left-4 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-background/50 backdrop-blur-sm flex items-center justify-center hover:bg-background/80 transition-colors z-10 border border-border/30"
+              className="absolute left-4 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/40 transition-colors z-10 text-white"
             >
-              <ChevronLeft className="h-5 w-5 text-foreground" />
+              <ChevronLeft className="h-8 w-8" />
             </button>
             <button
               onClick={() => setHeroIndex((i) => (i + 1) % HERO_SLIDES.length)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-background/50 backdrop-blur-sm flex items-center justify-center hover:bg-background/80 transition-colors z-10 border border-border/30"
+              className="absolute right-4 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/40 transition-colors z-10 text-white"
             >
-              <ChevronRight className="h-5 w-5 text-foreground" />
+              <ChevronRight className="h-8 w-8" />
             </button>
-
-            {/* Dots */}
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-              {HERO_SLIDES.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setHeroIndex(i)}
-                  className={`h-2 rounded-full transition-all duration-300 ${i === heroIndex ? "w-8 bg-primary shadow-[0_0_10px_hsl(142_71%_45%_/_0.5)]" : "w-2 bg-foreground/30"}`}
-                />
-              ))}
-            </div>
           </div>
         </section>
       )}
@@ -339,13 +299,13 @@ const StorePage = () => {
       {/* ═══ CATEGORIES ═══ */}
       {isHome && (
         <section className="container mx-auto px-4 py-8">
-          <div className="flex items-center gap-2 mb-6 overflow-x-auto no-scrollbar">
+          <div className="flex items-center gap-4 mb-6 overflow-x-auto no-scrollbar justify-center md:justify-between">
             {DEPT_ICONS.map(({ img, label }) => (
               <button key={label} className="group flex-shrink-0 flex flex-col items-center gap-2 w-24">
-                <div className="h-16 w-16 rounded-full bg-white border border-[#E0E0E0] flex items-center justify-center group-hover:border-primary transition-all p-2">
-                  <img src={img} alt={label} loading="lazy" width={64} height={64} className="h-full w-full object-contain" />
+                <div className="h-20 w-20 rounded-full bg-white border border-[#E0E0E0] flex items-center justify-center group-hover:border-[#FF6500] transition-all p-2 overflow-hidden shadow-sm">
+                  <img src={img} alt={label} loading="lazy" width={80} height={80} className="h-full w-full object-contain group-hover:scale-110 transition-transform" />
                 </div>
-                <span className="text-[10px] font-black text-[#42464D] text-center uppercase">
+                <span className="text-[10px] font-black text-[#42464D] text-center uppercase tracking-tighter leading-tight">
                   {label}
                 </span>
               </button>
