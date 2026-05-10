@@ -6,50 +6,44 @@
 
 @layer base {
   :root {
-    --background: 120 5% 3%;
-    --foreground: 120 5% 95%;
+    --background: 220 14% 96%;
+    --foreground: 220 14% 15%;
 
-    --card: 120 5% 6%;
-    --card-foreground: 120 5% 95%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 14% 15%;
 
-    --popover: 120 5% 6%;
-    --popover-foreground: 120 5% 95%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 14% 15%;
 
-    --primary: 142 71% 45%;
+    --primary: 24 100% 50%; /* Kabum Orange */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 120 5% 11%;
-    --secondary-foreground: 120 5% 95%;
+    --secondary: 220 100% 45%; /* Kabum Blue */
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 120 5% 11%;
-    --muted-foreground: 120 5% 55%;
+    --muted: 220 14% 90%;
+    --muted-foreground: 220 14% 45%;
 
-    --accent: 120 5% 14%;
-    --accent-foreground: 120 5% 95%;
+    --accent: 220 100% 45%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 120 5% 13%;
-    --input: 120 5% 13%;
-    --ring: 142 71% 45%;
+    --border: 220 14% 90%;
+    --input: 220 14% 90%;
+    --ring: 24 100% 50%;
 
-    --blue-btn: 211 100% 50%;
-    --blue-btn-foreground: 0 0% 100%;
+    --radius: 0.25rem;
 
-    --orange-btn: 24.6 95% 53.1%;
-    --orange-btn-foreground: 0 0% 100%;
-
-    --radius: 0.5rem;
-
-    --sidebar-background: 120 5% 4%;
-    --sidebar-foreground: 120 5% 90%;
-    --sidebar-primary: 142 71% 45%;
+    --sidebar-background: 220 100% 45%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 24 100% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 120 5% 11%;
-    --sidebar-accent-foreground: 120 5% 90%;
-    --sidebar-border: 120 5% 13%;
-    --sidebar-ring: 142 71% 45%;
+    --sidebar-accent: 220 100% 40%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 220 100% 40%;
+    --sidebar-ring: 24 100% 50%;
   }
 
   .dark {
