@@ -31,16 +31,16 @@ const HERO_SLIDES = [
   {
     image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1920&auto=format&fit=crop",
     tag: "OFERTA NINJA",
-    title: "GALAXY S24 ULTRA",
-    subtitle: "A inteligência artificial chegou ao seu smartphone. Aproveite agora!",
+    title: "OFERTA NINJA",
+    subtitle: "Aproveite os melhores preços em tecnologia!",
     cta: "COMPRAR AGORA",
     price: "7.499",
   },
   {
-    image: "https://images.unsplash.com/photo-1587831990711-23ca6441447b?q=80&w=1920&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?q=80&w=1920&auto=format&fit=crop",
     tag: "HARDWARE",
-    title: "PROCESSADOR RYZEN 7",
-    subtitle: "Performance imbatível para seus jogos e trabalhos pesados.",
+    title: "HARDWARE PREMIUM",
+    subtitle: "Componentes de alta performance para seu setup.",
     cta: "VER OFERTA",
     price: "1.499",
   }
