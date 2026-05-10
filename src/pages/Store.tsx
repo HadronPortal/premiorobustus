@@ -249,10 +249,11 @@ const StorePage = () => {
         )}
       </header>
 
-      {/* ═══ HERO BANNER CAROUSEL ═══ */}
+      {/* ═══ HERO BANNER & CATEGORIES ═══ */}
       {isHome && (
         <section className="relative">
-          <div className="relative h-[300px] md:h-[400px] overflow-hidden bg-background">
+          {/* Banner */}
+          <div className="relative h-[300px] md:h-[450px] overflow-hidden bg-background">
             {HERO_SLIDES.map((slide, i) => (
               <div
                 key={i}
@@ -266,34 +267,42 @@ const StorePage = () => {
             {/* Navigation arrows */}
             <button
               onClick={() => setHeroIndex((i) => (i - 1 + HERO_SLIDES.length) % HERO_SLIDES.length)}
-              className="absolute left-4 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/40 transition-colors z-10 text-white"
+              className="absolute left-4 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center hover:bg-black/50 transition-colors z-10 text-white"
             >
               <ChevronLeft className="h-8 w-8" />
             </button>
             <button
               onClick={() => setHeroIndex((i) => (i + 1) % HERO_SLIDES.length)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/40 transition-colors z-10 text-white"
+              className="absolute right-4 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center hover:bg-black/50 transition-colors z-10 text-white"
             >
               <ChevronRight className="h-8 w-8" />
             </button>
           </div>
-        </section>
-      )}
 
-      {/* ═══ CATEGORIES ═══ */}
-      {isHome && (
-        <section className="container mx-auto px-4 py-8">
-          <div className="flex items-center gap-4 mb-6 overflow-x-auto no-scrollbar justify-center md:justify-between">
-            {DEPT_ICONS.map(({ img, label }) => (
-              <button key={label} className="group flex-shrink-0 flex flex-col items-center gap-2 w-24">
-                <div className="h-20 w-20 rounded-full bg-white border border-[#E0E0E0] flex items-center justify-center group-hover:border-[#FF6500] transition-all p-2 overflow-hidden shadow-sm">
-                  <img src={img} alt={label} loading="lazy" width={80} height={80} className="h-full w-full object-contain group-hover:scale-110 transition-transform" crossOrigin="anonymous" />
-                </div>
-                <span className="text-[10px] font-black text-[#42464D] text-center uppercase tracking-tighter leading-tight">
-                  {label}
-                </span>
-              </button>
-            ))}
+          {/* Categories Floating Cards */}
+          <div className="container mx-auto px-4 -mt-10 md:-mt-16 relative z-20">
+            <div className="bg-white p-6 rounded-lg shadow-xl border border-border overflow-x-auto no-scrollbar">
+              <div className="flex items-start gap-4 md:gap-8 min-w-max justify-center">
+                {DEPT_ICONS.map(({ img, label }) => (
+                  <button key={label} className="group flex flex-col items-center gap-2 w-20 md:w-24">
+                    <div className="h-16 w-16 md:h-20 md:w-20 rounded-full bg-white border border-[#E0E0E0] flex items-center justify-center group-hover:border-[#FF6500] transition-all p-2 overflow-hidden shadow-sm">
+                      <img 
+                        src={img} 
+                        alt={label} 
+                        loading="lazy" 
+                        width={80} 
+                        height={80} 
+                        className="h-full w-full object-contain group-hover:scale-110 transition-transform" 
+                        crossOrigin="anonymous" 
+                      />
+                    </div>
+                    <span className="text-[10px] font-black text-[#42464D] text-center uppercase tracking-tighter leading-tight whitespace-normal">
+                      {label}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         </section>
       )}
