@@ -161,8 +161,8 @@ const StorePage = () => {
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
       {/* ═══ ANNOUNCEMENT BAR ═══ */}
-      <div className="bg-[#0060B1] py-1 border-b border-white/10 hidden md:block">
-        <div className="container mx-auto px-4 flex items-center justify-between text-[10px] font-bold text-white uppercase tracking-wider">
+      <div className="bg-[#FFD700] py-1 border-b border-black/10 hidden md:block">
+        <div className="container mx-auto px-4 flex items-center justify-between text-[10px] font-bold text-[#42464D] uppercase tracking-wider">
           <div className="flex items-center gap-6">
             <span className="hover:text-primary cursor-pointer">INSTITUCIONAL</span>
             <span className="hover:text-primary cursor-pointer">POLÍTICAS</span>
@@ -176,17 +176,17 @@ const StorePage = () => {
       </div>
 
       {/* ═══ MAIN HEADER ═══ */}
-      <header className="sticky top-0 z-50 bg-[#0060B1] text-white">
+      <header className="sticky top-0 z-50 bg-[#FFD700] text-[#42464D]">
         <div className="container mx-auto px-4 h-20 flex items-center gap-6">
           {/* Menu button */}
           <button className="flex flex-col items-center gap-1 group" onClick={() => setMobileMenu(!mobileMenu)}>
-            <Menu className="h-8 w-8 text-white group-hover:text-primary transition-colors" />
+            <Menu className="h-8 w-8 text-[#42464D] group-hover:text-primary transition-colors" />
             <span className="text-[10px] font-bold hidden md:block">MENU</span>
           </button>
 
           {/* Logo */}
           <Link to="/" className="flex-shrink-0">
-            <h1 className="text-4xl font-black italic tracking-tighter">
+            <h1 className="text-4xl font-black italic tracking-tighter text-[#42464D]">
               KABUM<span className="text-primary">.</span>
             </h1>
           </Link>
@@ -199,7 +199,7 @@ const StorePage = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-white text-foreground h-12 rounded-sm border-none pr-12 font-medium placeholder:text-muted-foreground/60 focus-visible:ring-primary"
             />
-            <button className="absolute right-0 top-0 h-12 w-12 flex items-center justify-center text-[#0060B1] hover:text-primary transition-colors">
+            <button className="absolute right-0 top-0 h-12 w-12 flex items-center justify-center text-[#42464D] hover:text-primary transition-colors">
               <Search className="h-6 w-6" />
             </button>
           </div>
@@ -207,18 +207,18 @@ const StorePage = () => {
           {/* User & Cart */}
           <div className="flex items-center gap-6">
             <Link to="/admin/login" className="flex items-center gap-2 group">
-              <div className="h-10 w-10 flex items-center justify-center border-2 border-white/20 rounded-full group-hover:border-primary transition-colors">
+              <div className="h-10 w-10 flex items-center justify-center border-2 border-[#42464D]/20 rounded-full group-hover:border-primary transition-colors">
                 <User className="h-5 w-5" />
               </div>
               <div className="hidden lg:block leading-tight">
-                <p className="text-[10px] font-bold text-white/70">LOGIN OU</p>
-                <p className="text-xs font-bold">CADASTRE-SE</p>
+                <p className="text-[10px] font-bold text-[#42464D]/70">LOGIN OU</p>
+                <p className="text-xs font-bold text-[#42464D]">CADASTRE-SE</p>
               </div>
             </Link>
 
             <Link to="/cart" className="relative group flex items-center gap-3">
               <div className="relative">
-                <ShoppingCart className="h-8 w-8 text-white group-hover:text-primary transition-colors" />
+                <ShoppingCart className="h-8 w-8 text-[#42464D] group-hover:text-primary transition-colors" />
                 {itemCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-black rounded-full h-5 w-5 flex items-center justify-center shadow-lg">
                     {itemCount}
@@ -230,12 +230,12 @@ const StorePage = () => {
         </div>
 
         {/* Desktop Categories Sub-header */}
-        <div className="bg-[#005096] hidden md:block">
+        <div className="bg-[#E6C200] hidden md:block">
           <div className="container mx-auto px-4 h-10 flex items-center gap-8 overflow-x-auto no-scrollbar">
             {["HARDWARE", "PERIFÉRICOS", "GAMES", "COMPUTADORES", "CELULAR", "TV", "ÁUDIO"].map((item) => (
               <button
                 key={item}
-                className="text-[11px] font-black whitespace-nowrap hover:text-primary transition-colors"
+                className="text-[11px] font-black whitespace-nowrap hover:text-primary transition-colors text-[#42464D]"
               >
                 {item}
               </button>
@@ -246,7 +246,7 @@ const StorePage = () => {
         {/* Mobile Menu */}
         {mobileMenu && (
           <div className="absolute top-full left-0 w-full md:w-80 h-[calc(100vh-80px)] bg-white text-foreground shadow-2xl animate-fade-in overflow-y-auto">
-            <div className="p-4 bg-[#0060B1] text-white flex items-center justify-between">
+            <div className="p-4 bg-[#FFD700] text-[#42464D] flex items-center justify-between">
               <span className="font-bold">DEPARTAMENTOS</span>
               <X className="h-6 w-6 cursor-pointer" onClick={() => setMobileMenu(false)} />
             </div>
