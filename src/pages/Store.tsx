@@ -29,28 +29,20 @@ type Category = Tables<"categories">;
 
 const HERO_SLIDES = [
   {
-    image: banner1,
-    tag: "LANÇAMENTO",
-    title: "O futuro na palma\nda sua mão",
-    subtitle: "Smartphones premium com tecnologia de ponta e os melhores preços do mercado.",
-    cta: "Comprar agora",
-    price: "1.299",
+    image: "https://images.kabum.com.br/produtos/fotos/640733/smartphone-samsung-galaxy-s24-ultra-512gb-12gb-ram-titanium-black_1705574521_gg.jpg",
+    tag: "OFERTA NINJA",
+    title: "GALAXY S24 ULTRA",
+    subtitle: "A inteligência artificial chegou ao seu smartphone. Aproveite agora!",
+    cta: "COMPRAR AGORA",
+    price: "7.499",
   },
   {
-    image: banner2,
-    tag: "OFERTA ESPECIAL",
-    title: "Performance\nsem limites",
-    subtitle: "Notebooks e acessórios para transformar sua experiência digital.",
-    cta: "Ver ofertas",
-    price: "2.499",
-  },
-  {
-    image: banner3,
-    tag: "MEGA DEAL",
-    title: "Tecnologia\npara todos",
-    subtitle: "Wearables, games e periféricos com desconto exclusivo.",
-    cta: "Aproveitar",
-    price: "899",
+    image: "https://images.kabum.com.br/produtos/fotos/522500/processador-amd-ryzen-7-5700x3d-3-0ghz-4-1ghz-max-turbo-cache-100mb-am4-sem-video-100-100001503wof_1705603411_gg.jpg",
+    tag: "HARDWARE",
+    title: "PROCESSADOR RYZEN 7",
+    subtitle: "Performance imbatível para seus jogos e trabalhos pesados.",
+    cta: "VER OFERTA",
+    price: "1.499",
   },
 ];
 
@@ -153,91 +145,103 @@ const StorePage = () => {
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
       {/* ═══ ANNOUNCEMENT BAR ═══ */}
-      <div className="bg-primary py-1.5">
-        <div className="container mx-auto px-4 flex items-center justify-center gap-2">
-          <Sparkles className="h-3.5 w-3.5 text-primary-foreground" />
-          <p className="text-[11px] font-semibold text-primary-foreground tracking-wide">
-            FRETE GRÁTIS em compras acima de R$ 299 • Use o cupom <span className="font-black">SMART10</span>
-          </p>
-          <Sparkles className="h-3.5 w-3.5 text-primary-foreground" />
+      <div className="bg-[#0060B1] py-1 border-b border-white/10 hidden md:block">
+        <div className="container mx-auto px-4 flex items-center justify-between text-[10px] font-bold text-white uppercase tracking-wider">
+          <div className="flex items-center gap-6">
+            <span className="hover:text-primary cursor-pointer">INSTITUCIONAL</span>
+            <span className="hover:text-primary cursor-pointer">POLÍTICAS</span>
+            <span className="hover:text-primary cursor-pointer">AJUDA</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <span className="flex items-center gap-1.5"><Truck className="h-3 w-3" /> FRETE GRÁTIS</span>
+            <span className="flex items-center gap-1.5 text-primary"><Zap className="h-3 w-3" /> OFERTAS DO DIA</span>
+          </div>
         </div>
       </div>
 
-      {/* ═══ HEADER ═══ */}
-      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/50">
-        <div className="container mx-auto px-4 flex items-center gap-4 h-16">
-          {/* Mobile menu toggle */}
-          <button className="lg:hidden" onClick={() => setMobileMenu(!mobileMenu)}>
-            {mobileMenu ? <X className="h-6 w-6 text-foreground" /> : <Menu className="h-6 w-6 text-foreground" />}
+      {/* ═══ MAIN HEADER ═══ */}
+      <header className="sticky top-0 z-50 bg-[#0060B1] text-white">
+        <div className="container mx-auto px-4 h-20 flex items-center gap-6">
+          {/* Menu button */}
+          <button className="flex flex-col items-center gap-1 group" onClick={() => setMobileMenu(!mobileMenu)}>
+            <Menu className="h-8 w-8 text-white group-hover:text-primary transition-colors" />
+            <span className="text-[10px] font-bold hidden md:block">MENU</span>
           </button>
 
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2.5 flex-shrink-0">
-            <div className="h-9 w-9 rounded-xl bg-primary flex items-center justify-center shadow-[0_0_20px_hsl(142_71%_45%_/_0.3)]">
-              <Zap className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <span className="text-xl font-extrabold tracking-tight text-foreground hidden sm:block">
-              Smart<span className="text-primary">Cell</span>
-            </span>
+          <Link to="/" className="flex-shrink-0">
+            <h1 className="text-4xl font-black italic tracking-tighter">
+              KABUM<span className="text-primary">.</span>
+            </h1>
           </Link>
 
-          {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center gap-1 ml-6">
-            {["Home", "Smartphones", "Eletrônicos", "Ofertas", "Contato"].map((item) => (
-              <button
-                key={item}
-                onClick={() => { setSelectedCategory(null); setSearchQuery(""); }}
-                className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors relative group"
-              >
-                {item}
-                <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-primary rounded-full group-hover:w-4/5 transition-all duration-300" />
-              </button>
-            ))}
-          </nav>
-
           {/* Search */}
-          <div className="flex-1 max-w-xl ml-auto relative">
+          <div className="flex-1 relative group">
             <Input
-              placeholder="O que você procura?"
+              placeholder="Busque aqui o seu produto"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pr-12 bg-card border-border/50 h-10 rounded-xl text-sm placeholder:text-muted-foreground/60 focus:border-primary focus:shadow-[0_0_0_3px_hsl(142_71%_45%_/_0.1)]"
+              className="w-full bg-white text-foreground h-12 rounded-sm border-none pr-12 font-medium placeholder:text-muted-foreground/60 focus-visible:ring-primary"
             />
-            <button className="absolute right-1 top-1 h-8 w-10 bg-primary rounded-lg flex items-center justify-center hover:bg-primary/90 transition-colors">
-              <Search className="h-4 w-4 text-primary-foreground" />
+            <button className="absolute right-0 top-0 h-12 w-12 flex items-center justify-center text-[#0060B1] hover:text-primary transition-colors">
+              <Search className="h-6 w-6" />
             </button>
           </div>
 
-          {/* Actions */}
-          <div className="flex items-center gap-1">
-            <Link to="/admin/login" className="hidden md:flex h-9 w-9 items-center justify-center rounded-xl hover:bg-accent transition-colors">
-              <User className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
+          {/* User & Cart */}
+          <div className="flex items-center gap-6">
+            <Link to="/admin/login" className="flex items-center gap-2 group">
+              <div className="h-10 w-10 flex items-center justify-center border-2 border-white/20 rounded-full group-hover:border-primary transition-colors">
+                <User className="h-5 w-5" />
+              </div>
+              <div className="hidden lg:block leading-tight">
+                <p className="text-[10px] font-bold text-white/70">LOGIN OU</p>
+                <p className="text-xs font-bold">CADASTRE-SE</p>
+              </div>
             </Link>
-            <button className="hidden md:flex h-9 w-9 items-center justify-center rounded-xl hover:bg-accent transition-colors">
-              <Heart className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
-            </button>
-            <Link to="/cart" className="relative h-9 w-9 rounded-xl hover:bg-accent flex items-center justify-center transition-colors">
-              <ShoppingCart className="h-5 w-5 text-foreground" />
-              {itemCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-[10px] font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-[0_0_10px_hsl(142_71%_45%_/_0.4)]">
-                  {itemCount}
-                </span>
-              )}
+
+            <Link to="/cart" className="relative group flex items-center gap-3">
+              <div className="relative">
+                <ShoppingCart className="h-8 w-8 text-white group-hover:text-primary transition-colors" />
+                {itemCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-black rounded-full h-5 w-5 flex items-center justify-center shadow-lg">
+                    {itemCount}
+                  </span>
+                )}
+              </div>
             </Link>
+          </div>
+        </div>
+
+        {/* Desktop Categories Sub-header */}
+        <div className="bg-[#005096] hidden md:block">
+          <div className="container mx-auto px-4 h-10 flex items-center gap-8 overflow-x-auto no-scrollbar">
+            {["HARDWARE", "PERIFÉRICOS", "GAMES", "COMPUTADORES", "CELULAR", "TV", "ÁUDIO"].map((item) => (
+              <button
+                key={item}
+                className="text-[11px] font-black whitespace-nowrap hover:text-primary transition-colors"
+              >
+                {item}
+              </button>
+            ))}
           </div>
         </div>
 
         {/* Mobile Menu */}
         {mobileMenu && (
-          <div className="lg:hidden border-t border-border bg-background/95 backdrop-blur-xl animate-fade-in">
-            <nav className="container mx-auto px-4 py-4 flex flex-col gap-1">
-              {["Home", "Smartphones", "Eletrônicos", "Ofertas", "Contato"].map((item) => (
+          <div className="absolute top-full left-0 w-full md:w-80 h-[calc(100vh-80px)] bg-white text-foreground shadow-2xl animate-fade-in overflow-y-auto">
+            <div className="p-4 bg-[#0060B1] text-white flex items-center justify-between">
+              <span className="font-bold">DEPARTAMENTOS</span>
+              <X className="h-6 w-6 cursor-pointer" onClick={() => setMobileMenu(false)} />
+            </div>
+            <nav className="flex flex-col">
+              {["Hardware", "Periféricos", "Games", "Computadores", "Celular & Smartphone", "TV", "Áudio"].map((item) => (
                 <button
                   key={item}
-                  onClick={() => { setMobileMenu(false); setSelectedCategory(null); setSearchQuery(""); }}
-                  className="px-4 py-3 text-sm font-medium text-foreground hover:bg-accent rounded-xl text-left transition-colors"
+                  className="px-6 py-4 text-sm font-bold border-b border-border hover:bg-muted flex items-center justify-between"
+                  onClick={() => setMobileMenu(false)}
                 >
-                  {item}
+                  {item} <ChevronRight className="h-4 w-4 text-muted-foreground" />
                 </button>
               ))}
             </nav>
@@ -318,14 +322,14 @@ const StorePage = () => {
 
       {/* ═══ CATEGORIES ═══ */}
       {isHome && (
-        <section className="container mx-auto px-4 py-12">
-          <div className="grid grid-cols-4 md:grid-cols-8 gap-4">
+        <section className="container mx-auto px-4 py-8">
+          <div className="flex items-center gap-2 mb-6 overflow-x-auto no-scrollbar">
             {DEPT_ICONS.map(({ img, label }) => (
-              <button key={label} className="group flex flex-col items-center gap-3">
-                <div className="h-16 w-16 md:h-20 md:w-20 rounded-2xl bg-card border border-border/50 flex items-center justify-center group-hover:border-primary/50 group-hover:bg-primary/5 group-hover:shadow-[0_0_25px_-5px_hsl(142_71%_45%_/_0.2)] transition-all duration-300 group-hover:-translate-y-1 p-2">
-                  <img src={img} alt={label} loading="lazy" width={64} height={64} className="h-full w-full object-contain drop-shadow-lg group-hover:scale-110 transition-transform duration-300" />
+              <button key={label} className="group flex-shrink-0 flex flex-col items-center gap-2 w-24">
+                <div className="h-16 w-16 rounded-full bg-white border border-[#E0E0E0] flex items-center justify-center group-hover:border-primary transition-all p-2">
+                  <img src={img} alt={label} loading="lazy" width={64} height={64} className="h-full w-full object-contain" />
                 </div>
-                <span className="text-[11px] md:text-xs font-medium text-muted-foreground text-center group-hover:text-foreground transition-colors">
+                <span className="text-[10px] font-black text-[#42464D] text-center uppercase">
                   {label}
                 </span>
               </button>
@@ -336,31 +340,31 @@ const StorePage = () => {
 
       {/* ═══ FLASH DEALS WITH COUNTDOWN ═══ */}
       {isHome && promoProducts.length > 0 && (
-        <section className="bg-gradient-to-r from-primary/5 via-card to-primary/5 border-y border-border/50">
-          <div className="container mx-auto px-4 py-10">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
+        <section className="bg-gradient-to-r from-[#FF6500] to-[#E55A00] border-y border-white/10">
+          <div className="container mx-auto px-4 py-8">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <Flame className="h-5 w-5 text-primary" />
+                <div className="h-12 w-12 rounded-full bg-white/20 flex items-center justify-center">
+                  <Flame className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-foreground">Ofertas Relâmpago</h2>
-                  <p className="text-xs text-muted-foreground">Aproveite antes que acabe!</p>
+                  <h2 className="text-2xl font-black text-white italic tracking-tight">OFERTA <span className="text-white/80">NINJA</span></h2>
+                  <p className="text-xs font-bold text-white/90">OS MELHORES PREÇOS, TODO DIA!</p>
                 </div>
               </div>
               {/* Countdown */}
-              <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-primary" />
-                <span className="text-xs text-muted-foreground mr-1">Termina em:</span>
+              <div className="flex items-center gap-2 bg-black/20 rounded-lg p-2 backdrop-blur-sm">
+                <Clock className="h-5 w-5 text-white" />
+                <span className="text-xs font-black text-white mr-1 uppercase">Termina em:</span>
                 {[
-                  { v: countdown.d, l: "d" },
-                  { v: countdown.h, l: "h" },
-                  { v: countdown.m, l: "m" },
-                  { v: countdown.s, l: "s" },
+                  { v: countdown.d, l: "D" },
+                  { v: countdown.h, l: "H" },
+                  { v: countdown.m, l: "M" },
+                  { v: countdown.s, l: "S" },
                 ].map(({ v, l }) => (
-                  <div key={l} className="bg-card border border-border rounded-lg px-2.5 py-1.5 text-center min-w-[44px]">
-                    <span className="text-base font-bold text-foreground">{pad(v)}</span>
-                    <span className="text-[9px] text-muted-foreground ml-0.5">{l}</span>
+                  <div key={l} className="bg-white rounded px-2 py-1 text-center min-w-[40px]">
+                    <span className="text-base font-black text-[#FF6500]">{pad(v)}</span>
+                    <span className="text-[8px] font-black text-[#FF6500]/70 ml-0.5">{l}</span>
                   </div>
                 ))}
               </div>
@@ -625,71 +629,66 @@ const ProductCard = ({ product, addItem, index, showDiscount, showRating }: Prod
 
   return (
     <div
-      className="group bg-card border border-border/50 rounded-2xl overflow-hidden hover:border-primary/40 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_15px_40px_-15px_hsl(142_71%_45%_/_0.15)] animate-fade-in flex flex-col"
+      className="group bg-white border border-[#E0E0E0] rounded-sm overflow-hidden hover:shadow-lg transition-all duration-300 animate-fade-in flex flex-col"
       style={{ animationDelay: `${index * 60}ms`, opacity: 0, animationFillMode: "forwards" }}
     >
       {/* Image */}
-      <div className="relative aspect-square bg-gradient-to-br from-secondary/20 to-secondary/5 overflow-hidden">
+      <div className="relative aspect-square p-4 flex items-center justify-center overflow-hidden">
         {product.images?.[0] ? (
-          <img src={product.images[0]} alt={product.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
+          <img src={product.images[0]} alt={product.name} className="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-110" />
         ) : (
           <div className="h-full w-full flex items-center justify-center">
             <Package className="h-14 w-14 text-muted-foreground/15" />
           </div>
         )}
 
-        {/* Badges */}
-        <div className="absolute top-2.5 left-2.5 flex flex-col gap-1.5">
-          {showDiscount && hasPromo && (
-            <span className="bg-primary text-primary-foreground text-[10px] font-black px-2.5 py-1 rounded-lg shadow-[0_0_10px_hsl(142_71%_45%_/_0.3)]">
-              -{discount}%
-            </span>
-          )}
-          {showRating && (
-            <span className="bg-background/80 backdrop-blur text-foreground text-[10px] font-bold px-2 py-1 rounded-lg flex items-center gap-1">
-              <Star className="h-2.5 w-2.5 text-primary fill-primary" /> {rating.toFixed(1)}
-            </span>
-          )}
-        </div>
+        {/* Discount Badge */}
+        {showDiscount && hasPromo && (
+          <div className="absolute top-2 left-2 bg-[#FF6500] text-white text-[10px] font-black px-2 py-1 rounded-sm">
+            {discount}% OFF
+          </div>
+        )}
 
         {/* Wishlist */}
-        <button className="absolute top-2.5 right-2.5 h-8 w-8 rounded-xl bg-background/60 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-background/90 hover:scale-110">
-          <Heart className="h-4 w-4 text-foreground" />
+        <button className="absolute top-2 right-2 h-8 w-8 rounded-full bg-white shadow-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 hover:text-primary">
+          <Heart className="h-5 w-5" />
         </button>
-
-        {/* Quick view */}
-        <div className="absolute inset-0 bg-background/60 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
-          <Button
-            className="rounded-xl font-bold shadow-[0_0_20px_-5px_hsl(142_71%_45%_/_0.4)]"
-            disabled={product.stock <= 0}
-            onClick={(e) => { e.stopPropagation(); addItem(product); }}
-          >
-            <Plus className="h-4 w-4 mr-1.5" />
-            {product.stock > 0 ? "Adicionar ao carrinho" : "Esgotado"}
-          </Button>
-        </div>
       </div>
 
       {/* Info */}
-      <div className="p-4 flex flex-col flex-1">
-        <h3 className="text-xs md:text-sm font-medium text-foreground line-clamp-2 group-hover:text-primary transition-colors leading-snug mb-auto">
+      <div className="p-4 pt-0 flex flex-col flex-1">
+        <h3 className="text-sm font-bold text-[#42464D] line-clamp-2 leading-tight mb-2 min-h-[2.5rem] group-hover:text-secondary transition-colors">
           {product.name}
         </h3>
-        <div className="mt-3">
+        
+        <div className="flex items-center gap-1 mb-2">
+          {Array.from({ length: 5 }).map((_, j) => (
+            <Star key={j} className={`h-3 w-3 ${j < 4 ? "text-[#FFB800] fill-[#FFB800]" : "text-[#E0E0E0] fill-[#E0E0E0]"}`} />
+          ))}
+          <span className="text-[10px] text-muted-foreground font-bold">(120)</span>
+        </div>
+
+        <div className="mt-auto">
           {hasPromo && (
-            <span className="text-[10px] text-muted-foreground line-through block">
+            <span className="text-xs text-muted-foreground line-through block font-medium">
               R$ {Number(product.price).toFixed(2)}
             </span>
           )}
-          <p className="text-lg font-black text-primary">
+          <p className="text-xl font-black text-[#FF6500]">
             R$ {Number(price).toFixed(2)}
           </p>
-          <p className="text-[10px] text-muted-foreground mt-0.5">
-            à vista no <span className="font-bold text-primary">PIX</span>
+          <p className="text-[10px] font-bold text-[#42464D] mb-4">
+            À vista no <span className="text-secondary font-black">PIX</span>
           </p>
-          {product.stock <= 5 && product.stock > 0 && (
-            <p className="text-[10px] text-destructive font-semibold mt-1">Últimas {product.stock} unidades!</p>
-          )}
+          
+          <Button
+            className="w-full bg-secondary hover:bg-secondary/90 text-white font-black text-xs h-10 rounded-sm uppercase tracking-wider gap-2"
+            disabled={product.stock <= 0}
+            onClick={(e) => { e.stopPropagation(); addItem(product); }}
+          >
+            <ShoppingCart className="h-4 w-4" />
+            COMPRAR
+          </Button>
         </div>
       </div>
     </div>
