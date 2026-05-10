@@ -29,7 +29,7 @@ type Category = Tables<"categories">;
 
 const HERO_SLIDES = [
   {
-    image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1920&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1920&auto=format&fit=crop",
     tag: "OFERTA NINJA",
     title: "OFERTA NINJA",
     subtitle: "Aproveite os melhores preços em tecnologia!",
