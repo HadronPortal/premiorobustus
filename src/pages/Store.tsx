@@ -213,19 +213,7 @@ const StorePage = () => {
           </div>
         </div>
 
-        {/* Desktop Categories Sub-header */}
-        <div className="bg-[#E6C200] hidden md:block">
-          <div className="container mx-auto px-4 h-10 flex items-center gap-8 overflow-x-auto no-scrollbar">
-            {["HARDWARE", "PERIFÉRICOS", "GAMES", "COMPUTADORES", "CELULAR", "TV", "ÁUDIO"].map((item) => (
-              <button
-                key={item}
-                className="text-[11px] font-black whitespace-nowrap hover:text-primary transition-colors text-[#42464D]"
-              >
-                {item}
-              </button>
-            ))}
-          </div>
-        </div>
+        {/* Desktop Categories Sub-header - REMOVED from top, will move to bottom fixed or under banner if needed but photo shows it floating/scrolling */}
 
         {/* Mobile Menu */}
         {mobileMenu && (
