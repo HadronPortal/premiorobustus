@@ -29,28 +29,20 @@ type Category = Tables<"categories">;
 
 const HERO_SLIDES = [
   {
-    image: banner1,
-    tag: "LANÇAMENTO",
-    title: "O futuro na palma\nda sua mão",
-    subtitle: "Smartphones premium com tecnologia de ponta e os melhores preços do mercado.",
-    cta: "Comprar agora",
-    price: "1.299",
+    image: "https://images.kabum.com.br/produtos/fotos/640733/smartphone-samsung-galaxy-s24-ultra-512gb-12gb-ram-titanium-black_1705574521_gg.jpg",
+    tag: "OFERTA NINJA",
+    title: "GALAXY S24 ULTRA",
+    subtitle: "A inteligência artificial chegou ao seu smartphone. Aproveite agora!",
+    cta: "COMPRAR AGORA",
+    price: "7.499",
   },
   {
-    image: banner2,
-    tag: "OFERTA ESPECIAL",
-    title: "Performance\nsem limites",
-    subtitle: "Notebooks e acessórios para transformar sua experiência digital.",
-    cta: "Ver ofertas",
-    price: "2.499",
-  },
-  {
-    image: banner3,
-    tag: "MEGA DEAL",
-    title: "Tecnologia\npara todos",
-    subtitle: "Wearables, games e periféricos com desconto exclusivo.",
-    cta: "Aproveitar",
-    price: "899",
+    image: "https://images.kabum.com.br/produtos/fotos/522500/processador-amd-ryzen-7-5700x3d-3-0ghz-4-1ghz-max-turbo-cache-100mb-am4-sem-video-100-100001503wof_1705603411_gg.jpg",
+    tag: "HARDWARE",
+    title: "PROCESSADOR RYZEN 7",
+    subtitle: "Performance imbatível para seus jogos e trabalhos pesados.",
+    cta: "VER OFERTA",
+    price: "1.499",
   },
 ];
 
