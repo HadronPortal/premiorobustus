@@ -348,31 +348,31 @@ const StorePage = () => {
 
       {/* ═══ FLASH DEALS WITH COUNTDOWN ═══ */}
       {isHome && promoProducts.length > 0 && (
-        <section className="bg-gradient-to-r from-primary/5 via-card to-primary/5 border-y border-border/50">
-          <div className="container mx-auto px-4 py-10">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
+        <section className="bg-gradient-to-r from-[#FF6500] to-[#E55A00] border-y border-white/10">
+          <div className="container mx-auto px-4 py-8">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <Flame className="h-5 w-5 text-primary" />
+                <div className="h-12 w-12 rounded-full bg-white/20 flex items-center justify-center">
+                  <Flame className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-foreground">Ofertas Relâmpago</h2>
-                  <p className="text-xs text-muted-foreground">Aproveite antes que acabe!</p>
+                  <h2 className="text-2xl font-black text-white italic tracking-tight">OFERTA <span className="text-white/80">NINJA</span></h2>
+                  <p className="text-xs font-bold text-white/90">OS MELHORES PREÇOS, TODO DIA!</p>
                 </div>
               </div>
               {/* Countdown */}
-              <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-primary" />
-                <span className="text-xs text-muted-foreground mr-1">Termina em:</span>
+              <div className="flex items-center gap-2 bg-black/20 rounded-lg p-2 backdrop-blur-sm">
+                <Clock className="h-5 w-5 text-white" />
+                <span className="text-xs font-black text-white mr-1 uppercase">Termina em:</span>
                 {[
-                  { v: countdown.d, l: "d" },
-                  { v: countdown.h, l: "h" },
-                  { v: countdown.m, l: "m" },
-                  { v: countdown.s, l: "s" },
+                  { v: countdown.d, l: "D" },
+                  { v: countdown.h, l: "H" },
+                  { v: countdown.m, l: "M" },
+                  { v: countdown.s, l: "S" },
                 ].map(({ v, l }) => (
-                  <div key={l} className="bg-card border border-border rounded-lg px-2.5 py-1.5 text-center min-w-[44px]">
-                    <span className="text-base font-bold text-foreground">{pad(v)}</span>
-                    <span className="text-[9px] text-muted-foreground ml-0.5">{l}</span>
+                  <div key={l} className="bg-white rounded px-2 py-1 text-center min-w-[40px]">
+                    <span className="text-base font-black text-[#FF6500]">{pad(v)}</span>
+                    <span className="text-[8px] font-black text-[#FF6500]/70 ml-0.5">{l}</span>
                   </div>
                 ))}
               </div>
