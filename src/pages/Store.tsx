@@ -258,7 +258,7 @@ const StorePage = () => {
                 key={i}
                 className={`absolute inset-0 transition-opacity duration-700 ${i === heroIndex ? "opacity-100" : "opacity-0 pointer-events-none"}`}
               >
-                <img src={slide.image} alt={slide.tag} className="h-full w-full object-cover" />
+                <img src={slide.image} alt={slide.tag} className="h-full w-full object-cover" crossOrigin="anonymous" />
                 <div className="absolute inset-0 bg-black/10" />
               </div>
             ))}
