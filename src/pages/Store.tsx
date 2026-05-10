@@ -29,7 +29,7 @@ type Category = Tables<"categories">;
 
 const HERO_SLIDES = [
   {
-    image: "https://images.kabum.com.br/produtos/fotos/640733/smartphone-samsung-galaxy-s24-ultra-512gb-12gb-ram-titanium-black_1705574521_gg.jpg",
+    image: "https://temas.lojavirtual.com.br/tema-eletronicos/img/banner-principal-1.jpg",
     tag: "OFERTA NINJA",
     title: "GALAXY S24 ULTRA",
     subtitle: "A inteligência artificial chegou ao seu smartphone. Aproveite agora!",
@@ -37,29 +37,13 @@ const HERO_SLIDES = [
     price: "7.499",
   },
   {
-    image: "https://images.kabum.com.br/produtos/fotos/522500/processador-amd-ryzen-7-5700x3d-3-0ghz-4-1ghz-max-turbo-cache-100mb-am4-sem-video-100-100001503wof_1705603411_gg.jpg",
+    image: "https://temas.lojavirtual.com.br/tema-eletronicos/img/banner-principal-2.jpg",
     tag: "HARDWARE",
     title: "PROCESSADOR RYZEN 7",
     subtitle: "Performance imbatível para seus jogos e trabalhos pesados.",
     cta: "VER OFERTA",
     price: "1.499",
-  },
-  {
-    image: "https://images.kabum.com.br/produtos/fotos/471926/placa-de-video-rtx-4060-ti-ventum-2x-black-8g-oc-msi-nvidia-geforce-8gb-gddr6-dlss-ray-tracing-geforce-rtx-4060-ti-ventus-2x-black-8g-oc_1684941926_gg.jpg",
-    tag: "GAMER",
-    title: "RTX 4060 TI",
-    subtitle: "Eleve o nível do seu setup com o melhor custo-benefício em Ray Tracing.",
-    cta: "APROVEITAR",
-    price: "2.899",
-  },
-  {
-    image: "https://images.kabum.com.br/produtos/fotos/161642/console-sony-playstation-5-ps5_1623351911_gg.jpg",
-    tag: "CONSOLES",
-    title: "PLAYSTATION 5",
-    subtitle: "Jogue como nunca antes com carregamento ultrarrápido e imersão total.",
-    cta: "COMPRAR JÁ",
-    price: "3.799",
-  },
+  }
 ];
 
 const DEPT_ICONS = [
