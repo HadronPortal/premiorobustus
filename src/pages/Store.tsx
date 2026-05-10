@@ -287,7 +287,7 @@ const StorePage = () => {
             {DEPT_ICONS.map(({ img, label }) => (
               <button key={label} className="group flex-shrink-0 flex flex-col items-center gap-2 w-24">
                 <div className="h-20 w-20 rounded-full bg-white border border-[#E0E0E0] flex items-center justify-center group-hover:border-[#FF6500] transition-all p-2 overflow-hidden shadow-sm">
-                  <img src={img} alt={label} loading="lazy" width={80} height={80} className="h-full w-full object-contain group-hover:scale-110 transition-transform" />
+                  <img src={img} alt={label} loading="lazy" width={80} height={80} className="h-full w-full object-contain group-hover:scale-110 transition-transform" crossOrigin="anonymous" />
                 </div>
                 <span className="text-[10px] font-black text-[#42464D] text-center uppercase tracking-tighter leading-tight">
                   {label}
