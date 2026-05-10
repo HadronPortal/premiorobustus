@@ -47,14 +47,14 @@ const HERO_SLIDES = [
 ];
 
 const DEPT_ICONS = [
-  { img: "https://images.kabum.com.br/produtos/fotos/fotos_mini/1690464673.jpg", label: "Hardwares" },
-  { img: "https://images.kabum.com.br/produtos/fotos/fotos_mini/1690464645.jpg", label: "Periféricos" },
-  { img: "https://images.kabum.com.br/produtos/fotos/fotos_mini/1690464653.jpg", label: "Computadores" },
-  { img: "https://images.kabum.com.br/produtos/fotos/fotos_mini/1690464635.jpg", label: "Placas de Vídeo" },
-  { img: "https://images.kabum.com.br/produtos/fotos/fotos_mini/1690464663.jpg", label: "Processadores" },
-  { img: "https://images.kabum.com.br/produtos/fotos/fotos_mini/1690464683.jpg", label: "Monitores" },
-  { img: "https://images.kabum.com.br/produtos/fotos/fotos_mini/1690464693.jpg", label: "Headsets" },
-  { img: "https://images.kabum.com.br/produtos/fotos/fotos_mini/1690464703.jpg", label: "Teclados" },
+  { img: "https://img.icons8.com/3d-fluency/100/processor.png", label: "Hardwares" },
+  { img: "https://img.icons8.com/3d-fluency/100/mouse.png", label: "Periféricos" },
+  { img: "https://img.icons8.com/3d-fluency/100/monitor.png", label: "Monitores" },
+  { img: "https://img.icons8.com/3d-fluency/100/video-card.png", label: "Placas de Vídeo" },
+  { img: "https://img.icons8.com/3d-fluency/100/smartphone.png", label: "Celulares" },
+  { img: "https://img.icons8.com/3d-fluency/100/headset.png", label: "Headsets" },
+  { img: "https://img.icons8.com/3d-fluency/100/keyboard.png", label: "Teclados" },
+  { img: "https://img.icons8.com/3d-fluency/100/console.png", label: "Games" },
 ];
 
 const REVIEWS = [
