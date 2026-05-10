@@ -29,7 +29,7 @@ type Category = Tables<"categories">;
 
 const HERO_SLIDES = [
   {
-    image: "https://images.kabum.com.br/produtos/fotos/640733/smartphone-samsung-galaxy-s24-ultra-512gb-12gb-ram-titanium-black_1705574521_gg.jpg",
+    image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1920&auto=format&fit=crop",
     tag: "OFERTA NINJA",
     title: "GALAXY S24 ULTRA",
     subtitle: "A inteligência artificial chegou ao seu smartphone. Aproveite agora!",
@@ -37,40 +37,24 @@ const HERO_SLIDES = [
     price: "7.499",
   },
   {
-    image: "https://images.kabum.com.br/produtos/fotos/522500/processador-amd-ryzen-7-5700x3d-3-0ghz-4-1ghz-max-turbo-cache-100mb-am4-sem-video-100-100001503wof_1705603411_gg.jpg",
+    image: "https://images.unsplash.com/photo-1587831990711-23ca6441447b?q=80&w=1920&auto=format&fit=crop",
     tag: "HARDWARE",
     title: "PROCESSADOR RYZEN 7",
     subtitle: "Performance imbatível para seus jogos e trabalhos pesados.",
     cta: "VER OFERTA",
     price: "1.499",
-  },
-  {
-    image: "https://images.kabum.com.br/produtos/fotos/471926/placa-de-video-rtx-4060-ti-ventum-2x-black-8g-oc-msi-nvidia-geforce-8gb-gddr6-dlss-ray-tracing-geforce-rtx-4060-ti-ventus-2x-black-8g-oc_1684941926_gg.jpg",
-    tag: "GAMER",
-    title: "RTX 4060 TI",
-    subtitle: "Eleve o nível do seu setup com o melhor custo-benefício em Ray Tracing.",
-    cta: "APROVEITAR",
-    price: "2.899",
-  },
-  {
-    image: "https://images.kabum.com.br/produtos/fotos/161642/console-sony-playstation-5-ps5_1623351911_gg.jpg",
-    tag: "CONSOLES",
-    title: "PLAYSTATION 5",
-    subtitle: "Jogue como nunca antes com carregamento ultrarrápido e imersão total.",
-    cta: "COMPRAR JÁ",
-    price: "3.799",
-  },
+  }
 ];
 
 const DEPT_ICONS = [
-  { img: "https://images.kabum.com.br/produtos/fotos/fotos_mini/1690464673.jpg", label: "Hardwares" },
-  { img: "https://images.kabum.com.br/produtos/fotos/fotos_mini/1690464645.jpg", label: "Periféricos" },
-  { img: "https://images.kabum.com.br/produtos/fotos/fotos_mini/1690464653.jpg", label: "Computadores" },
-  { img: "https://images.kabum.com.br/produtos/fotos/fotos_mini/1690464635.jpg", label: "Placas de Vídeo" },
-  { img: "https://images.kabum.com.br/produtos/fotos/fotos_mini/1690464663.jpg", label: "Processadores" },
-  { img: "https://images.kabum.com.br/produtos/fotos/fotos_mini/1690464683.jpg", label: "Monitores" },
-  { img: "https://images.kabum.com.br/produtos/fotos/fotos_mini/1690464693.jpg", label: "Headsets" },
-  { img: "https://images.kabum.com.br/produtos/fotos/fotos_mini/1690464703.jpg", label: "Teclados" },
+  { img: "https://img.icons8.com/3d-fluency/100/processor.png", label: "Hardwares" },
+  { img: "https://img.icons8.com/3d-fluency/100/mouse.png", label: "Periféricos" },
+  { img: "https://img.icons8.com/3d-fluency/100/monitor.png", label: "Monitores" },
+  { img: "https://img.icons8.com/3d-fluency/100/video-card.png", label: "Placas de Vídeo" },
+  { img: "https://img.icons8.com/3d-fluency/100/smartphone.png", label: "Celulares" },
+  { img: "https://img.icons8.com/3d-fluency/100/headset.png", label: "Headsets" },
+  { img: "https://img.icons8.com/3d-fluency/100/keyboard.png", label: "Teclados" },
+  { img: "https://img.icons8.com/3d-fluency/100/console.png", label: "Games" },
 ];
 
 const REVIEWS = [
@@ -274,7 +258,7 @@ const StorePage = () => {
                 key={i}
                 className={`absolute inset-0 transition-opacity duration-700 ${i === heroIndex ? "opacity-100" : "opacity-0 pointer-events-none"}`}
               >
-                <img src={slide.image} alt={slide.tag} className="h-full w-full object-cover" />
+                <img src={slide.image} alt={slide.tag} className="h-full w-full object-cover" crossOrigin="anonymous" />
                 <div className="absolute inset-0 bg-black/10" />
               </div>
             ))}
@@ -303,7 +287,7 @@ const StorePage = () => {
             {DEPT_ICONS.map(({ img, label }) => (
               <button key={label} className="group flex-shrink-0 flex flex-col items-center gap-2 w-24">
                 <div className="h-20 w-20 rounded-full bg-white border border-[#E0E0E0] flex items-center justify-center group-hover:border-[#FF6500] transition-all p-2 overflow-hidden shadow-sm">
-                  <img src={img} alt={label} loading="lazy" width={80} height={80} className="h-full w-full object-contain group-hover:scale-110 transition-transform" />
+                  <img src={img} alt={label} loading="lazy" width={80} height={80} className="h-full w-full object-contain group-hover:scale-110 transition-transform" crossOrigin="anonymous" />
                 </div>
                 <span className="text-[10px] font-black text-[#42464D] text-center uppercase tracking-tighter leading-tight">
                   {label}
