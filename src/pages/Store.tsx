@@ -145,7 +145,7 @@ const StorePage = () => {
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
       {/* ═══ ANNOUNCEMENT BAR ═══ */}
-      <div className="bg-[#FFD700] py-1 border-b border-black/10 hidden md:block">
+      <div className="bg-[#E6C200] py-1 border-b border-black/5 hidden md:block">
         <div className="container mx-auto px-4 flex items-center justify-between text-[10px] font-bold text-[#42464D] uppercase tracking-wider">
           <div className="flex items-center gap-6">
             <span className="hover:text-primary cursor-pointer">INSTITUCIONAL</span>
