@@ -44,6 +44,22 @@ const HERO_SLIDES = [
     cta: "VER OFERTA",
     price: "1.499",
   },
+  {
+    image: "https://images.kabum.com.br/produtos/fotos/471926/placa-de-video-rtx-4060-ti-ventum-2x-black-8g-oc-msi-nvidia-geforce-8gb-gddr6-dlss-ray-tracing-geforce-rtx-4060-ti-ventus-2x-black-8g-oc_1684941926_gg.jpg",
+    tag: "GAMER",
+    title: "RTX 4060 TI",
+    subtitle: "Eleve o nível do seu setup com o melhor custo-benefício em Ray Tracing.",
+    cta: "APROVEITAR",
+    price: "2.899",
+  },
+  {
+    image: "https://images.kabum.com.br/produtos/fotos/161642/console-sony-playstation-5-ps5_1623351911_gg.jpg",
+    tag: "CONSOLES",
+    title: "PLAYSTATION 5",
+    subtitle: "Jogue como nunca antes com carregamento ultrarrápido e imersão total.",
+    cta: "COMPRAR JÁ",
+    price: "3.799",
+  },
 ];
 
 const DEPT_ICONS = [

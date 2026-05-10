@@ -18,8 +18,8 @@
     --primary: 24 100% 50%; /* Kabum Orange */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 100% 45%; /* Kabum Blue */
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 47 100% 50%; /* Yellow */
+    --secondary-foreground: 220 14% 15%;
 
     --muted: 220 14% 90%;
     --muted-foreground: 220 14% 45%;
@@ -36,13 +36,13 @@
 
     --radius: 0.25rem;
 
-    --sidebar-background: 220 100% 45%;
-    --sidebar-foreground: 0 0% 100%;
+    --sidebar-background: 47 100% 50%;
+    --sidebar-foreground: 220 14% 15%;
     --sidebar-primary: 24 100% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 100% 40%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 220 100% 40%;
+    --sidebar-accent: 47 100% 45%;
+    --sidebar-accent-foreground: 220 14% 15%;
+    --sidebar-border: 47 100% 45%;
     --sidebar-ring: 24 100% 50%;
   }
 
