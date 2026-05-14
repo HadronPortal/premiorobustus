@@ -29,7 +29,7 @@ type Category = Tables<"categories">;
 
 const HERO_SLIDES = [
   {
-    image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1920&auto=format&fit=crop",
+    image: "https://images.kabum.com.br/produtos/fotos/640733/smartphone-samsung-galaxy-s24-ultra-512gb-12gb-ram-titanium-black_1705574521_gg.jpg",
     tag: "OFERTA NINJA",
     title: "GALAXY S24 ULTRA",
     subtitle: "A inteligência artificial chegou ao seu smartphone. Aproveite agora!",
@@ -37,7 +37,7 @@ const HERO_SLIDES = [
     price: "7.499",
   },
   {
-    image: "https://images.unsplash.com/photo-1587831990711-23ca6441447b?q=80&w=1920&auto=format&fit=crop",
+    image: "https://images.kabum.com.br/produtos/fotos/509531/processador-amd-ryzen-7-5700x3d-3-0ghz-4-1ghz-max-turbo-cache-100mb-am4-sem-video-100-100001503wof_1704223293_gg.jpg",
     tag: "HARDWARE",
     title: "PROCESSADOR RYZEN 7",
     subtitle: "Performance imbatível para seus jogos e trabalhos pesados.",
@@ -47,14 +47,14 @@ const HERO_SLIDES = [
 ];
 
 const DEPT_ICONS = [
-  { img: "https://img.icons8.com/3d-fluency/100/processor.png", label: "Hardwares" },
-  { img: "https://img.icons8.com/3d-fluency/100/mouse.png", label: "Periféricos" },
-  { img: "https://img.icons8.com/3d-fluency/100/monitor.png", label: "Monitores" },
-  { img: "https://img.icons8.com/3d-fluency/100/video-card.png", label: "Placas de Vídeo" },
-  { img: "https://img.icons8.com/3d-fluency/100/smartphone.png", label: "Celulares" },
-  { img: "https://img.icons8.com/3d-fluency/100/headset.png", label: "Headsets" },
-  { img: "https://img.icons8.com/3d-fluency/100/keyboard.png", label: "Teclados" },
-  { img: "https://img.icons8.com/3d-fluency/100/console.png", label: "Games" },
+  { img: "https://static.kabum.com.br/conteudo/categorias/HARDWARE.png", label: "Hardwares" },
+  { img: "https://static.kabum.com.br/conteudo/categorias/PERIFERICOS.png", label: "Periféricos" },
+  { img: "https://static.kabum.com.br/conteudo/categorias/MONITORES.png", label: "Monitores" },
+  { img: "https://static.kabum.com.br/conteudo/categorias/PLACAS_DE_VIDEO.png", label: "Placas de Vídeo" },
+  { img: "https://static.kabum.com.br/conteudo/categorias/CELULAR_E_SMARTPHONE.png", label: "Celulares" },
+  { img: "https://static.kabum.com.br/conteudo/categorias/HEADSETS.png", label: "Headsets" },
+  { img: "https://static.kabum.com.br/conteudo/categorias/TECLADOS.png", label: "Teclados" },
+  { img: "https://static.kabum.com.br/conteudo/categorias/GAMES.png", label: "Games" },
 ];
 
 const REVIEWS = [
