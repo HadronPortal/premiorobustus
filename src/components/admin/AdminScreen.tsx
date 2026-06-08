@@ -165,7 +165,100 @@ export const AdminScreen: React.FC = () => {
   };
 
   return (
-    <div className="validator-page">
+    <div className="validator-page bg-[#003380] flex items-center justify-center">
+      <style>{`
+        html, body, #root {
+          margin: 0;
+          padding: 0;
+          height: 100%;
+          overflow: hidden;
+        }
+        .validator-page {
+          min-height: 100vh;
+          height: 100vh;
+          width: 100%;
+          padding: 16px 24px;
+          box-sizing: border-box;
+          overflow: hidden;
+        }
+        .validator-shell {
+          width: min(100%, 1120px);
+          height: 100%;
+          margin: 0 auto;
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
+          background: white;
+          border-radius: 20px;
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        .validator-header {
+          flex: 0 0 auto;
+          min-height: 48px;
+          padding: 10px 28px;
+          background: #ff920f;
+          color: white;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+        .validator-content {
+          flex: 1 1 auto;
+          min-height: 0;
+          padding: 20px 28px 24px;
+          overflow-y: auto;
+          overflow-x: hidden;
+        }
+        .validation-form {
+          margin-bottom: 18px;
+          display: grid;
+          grid-template-columns: 1fr 1fr auto;
+          gap: 12px;
+          align-items: end;
+        }
+        .validation-result {
+          margin-top: 18px;
+          padding: 0;
+        }
+        .status-banner {
+          padding: 12px 20px;
+          margin-bottom: 18px;
+          border-radius: 16px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+        .result-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 16px;
+        }
+        .result-card {
+          padding: 14px 18px;
+          background: #f8fafc;
+          border: 1px solid #f1f5f9;
+          border-radius: 16px;
+          min-height: auto;
+        }
+        @media (max-width: 768px) {
+          .validation-form {
+            grid-template-columns: 1fr;
+          }
+          .validator-page {
+            padding: 10px;
+            overflow-y: auto;
+            height: auto;
+            min-height: 100vh;
+          }
+          .validator-shell {
+            height: auto;
+          }
+          html, body, #root {
+            overflow: auto;
+          }
+        }
+      `}</style>
+
       <ConfirmationModal 
         isOpen={showConfirmModal} 
         onConfirm={handleRedeem} 
@@ -175,41 +268,41 @@ export const AdminScreen: React.FC = () => {
       
       <div className="validator-shell">
         {/* Header */}
-        <div className="bg-[#ff920f] px-10 py-5 text-white flex items-center justify-between rounded-t-[20px]">
+        <div className="validator-header">
           <div>
-            <h1 className="text-2xl font-black uppercase italic tracking-tighter leading-none">Validar Brinde</h1>
-            <p className="text-xs font-bold opacity-90 uppercase tracking-widest mt-1">Equipe Stand RobustUS</p>
+            <h1 className="text-xl font-black uppercase italic tracking-tighter leading-none">Validar Brinde</h1>
+            <p className="text-[10px] font-bold opacity-90 uppercase tracking-widest">Equipe Stand RobustUS</p>
           </div>
-          <ShieldCheck className="w-10 h-10 opacity-30" />
+          <ShieldCheck className="w-8 h-8 opacity-30" />
         </div>
 
         <div className="validator-content">
           {/* Form Section */}
           <form onSubmit={handleValidate} className="validation-form">
             <div>
-              <label className="block text-[10px] font-bold text-slate-400 uppercase mb-2 ml-1">Código do Brinde</label>
+              <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1.5 ml-1">Código do Brinde</label>
               <div className="relative">
-                <Ticket className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#0047ab]" />
+                <Ticket className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#0047ab]" />
                 <input 
                   type="text"
                   placeholder="EX: 1234"
                   value={code}
                   onChange={e => setCode(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 p-4 pl-12 rounded-xl text-lg font-bold text-[#003380] focus:border-[#f7941d] outline-none transition-all uppercase"
+                  className="w-full bg-slate-50 border border-slate-200 p-3 pl-10 rounded-xl text-base font-bold text-[#003380] focus:border-[#f7941d] outline-none transition-all uppercase h-[52px]"
                 />
               </div>
             </div>
             <div>
-              <label className="block text-[10px] font-bold text-slate-400 uppercase mb-2 ml-1">PIN da Equipe</label>
+              <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1.5 ml-1">PIN da Equipe</label>
               <div className="relative">
-                <ShieldCheck className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#0047ab]" />
+                <ShieldCheck className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#0047ab]" />
                 <input 
                   type="password"
                   inputMode="numeric"
                   placeholder="PIN"
                   value={pin}
                   onChange={e => setPin(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 p-4 pl-12 rounded-xl text-lg font-bold text-[#003380] focus:border-[#f7941d] outline-none transition-all"
+                  className="w-full bg-slate-50 border border-slate-200 p-3 pl-10 rounded-xl text-base font-bold text-[#003380] focus:border-[#f7941d] outline-none transition-all h-[52px]"
                 />
               </div>
             </div>
@@ -217,9 +310,9 @@ export const AdminScreen: React.FC = () => {
               <button 
                 type="submit"
                 disabled={loading}
-                className="bg-[#0047ab] text-white px-8 h-[60px] rounded-xl font-black uppercase italic tracking-widest hover:bg-[#003380] transition-all flex items-center justify-center gap-3 disabled:opacity-50 whitespace-nowrap min-w-[200px]"
+                className="bg-[#0047ab] text-white px-6 h-[52px] rounded-xl font-black uppercase italic tracking-widest hover:bg-[#003380] transition-all flex items-center justify-center gap-2 disabled:opacity-50 whitespace-nowrap min-w-[160px] text-sm"
               >
-                {loading ? <RotateCcw className="w-5 h-5 animate-spin" /> : <Search className="w-5 h-5" />}
+                {loading ? <RotateCcw className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
                 {loading ? 'Validando...' : 'Validar Código'}
               </button>
             </div>
@@ -229,27 +322,27 @@ export const AdminScreen: React.FC = () => {
           <div className="validation-result">
             <AnimatePresence mode="wait">
               {!validationResult ? (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="py-12 text-center text-slate-300">
-                  <Ticket className="w-12 h-12 mx-auto mb-3 opacity-10" />
-                  <p className="text-sm font-bold uppercase italic tracking-widest">Aguardando validação...</p>
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="py-10 text-center text-slate-300">
+                  <Ticket className="w-10 h-10 mx-auto mb-2 opacity-10" />
+                  <p className="text-xs font-bold uppercase italic tracking-widest">Aguardando validação...</p>
                 </motion.div>
               ) : (validationResult.type === 'invalid' || validationResult.type === 'unauthorized' || validationResult.type === 'error') ? (
-                <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="py-8 text-center space-y-4">
-                  <XCircle className="w-16 h-16 text-red-500 mx-auto" />
-                  <h2 className="text-3xl font-black text-red-600 uppercase italic tracking-tighter">{validationResult.message}</h2>
-                  <button onClick={() => setValidationResult(null)} className="text-[#0047ab] font-bold uppercase text-xs hover:underline tracking-widest">Tentar novamente</button>
+                <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="py-6 text-center space-y-3">
+                  <XCircle className="w-12 h-12 text-red-500 mx-auto" />
+                  <h2 className="text-2xl font-black text-red-600 uppercase italic tracking-tighter">{validationResult.message}</h2>
+                  <button onClick={() => setValidationResult(null)} className="text-[#0047ab] font-bold uppercase text-[10px] hover:underline tracking-widest">Tentar novamente</button>
                 </motion.div>
               ) : (
-                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
                   {/* Status Banner */}
                   <div className={`status-banner border shadow-sm ${
                     validationResult.type === 'pending' 
                       ? 'bg-amber-50 border-amber-100 text-amber-700' 
                       : 'bg-[#0047ab]/5 border-[#0047ab]/10 text-[#0047ab]'
                   }`}>
-                    <div className="flex items-center gap-4">
-                      {validationResult.type === 'pending' ? <RotateCcw className="w-6 h-6" /> : <CheckCircle2 className="w-6 h-6" />}
-                      <span className="text-2xl font-black uppercase italic tracking-tight">
+                    <div className="flex items-center gap-3">
+                      {validationResult.type === 'pending' ? <RotateCcw className="w-5 h-5" /> : <CheckCircle2 className="w-5 h-5" />}
+                      <span className="text-xl font-black uppercase italic tracking-tight">
                         {validationResult.type === 'pending' ? 'Brinde Pendente' : 'Brinde Entregue'}
                       </span>
                     </div>
@@ -257,10 +350,10 @@ export const AdminScreen: React.FC = () => {
                       <button 
                         onClick={() => setShowConfirmModal(true)}
                         disabled={loading}
-                        className="bg-[#f7941d] text-white px-8 h-[56px] rounded-xl font-black uppercase italic tracking-widest hover:bg-[#d47a00] transition-all shadow-md active:scale-95 inline-flex items-center justify-center gap-3 whitespace-nowrap"
+                        className="bg-[#f7941d] text-white px-6 h-[48px] rounded-xl font-black uppercase italic tracking-widest hover:bg-[#d47a00] transition-all shadow-md active:scale-95 inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm"
                       >
-                        <Gift className="w-5 h-5" />
-                        <span>Entregar Brinde</span>
+                        <Gift className="w-4 h-4" />
+                        <span>Confirmar Entrega</span>
                       </button>
                     )}
                   </div>
@@ -268,42 +361,42 @@ export const AdminScreen: React.FC = () => {
                   {/* Info Grid */}
                   <div className="result-grid">
                     <div className="result-card">
-                      <p className="text-[9px] font-bold text-slate-400 uppercase mb-2 tracking-widest">Participante</p>
-                      <div className="flex items-center gap-3">
-                        <User className="w-4 h-4 text-[#0047ab]" />
-                        <p className="text-lg font-black text-[#003380] uppercase truncate">{validationResult.name}</p>
+                      <p className="text-[9px] font-bold text-slate-400 uppercase mb-1.5 tracking-widest">Participante</p>
+                      <div className="flex items-center gap-2">
+                        <User className="w-3.5 h-3.5 text-[#0047ab]" />
+                        <p className="text-base font-black text-[#003380] uppercase truncate">{validationResult.name}</p>
                       </div>
                     </div>
                     <div className="result-card">
-                      <p className="text-[9px] font-bold text-slate-400 uppercase mb-2 tracking-widest">Documento (CPF)</p>
-                      <div className="flex items-center gap-3">
-                        <FileText className="w-4 h-4 text-[#0047ab]" />
-                        <p className="text-lg font-black text-[#003380]">{validationResult.cpfMasked}</p>
+                      <p className="text-[9px] font-bold text-slate-400 uppercase mb-1.5 tracking-widest">Documento (CPF)</p>
+                      <div className="flex items-center gap-2">
+                        <FileText className="w-3.5 h-3.5 text-[#0047ab]" />
+                        <p className="text-base font-black text-[#003380]">{validationResult.cpfMasked}</p>
                       </div>
                     </div>
                     <div className="result-card">
-                      <p className="text-[9px] font-bold text-slate-400 uppercase mb-2 tracking-widest">Código Validado</p>
-                      <div className="flex items-center gap-3">
-                        <Ticket className="w-4 h-4 text-[#f7941d]" />
-                        <p className="text-lg font-black text-[#003380] italic">{validationResult.prizeCode}</p>
+                      <p className="text-[9px] font-bold text-slate-400 uppercase mb-1.5 tracking-widest">Código Validado</p>
+                      <div className="flex items-center gap-2">
+                        <Ticket className="w-3.5 h-3.5 text-[#f7941d]" />
+                        <p className="text-base font-black text-[#003380] italic">{validationResult.prizeCode}</p>
                       </div>
                     </div>
                     <div className="result-card">
-                      <p className="text-[9px] font-bold text-slate-400 uppercase mb-2 tracking-widest">
+                      <p className="text-[9px] font-bold text-slate-400 uppercase mb-1.5 tracking-widest">
                         {validationResult.type === 'pending' ? 'Data da Vitória' : 'Data da Retirada'}
                       </p>
-                      <div className="flex items-center gap-3">
-                        <Calendar className="w-4 h-4 text-[#0047ab]" />
-                        <p className="text-base font-bold text-[#003380]">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="w-3.5 h-3.5 text-[#0047ab]" />
+                        <p className="text-sm font-bold text-[#003380]">
                           {validationResult.type === 'pending' ? formatTime(validationResult.createdAt) : formatTime(validationResult.redeemedAt)}
                         </p>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="flex justify-center">
-                    <button onClick={resetForm} className="text-slate-400 hover:text-[#0047ab] font-bold uppercase text-[10px] tracking-[0.15em] flex items-center gap-2 transition-colors py-2">
-                      <RotateCcw className="w-3.5 h-3.5" /> Limpar pesquisa
+                  <div className="flex justify-center pt-2">
+                    <button onClick={resetForm} className="text-slate-400 hover:text-[#0047ab] font-bold uppercase text-[9px] tracking-[0.15em] flex items-center gap-2 transition-colors py-1">
+                      <RotateCcw className="w-3 h-3" /> Limpar pesquisa
                     </button>
                   </div>
                 </motion.div>
@@ -313,7 +406,7 @@ export const AdminScreen: React.FC = () => {
         </div>
 
         {/* Footer */}
-        <div className="px-10 py-4 bg-slate-50 border-t border-slate-100 flex justify-between items-center text-slate-400 rounded-b-[20px]">
+        <div className="px-10 py-3 bg-slate-50 border-t border-slate-100 flex justify-between items-center text-slate-400 rounded-b-[20px]">
           <button 
             onClick={() => window.location.href = '/'} 
             className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest hover:text-[#0047ab] transition-colors"
