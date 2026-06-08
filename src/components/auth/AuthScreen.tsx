@@ -35,32 +35,39 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.acceptedTerms) {
-      setError("Aceite as regras para participar.");
+    const { cpf, name, acceptedTerms } = formData;
+    const cleanedCpf = cpf.replace(/\D/g, "");
+
+    console.log("CPF NA TELA:", cpf);
+    console.log("CPF LIMPO ENVIADO:", cleanedCpf);
+
+    if (!cleanedCpf || cleanedCpf.length !== 11) {
+      setError("Informe um CPF válido.");
       return;
     }
 
-    if (!formData.cpf || !formData.name.trim()) {
-      setError("Preencha CPF e nome.");
+    if (!name.trim()) {
+      setError("Informe seu nome.");
+      return;
+    }
+
+    if (!acceptedTerms) {
+      setError("Aceite as regras para participar.");
       return;
     }
     
     setLoading(true);
     setError('');
 
-    const cpf = formData.cpf.replace(/\D/g, '');
-    const name = formData.name.trim();
-    const acceptedTerms = formData.acceptedTerms === true;
-
     try {
       const { data, error: rpcError } = await (supabase.rpc as any)("start_participation_simple", {
-        p_cpf: cpf.replace(/\D/g, ""),
+        p_cpf: cleanedCpf,
         p_event_slug: "robustus-expo-2026",
         p_name: name.trim()
       });
 
-      console.log("RPC DATA:", data);
-      console.error("RPC ERROR:", rpcError);
+      console.log("START DATA:", data);
+      console.error("START ERROR:", rpcError);
       
       if (rpcError) {
         setError(rpcError.message || "Não foi possível iniciar agora.");
