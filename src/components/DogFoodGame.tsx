@@ -25,7 +25,7 @@ const BRAND = {
 const ASSETS = {
   logo: "https://robustus.com.br/wp-content/uploads/2025/03/logo.png",
   paw: "https://robustus.com.br/wp-content/uploads/2025/03/patinha.png",
-  dog: "https://robustus.com.br/wp-content/uploads/2025/10/DOG-ROBUSTUS.png",
+  dog: "https://robustus.com.br/wp-content/uploads/2025/10/cao-mini-768x633.png", // Using an existing dog image
 };
 
 const GAME_PRODUCTS = [
