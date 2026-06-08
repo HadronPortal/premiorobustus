@@ -17,7 +17,7 @@ type ValidationResult = {
 const ConfirmationModal = ({ isOpen, onConfirm, onCancel, loading }: { isOpen: boolean, onConfirm: () => void, onCancel: () => void, loading: boolean }) => (
   <AnimatePresence>
     {isOpen && (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#003380]/80 backdrop-blur-sm">
+      <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-[#003380]/80 backdrop-blur-sm">
         <motion.div 
           initial={{ scale: 0.9, opacity: 0 }} 
           animate={{ scale: 1, opacity: 1 }} 
@@ -27,7 +27,7 @@ const ConfirmationModal = ({ isOpen, onConfirm, onCancel, loading }: { isOpen: b
           <div className="w-24 h-24 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-6">
             <AlertTriangle className="w-12 h-12 text-[#f7941d]" />
           </div>
-          <h2 className="text-4xl font-black text-[#003380] uppercase italic italic tracking-tighter mb-4">Confirmar entrega?</h2>
+          <h2 className="text-4xl font-black text-[#003380] uppercase italic tracking-tighter mb-4">Confirmar entrega?</h2>
           <p className="text-xl text-slate-500 font-bold uppercase tracking-tight mb-10">Você está prestes a marcar este brinde como entregue.</p>
           <div className="flex flex-col sm:flex-row gap-4">
             <button 
@@ -218,12 +218,19 @@ export const AdminScreen: React.FC = () => {
 
   return (
     <div className="min-h-screen w-full bg-[#0047ab] flex items-center justify-center p-4 sm:p-8 font-sans">
+      <ConfirmationModal 
+        isOpen={showConfirmModal} 
+        onConfirm={handleRedeem} 
+        onCancel={() => setShowConfirmModal(false)}
+        loading={loading}
+      />
+      
       <div className="w-full max-w-4xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col">
         {/* Header */}
         <div className="bg-[#f7941d] p-6 text-white flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-black uppercase italic tracking-tighter">Validar Brinde</h1>
-            <p className="text-sm font-bold opacity-90 uppercase tracking-widest">Equipe Stand RobustUS</p>
+            <h1 className="text-3xl font-black uppercase italic tracking-tighter leading-none">Validar Brinde</h1>
+            <p className="text-sm font-bold opacity-90 uppercase tracking-widest mt-1">Equipe Stand RobustUS</p>
           </div>
           <ShieldCheck className="w-12 h-12 opacity-50" />
         </div>
@@ -276,24 +283,18 @@ export const AdminScreen: React.FC = () => {
               {!validationResult ? (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-slate-300">
                   <Ticket className="w-16 h-16 mx-auto mb-4 opacity-20" />
-                  <p className="text-xl font-bold uppercase italic">Aguardando validação...</p>
+                  <p className="text-xl font-bold uppercase italic tracking-widest">Aguardando validação...</p>
                 </motion.div>
               ) : validationResult.type === 'invalid' || validationResult.type === 'unauthorized' || validationResult.type === 'error' ? (
                 <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center space-y-4">
                   <XCircle className="w-20 h-20 text-red-500 mx-auto" />
-                  <h2 className="text-4xl font-black text-red-600 uppercase italic tracking-tighter">{validationResult.message}</h2>
+                  <h2 className="text-4xl font-black text-red-600 uppercase italic tracking-tighter leading-tight">{validationResult.message}</h2>
                   <button onClick={() => setValidationResult(null)} className="text-[#0047ab] font-bold uppercase text-sm hover:underline">Tentar novamente</button>
                 </motion.div>
               ) : (
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full space-y-8">
                   {/* Status Banner */}
                   <div className={`p-6 rounded-2xl flex items-center justify-between shadow-sm border-2 ${
-                    validationResult.type === 'pending' 
-                      ? 'bg-amber-50 border-amber-100 text-amber-700' 
-                      : 'bg-slate-100 border-slate-200 text-slate-500'
-                  }`}>
-                    <div className="flex items-center gap-4">
-                    <div className={`p-6 rounded-2xl flex items-center justify-between shadow-sm border-2 ${
                     validationResult.type === 'pending' 
                       ? 'bg-amber-50 border-amber-100 text-amber-700' 
                       : 'bg-[#0047ab]/5 border-[#0047ab]/10 text-[#0047ab]'
@@ -317,7 +318,7 @@ export const AdminScreen: React.FC = () => {
 
                   {/* Info Grid */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 relative overflow-visible">
                       <p className="text-[10px] font-bold text-slate-400 uppercase mb-2 tracking-widest">Participante</p>
                       <div className="flex items-center gap-3">
                         <User className="w-5 h-5 text-[#0047ab]" />
@@ -352,7 +353,7 @@ export const AdminScreen: React.FC = () => {
                   </div>
                   
                   <div className="flex justify-center pt-4">
-                    <button onClick={resetForm} className="text-slate-400 hover:text-[#0047ab] font-bold uppercase text-xs tracking-widest flex items-center gap-2">
+                    <button onClick={resetForm} className="text-slate-400 hover:text-[#0047ab] font-bold uppercase text-xs tracking-widest flex items-center gap-2 transition-colors">
                       <RotateCcw className="w-4 h-4" /> Limpar pesquisa
                     </button>
                   </div>
@@ -366,7 +367,7 @@ export const AdminScreen: React.FC = () => {
         <div className="p-6 bg-slate-50 border-t border-slate-100 flex justify-between items-center text-slate-400">
           <button 
             onClick={() => window.location.href = '/'} 
-            className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest hover:text-[#0047ab]"
+            className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest hover:text-[#0047ab] transition-colors"
           >
             <ChevronRight className="w-4 h-4 rotate-180" /> Voltar ao Totem
           </button>
