@@ -22,28 +22,27 @@ const ConfirmationModal = ({ isOpen, onConfirm, onCancel, loading }: { isOpen: b
           initial={{ scale: 0.9, opacity: 0 }} 
           animate={{ scale: 1, opacity: 1 }} 
           exit={{ scale: 0.9, opacity: 0 }}
-          className="bg-white rounded-[2.5rem] p-10 max-w-lg w-full shadow-2xl border-4 border-[#f7941d] text-center"
+          className="bg-white rounded-[2rem] p-8 max-w-lg w-full shadow-2xl border-4 border-[#f7941d] text-center"
         >
-          <div className="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-6">
-            <AlertTriangle className="w-10 h-10 text-[#f7941d]" />
+          <div className="w-16 h-16 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-4">
+            <AlertTriangle className="w-8 h-8 text-[#f7941d]" />
           </div>
-          <h2 className="text-4xl font-black text-[#003380] uppercase italic tracking-tighter mb-4">Confirmar entrega?</h2>
-          <p className="text-lg text-slate-500 font-bold uppercase tracking-tight mb-10">Você está prestes a marcar este brinde como entregue.</p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <h2 className="text-3xl font-black text-[#003380] uppercase italic tracking-tighter mb-2">Confirmar entrega?</h2>
+          <p className="text-base text-slate-500 font-bold uppercase tracking-tight mb-8">Você está prestes a marcar este brinde como entregue.</p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button 
               onClick={onCancel}
               disabled={loading}
-              className="flex-1 py-4 px-6 rounded-2xl font-black uppercase italic tracking-widest text-slate-400 hover:bg-slate-100 transition-all text-sm"
+              className="flex-1 py-3 px-6 rounded-xl font-black uppercase italic tracking-widest text-slate-400 hover:bg-slate-100 transition-all text-sm"
             >
               Cancelar
             </button>
             <button 
               onClick={onConfirm}
               disabled={loading}
-              style={{ minHeight: '56px', padding: '0 28px', maxWidth: '320px', letterSpacing: '0.02em' }}
-              className="flex-1 bg-[#0047ab] rounded-[12px] font-bold text-[18px] text-white shadow-xl hover:bg-[#003380] active:scale-95 transition-all inline-flex items-center justify-center gap-[12px] whitespace-nowrap leading-none"
+              className="flex-1 bg-[#0047ab] rounded-xl font-bold text-lg text-white shadow-lg hover:bg-[#003380] active:scale-95 transition-all inline-flex items-center justify-center gap-3 h-[56px] whitespace-nowrap"
             >
-              {loading ? <RotateCcw className="w-6 h-6 animate-spin" /> : <CheckCircle className="w-6 h-6 flex-shrink-0" />}
+              {loading ? <RotateCcw className="w-5 h-5 animate-spin" /> : <CheckCircle className="w-5 h-5 flex-shrink-0" />}
               {loading ? 'Processando...' : 'Confirmar entrega'}
             </button>
           </div>
@@ -79,6 +78,15 @@ export const AdminScreen: React.FC = () => {
 
   const handleValidate = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
+    if (!code) {
+      toast.error("Informe o código do brinde");
+      return;
+    }
+    if (!pin) {
+      toast.error("Informe o PIN da equipe");
+      return;
+    }
+
     const normalizedCode = normalizeCode(code);
     setCode(normalizedCode);
     
@@ -92,48 +100,25 @@ export const AdminScreen: React.FC = () => {
       });
 
       if (error) {
-        toast.error("Não foi possível concluir", {
-          description: "Tente novamente ou chame o responsável pela ativação."
-        });
-        setValidationResult({
-          type: "error",
-          message: "Não foi possível validar agora."
-        });
+        toast.error("Erro na validação", { description: "Tente novamente mais tarde." });
+        setValidationResult({ type: "error", message: "Não foi possível validar agora." });
         return;
       }
 
       if (!data?.ok) {
         if (data?.status === "invalid_code") {
-          toast.error("Código não encontrado", {
-            description: "Verifique se o código foi digitado corretamente."
-          });
-          setValidationResult({
-            type: "invalid",
-            message: "Código não encontrado"
-          });
+          setValidationResult({ type: "invalid", message: "Código não encontrado" });
         } else if (data?.status === "unauthorized") {
-          toast.error("PIN inválido", {
-            description: "Confira o PIN da equipe e tente novamente."
-          });
-          setValidationResult({
-            type: "unauthorized",
-            message: "PIN inválido"
-          });
+          setValidationResult({ type: "unauthorized", message: "PIN inválido" });
         } else {
-          toast.error("Não foi possível concluir", {
-            description: data?.message || "Erro desconhecido."
-          });
-          setValidationResult({
-            type: "error",
-            message: data?.message || "Não foi possível validar."
-          });
+          setValidationResult({ type: "error", message: data?.message || "Erro na validação" });
         }
         return;
       }
 
       if (data.status === "found") {
         setValidationResult({
-          type: data.prize_status, // pending ou redeemed
+          type: data.prize_status,
           prizeCode: data.prize_code,
           name: data.name,
           cpfMasked: data.cpf_masked,
@@ -142,14 +127,7 @@ export const AdminScreen: React.FC = () => {
         });
       }
     } catch (err: any) {
-      console.error("Critical Error:", err);
-      toast.error("Não foi possível concluir", {
-        description: "Tente novamente ou chame o responsável pela ativação."
-      });
-      setValidationResult({
-        type: "error",
-        message: "Erro de conexão."
-      });
+      setValidationResult({ type: "error", message: "Erro de conexão." });
     } finally {
       setLoading(false);
     }
@@ -157,7 +135,6 @@ export const AdminScreen: React.FC = () => {
 
   const handleRedeem = async () => {
     if (!validationResult?.prizeCode) return;
-
     setLoading(true);
 
     try {
@@ -166,46 +143,16 @@ export const AdminScreen: React.FC = () => {
         p_admin_pin: pin
       });
 
-      if (error) {
-        toast.error("Não foi possível concluir", {
-          description: "Tente novamente ou chame o responsável pela ativação."
-        });
+      if (error || !data?.ok) {
+        toast.error("Erro ao registrar entrega", { description: data?.message || "Tente novamente." });
         return;
       }
 
-      if (!data?.ok) {
-        if (data?.status === 'already_redeemed') {
-          toast.warning("Brinde já retirado", {
-            description: "Este código já foi usado anteriormente."
-          });
-        } else if (data?.status === 'invalid_code') {
-          toast.error("Código não encontrado", {
-            description: "Verifique se o código foi digitado corretamente."
-          });
-        } else if (data?.status === 'unauthorized') {
-          toast.error("PIN inválido", {
-            description: "Confira o PIN da equipe e tente novamente."
-          });
-        } else {
-          toast.error("Erro ao resgatar", {
-            description: data?.message || "Não foi possível concluir."
-          });
-        }
-        return;
-      }
-
-      // Sucesso na entrega
-      toast.success("Brinde entregue", {
-        description: "Entrega registrada com sucesso."
-      });
-      
+      toast.success("Brinde entregue", { description: "Entrega registrada com sucesso." });
       setShowConfirmModal(false);
-      await handleValidate(); // Re-valida para atualizar status sem limpar campos
+      await handleValidate(); 
     } catch (err: any) {
-      console.error("Critical Redeem Error:", err);
-      toast.error("Não foi possível concluir", {
-        description: "Tente novamente ou chame o responsável pela ativação."
-      });
+      toast.error("Erro crítico ao registrar entrega.");
     } finally {
       setLoading(false);
     }
@@ -218,7 +165,7 @@ export const AdminScreen: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#004aad] p-12 overflow-y-auto font-sans flex flex-col items-center">
+    <div className="validator-page">
       <ConfirmationModal 
         isOpen={showConfirmModal} 
         onConfirm={handleRedeem} 
@@ -226,21 +173,21 @@ export const AdminScreen: React.FC = () => {
         loading={loading}
       />
       
-      <div className="w-full max-w-[1120px] bg-white rounded-b-[28px] shadow-2xl overflow-hidden flex flex-col">
+      <div className="validator-shell">
         {/* Header */}
-        <div className="bg-[#ff920f] px-10 py-5 min-h-[72px] text-white flex items-center justify-between">
+        <div className="bg-[#ff920f] px-10 py-5 text-white flex items-center justify-between rounded-t-[20px]">
           <div>
-            <h1 className="text-3xl font-black uppercase italic tracking-tighter leading-none">Validar Brinde</h1>
-            <p className="text-sm font-bold opacity-90 uppercase tracking-widest mt-1">Equipe Stand RobustUS</p>
+            <h1 className="text-2xl font-black uppercase italic tracking-tighter leading-none">Validar Brinde</h1>
+            <p className="text-xs font-bold opacity-90 uppercase tracking-widest mt-1">Equipe Stand RobustUS</p>
           </div>
-          <ShieldCheck className="w-12 h-12 opacity-50" />
+          <ShieldCheck className="w-10 h-10 opacity-30" />
         </div>
 
-        <div className="p-10 flex flex-col gap-8">
+        <div className="validator-content">
           {/* Form Section */}
-          <form onSubmit={handleValidate} className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
-            <div className="md:col-span-1">
-              <label className="block text-xs font-bold text-slate-400 uppercase mb-2 ml-1">Código do Brinde</label>
+          <form onSubmit={handleValidate} className="validation-form">
+            <div>
+              <label className="block text-[10px] font-bold text-slate-400 uppercase mb-2 ml-1">Código do Brinde</label>
               <div className="relative">
                 <Ticket className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#0047ab]" />
                 <input 
@@ -248,12 +195,12 @@ export const AdminScreen: React.FC = () => {
                   placeholder="EX: 1234"
                   value={code}
                   onChange={e => setCode(e.target.value)}
-                  className="w-full bg-slate-50 border-2 border-slate-100 p-4 pl-12 rounded-xl text-xl font-bold text-[#003380] focus:border-[#f7941d] outline-none transition-all uppercase"
+                  className="w-full bg-slate-50 border border-slate-200 p-4 pl-12 rounded-xl text-lg font-bold text-[#003380] focus:border-[#f7941d] outline-none transition-all uppercase"
                 />
               </div>
             </div>
-            <div className="md:col-span-1">
-              <label className="block text-xs font-bold text-slate-400 uppercase mb-2 ml-1">PIN da Equipe</label>
+            <div>
+              <label className="block text-[10px] font-bold text-slate-400 uppercase mb-2 ml-1">PIN da Equipe</label>
               <div className="relative">
                 <ShieldCheck className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#0047ab]" />
                 <input 
@@ -262,47 +209,47 @@ export const AdminScreen: React.FC = () => {
                   placeholder="PIN"
                   value={pin}
                   onChange={e => setPin(e.target.value)}
-                  className="w-full bg-slate-50 border-2 border-slate-100 p-4 pl-12 rounded-xl text-xl font-bold text-[#003380] focus:border-[#f7941d] outline-none transition-all"
+                  className="w-full bg-slate-50 border border-slate-200 p-4 pl-12 rounded-xl text-lg font-bold text-[#003380] focus:border-[#f7941d] outline-none transition-all"
                 />
               </div>
             </div>
-            <div className="md:col-span-1">
+            <div>
               <button 
                 type="submit"
                 disabled={loading}
-                className="w-full bg-[#0047ab] text-white py-4 rounded-xl font-black uppercase italic tracking-widest hover:bg-[#003380] transition-all flex items-center justify-center gap-3 disabled:opacity-50"
+                className="bg-[#0047ab] text-white px-8 h-[60px] rounded-xl font-black uppercase italic tracking-widest hover:bg-[#003380] transition-all flex items-center justify-center gap-3 disabled:opacity-50 whitespace-nowrap min-w-[200px]"
               >
-                {loading ? <RotateCcw className="w-6 h-6 animate-spin" /> : <Search className="w-6 h-6" />}
+                {loading ? <RotateCcw className="w-5 h-5 animate-spin" /> : <Search className="w-5 h-5" />}
                 {loading ? 'Validando...' : 'Validar Código'}
               </button>
             </div>
           </form>
 
           {/* Results Area */}
-          <div className="min-h-[300px] border-2 border-dashed border-slate-100 rounded-2xl bg-slate-50/50 flex flex-col items-center justify-center p-8">
+          <div className="validation-result">
             <AnimatePresence mode="wait">
               {!validationResult ? (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-slate-300">
-                  <Ticket className="w-16 h-16 mx-auto mb-4 opacity-20" />
-                  <p className="text-xl font-bold uppercase italic tracking-widest">Aguardando validação...</p>
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="py-12 text-center text-slate-300">
+                  <Ticket className="w-12 h-12 mx-auto mb-3 opacity-10" />
+                  <p className="text-sm font-bold uppercase italic tracking-widest">Aguardando validação...</p>
                 </motion.div>
-              ) : validationResult.type === 'invalid' || validationResult.type === 'unauthorized' || validationResult.type === 'error' ? (
-                <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center space-y-4">
-                  <XCircle className="w-20 h-20 text-red-500 mx-auto" />
-                  <h2 className="text-4xl font-black text-red-600 uppercase italic tracking-tighter leading-tight">{validationResult.message}</h2>
-                  <button onClick={() => setValidationResult(null)} className="text-[#0047ab] font-bold uppercase text-sm hover:underline">Tentar novamente</button>
+              ) : (validationResult.type === 'invalid' || validationResult.type === 'unauthorized' || validationResult.type === 'error') ? (
+                <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="py-8 text-center space-y-4">
+                  <XCircle className="w-16 h-16 text-red-500 mx-auto" />
+                  <h2 className="text-3xl font-black text-red-600 uppercase italic tracking-tighter">{validationResult.message}</h2>
+                  <button onClick={() => setValidationResult(null)} className="text-[#0047ab] font-bold uppercase text-xs hover:underline tracking-widest">Tentar novamente</button>
                 </motion.div>
               ) : (
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full space-y-8">
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
                   {/* Status Banner */}
-                  <div className={`p-6 rounded-2xl flex items-center justify-between shadow-sm border-2 ${
+                  <div className={`status-banner border shadow-sm ${
                     validationResult.type === 'pending' 
                       ? 'bg-amber-50 border-amber-100 text-amber-700' 
                       : 'bg-[#0047ab]/5 border-[#0047ab]/10 text-[#0047ab]'
                   }`}>
                     <div className="flex items-center gap-4">
-                      {validationResult.type === 'pending' ? <RotateCcw className="w-8 h-8" /> : <CheckCircle2 className="w-8 h-8" />}
-                      <span className="text-3xl font-black uppercase italic tracking-tight">
+                      {validationResult.type === 'pending' ? <RotateCcw className="w-6 h-6" /> : <CheckCircle2 className="w-6 h-6" />}
+                      <span className="text-2xl font-black uppercase italic tracking-tight">
                         {validationResult.type === 'pending' ? 'Brinde Pendente' : 'Brinde Entregue'}
                       </span>
                     </div>
@@ -310,52 +257,53 @@ export const AdminScreen: React.FC = () => {
                       <button 
                         onClick={() => setShowConfirmModal(true)}
                         disabled={loading}
-                        className="bg-[#f7941d] text-white px-8 py-3 rounded-xl font-black uppercase italic tracking-widest hover:bg-[#d47a00] transition-all shadow-lg active:scale-95"
+                        className="bg-[#f7941d] text-white px-8 h-[56px] rounded-xl font-black uppercase italic tracking-widest hover:bg-[#d47a00] transition-all shadow-md active:scale-95 inline-flex items-center justify-center gap-3 whitespace-nowrap"
                       >
-                        Entregar Brinde
+                        <Gift className="w-5 h-5" />
+                        <span>Entregar Brinde</span>
                       </button>
                     )}
                   </div>
 
                   {/* Info Grid */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 relative overflow-visible">
-                      <p className="text-[10px] font-bold text-slate-400 uppercase mb-2 tracking-widest">Participante</p>
+                  <div className="result-grid">
+                    <div className="result-card">
+                      <p className="text-[9px] font-bold text-slate-400 uppercase mb-2 tracking-widest">Participante</p>
                       <div className="flex items-center gap-3">
-                        <User className="w-5 h-5 text-[#0047ab]" />
-                        <p className="text-xl font-black text-[#003380] uppercase truncate">{validationResult.name}</p>
+                        <User className="w-4 h-4 text-[#0047ab]" />
+                        <p className="text-lg font-black text-[#003380] uppercase truncate">{validationResult.name}</p>
                       </div>
                     </div>
-                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                      <p className="text-[10px] font-bold text-slate-400 uppercase mb-2 tracking-widest">Documento (CPF)</p>
+                    <div className="result-card">
+                      <p className="text-[9px] font-bold text-slate-400 uppercase mb-2 tracking-widest">Documento (CPF)</p>
                       <div className="flex items-center gap-3">
-                        <FileText className="w-5 h-5 text-[#0047ab]" />
-                        <p className="text-xl font-black text-[#003380]">{validationResult.cpfMasked}</p>
+                        <FileText className="w-4 h-4 text-[#0047ab]" />
+                        <p className="text-lg font-black text-[#003380]">{validationResult.cpfMasked}</p>
                       </div>
                     </div>
-                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                      <p className="text-[10px] font-bold text-slate-400 uppercase mb-2 tracking-widest">Código Validado</p>
+                    <div className="result-card">
+                      <p className="text-[9px] font-bold text-slate-400 uppercase mb-2 tracking-widest">Código Validado</p>
                       <div className="flex items-center gap-3">
-                        <Ticket className="w-5 h-5 text-[#f7941d]" />
-                        <p className="text-xl font-black text-[#003380] italic">{validationResult.prizeCode}</p>
+                        <Ticket className="w-4 h-4 text-[#f7941d]" />
+                        <p className="text-lg font-black text-[#003380] italic">{validationResult.prizeCode}</p>
                       </div>
                     </div>
-                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                      <p className="text-[10px] font-bold text-slate-400 uppercase mb-2 tracking-widest">
+                    <div className="result-card">
+                      <p className="text-[9px] font-bold text-slate-400 uppercase mb-2 tracking-widest">
                         {validationResult.type === 'pending' ? 'Data da Vitória' : 'Data da Retirada'}
                       </p>
                       <div className="flex items-center gap-3">
-                        <Calendar className="w-5 h-5 text-[#0047ab]" />
-                        <p className="text-lg font-bold text-[#003380]">
+                        <Calendar className="w-4 h-4 text-[#0047ab]" />
+                        <p className="text-base font-bold text-[#003380]">
                           {validationResult.type === 'pending' ? formatTime(validationResult.createdAt) : formatTime(validationResult.redeemedAt)}
                         </p>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="flex justify-center pt-4">
-                    <button onClick={resetForm} className="text-slate-400 hover:text-[#0047ab] font-bold uppercase text-xs tracking-widest flex items-center gap-2 transition-colors">
-                      <RotateCcw className="w-4 h-4" /> Limpar pesquisa
+                  <div className="flex justify-center">
+                    <button onClick={resetForm} className="text-slate-400 hover:text-[#0047ab] font-bold uppercase text-[10px] tracking-[0.15em] flex items-center gap-2 transition-colors py-2">
+                      <RotateCcw className="w-3.5 h-3.5" /> Limpar pesquisa
                     </button>
                   </div>
                 </motion.div>
@@ -365,12 +313,12 @@ export const AdminScreen: React.FC = () => {
         </div>
 
         {/* Footer */}
-        <div className="p-6 bg-slate-50 border-t border-slate-100 flex justify-between items-center text-slate-400">
+        <div className="px-10 py-4 bg-slate-50 border-t border-slate-100 flex justify-between items-center text-slate-400 rounded-b-[20px]">
           <button 
             onClick={() => window.location.href = '/'} 
-            className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest hover:text-[#0047ab] transition-colors"
+            className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest hover:text-[#0047ab] transition-colors"
           >
-            <ChevronRight className="w-4 h-4 rotate-180" /> Voltar ao Totem
+            <ChevronRight className="w-3 h-3 rotate-180" /> Voltar ao Totem
           </button>
           <p className="text-[10px] font-bold uppercase italic tracking-widest">RobustUS Nutrição Animal</p>
         </div>
