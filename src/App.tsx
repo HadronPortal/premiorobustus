@@ -379,39 +379,48 @@ const App = () => {
             key="victory"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="flex-1 w-full flex flex-col items-center justify-center p-12 z-20"
+            className="flex-1 w-full flex flex-col items-center justify-center p-8 z-20"
           >
-            <div className="relative w-full max-w-2xl bg-white/95 backdrop-blur-2xl p-16 rounded-[5rem] shadow-[0_50px_100px_rgba(0,0,0,0.5)] border-t-[16px] border-[#f7941d] flex flex-col items-center text-center">
+            <div className="relative w-full max-w-[95%] bg-white/95 backdrop-blur-3xl p-16 rounded-[6rem] shadow-[0_50px_100px_rgba(0,0,0,0.6)] border-t-[24px] border-[#f7941d] flex flex-col items-center text-center overflow-hidden">
               
               <motion.div 
                 initial={{ scale: 0, rotate: -45 }}
                 animate={{ scale: 1, rotate: 12 }}
                 transition={{ type: "spring", damping: 12, delay: 0.2 }}
-                className="absolute -top-20 bg-[#f7941d] p-10 rounded-[3rem] shadow-2xl border-[8px] border-white"
+                className="absolute -top-20 bg-[#f7941d] p-12 rounded-[3.5rem] shadow-2xl border-[10px] border-white"
               >
-                <Trophy className="w-24 h-24 text-white" />
+                <Trophy className="w-28 h-28 text-white" />
               </motion.div>
 
-              <div className="mt-16 space-y-6 mb-12">
-                <h2 className="text-9xl font-black text-[#0047ab] leading-none tracking-tighter uppercase italic drop-shadow-lg">UHUUUL!</h2>
-                <div className="bg-[#f7941d] inline-block px-8 py-2 rounded-full border-2 border-white shadow-lg rotate-[-2deg]">
-                   <p className="text-3xl font-black text-white uppercase tracking-widest italic">VOCÊ GANHOU UM BRINDE!</p>
+              <div className="mt-20 space-y-8 mb-16">
+                <h2 className="text-[10rem] font-black text-[#0047ab] leading-none tracking-tighter uppercase italic drop-shadow-xl">PARABÉNS!</h2>
+                <div className="bg-[#f7941d] inline-block px-12 py-4 rounded-full border-4 border-white shadow-2xl rotate-[-2deg]">
+                   <p className="text-4xl font-black text-white uppercase tracking-[0.2em] italic">VOCÊ GANHOU UM BRINDE!</p>
                 </div>
               </div>
 
-              <div className="bg-slate-50 rounded-[3rem] p-10 w-full border-4 border-dashed border-[#0047ab]/20 mb-12 shadow-inner">
-                <p className="text-2xl font-bold text-slate-500 uppercase tracking-widest mb-4">Código de retirada:</p>
-                <div className="bg-white px-8 py-8 rounded-[2.5rem] shadow-xl border-4 border-[#0047ab]">
-                  <span className="text-7xl font-black text-[#0047ab] tracking-widest">{voucherCode}</span>
+              <div className="bg-[#0047ab]/5 rounded-[4rem] p-12 w-full border-4 border-dashed border-[#0047ab]/20 mb-16 shadow-inner">
+                <p className="text-3xl font-bold text-slate-500 uppercase tracking-widest mb-6 px-4">Apresente este código para retirar seu brinde:</p>
+                <div className="bg-white px-8 py-10 rounded-[3rem] shadow-2xl border-4 border-[#0047ab] flex items-center justify-center">
+                  <span className="text-7xl sm:text-8xl font-black text-[#0047ab] tracking-tight break-all leading-none uppercase">
+                    {voucherCode.includes('-') ? (
+                      <>
+                        <span className="block">{voucherCode.split('-')[0]}</span>
+                        <span className="block text-6xl mt-2 text-[#f7941d]">{voucherCode.split('-')[1]}</span>
+                      </>
+                    ) : (
+                      voucherCode
+                    )}
+                  </span>
                 </div>
               </div>
 
               <motion.button 
-                whileTap={{ scale: 0.95 }}
+                whileTap={{ scale: 0.94 }}
                 onClick={() => setGameState('START')}
-                className="w-full bg-[#f7941d] py-10 rounded-[3.5rem] shadow-2xl flex items-center justify-center gap-5 text-4xl font-black text-white uppercase italic tracking-widest border-b-[10px] border-[#d47a00]"
+                className="w-full bg-[#f7941d] py-12 rounded-[4rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.4)] flex items-center justify-center gap-6 text-5xl font-black text-white uppercase italic tracking-widest border-b-[15px] border-[#d47a00]"
               >
-                <RotateCcw className="w-12 h-12" />
+                <RotateCcw className="w-16 h-16" />
                 JOGAR NOVAMENTE
               </motion.button>
             </div>
