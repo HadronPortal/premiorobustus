@@ -16,6 +16,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { AuthScreen } from './components/auth/AuthScreen';
 import { AdminScreen } from './components/admin/AdminScreen';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { Toaster } from 'sonner';
 
 // Configuração da Marca RobustUS
 const BRAND = {
