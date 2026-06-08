@@ -293,14 +293,20 @@ export const AdminScreen: React.FC = () => {
                       : 'bg-slate-100 border-slate-200 text-slate-500'
                   }`}>
                     <div className="flex items-center gap-4">
+                    <div className={`p-6 rounded-2xl flex items-center justify-between shadow-sm border-2 ${
+                    validationResult.type === 'pending' 
+                      ? 'bg-amber-50 border-amber-100 text-amber-700' 
+                      : 'bg-[#0047ab]/5 border-[#0047ab]/10 text-[#0047ab]'
+                  }`}>
+                    <div className="flex items-center gap-4">
                       {validationResult.type === 'pending' ? <RotateCcw className="w-8 h-8" /> : <CheckCircle2 className="w-8 h-8" />}
                       <span className="text-3xl font-black uppercase italic tracking-tight">
-                        {validationResult.type === 'pending' ? 'Brinde Pendente' : 'Brinde já Retirado'}
+                        {validationResult.type === 'pending' ? 'Brinde Pendente' : 'Brinde Entregue'}
                       </span>
                     </div>
                     {validationResult.type === 'pending' && (
                       <button 
-                        onClick={handleRedeem}
+                        onClick={() => setShowConfirmModal(true)}
                         disabled={loading}
                         className="bg-[#f7941d] text-white px-8 py-3 rounded-xl font-black uppercase italic tracking-widest hover:bg-[#d47a00] transition-all shadow-lg active:scale-95"
                       >
