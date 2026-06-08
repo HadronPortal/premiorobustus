@@ -29,7 +29,7 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
   };
 
   const isFormValid = formData.cpf.replace(/\D/g, '').length === 11 && 
-                      formData.name.trim().length > 3 && 
+                      formData.name.trim().length >= 3 && 
                       formData.acceptedTerms;
 
   const handleSubmit = async (e: React.FormEvent) => {
