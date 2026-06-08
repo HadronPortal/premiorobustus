@@ -24,25 +24,26 @@ const ConfirmationModal = ({ isOpen, onConfirm, onCancel, loading }: { isOpen: b
           exit={{ scale: 0.9, opacity: 0 }}
           className="bg-white rounded-[2.5rem] p-10 max-w-lg w-full shadow-2xl border-4 border-[#f7941d] text-center"
         >
-          <div className="w-24 h-24 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-6">
-            <AlertTriangle className="w-12 h-12 text-[#f7941d]" />
+          <div className="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-6">
+            <AlertTriangle className="w-10 h-10 text-[#f7941d]" />
           </div>
           <h2 className="text-4xl font-black text-[#003380] uppercase italic tracking-tighter mb-4">Confirmar entrega?</h2>
-          <p className="text-xl text-slate-500 font-bold uppercase tracking-tight mb-10">Você está prestes a marcar este brinde como entregue.</p>
-          <div className="flex flex-col sm:flex-row gap-4">
+          <p className="text-lg text-slate-500 font-bold uppercase tracking-tight mb-10">Você está prestes a marcar este brinde como entregue.</p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button 
               onClick={onCancel}
               disabled={loading}
-              className="flex-1 py-5 rounded-2xl font-black uppercase italic tracking-widest text-slate-400 hover:bg-slate-100 transition-all"
+              className="flex-1 py-4 px-6 rounded-2xl font-black uppercase italic tracking-widest text-slate-400 hover:bg-slate-100 transition-all text-sm"
             >
               Cancelar
             </button>
             <button 
               onClick={onConfirm}
               disabled={loading}
-              className="flex-1 bg-[#0047ab] py-5 rounded-2xl font-black uppercase italic tracking-widest text-white shadow-xl hover:bg-[#003380] active:scale-95 transition-all flex items-center justify-center gap-3"
+              style={{ minHeight: '56px', padding: '0 28px', maxWidth: '320px', letterSpacing: '0.02em' }}
+              className="flex-1 bg-[#0047ab] rounded-[12px] font-bold text-[18px] text-white shadow-xl hover:bg-[#003380] active:scale-95 transition-all inline-flex items-center justify-center gap-[12px] whitespace-nowrap leading-none"
             >
-              {loading ? <RotateCcw className="w-6 h-6 animate-spin" /> : <CheckCircle className="w-6 h-6" />}
+              {loading ? <RotateCcw className="w-6 h-6 animate-spin" /> : <CheckCircle className="w-6 h-6 flex-shrink-0" />}
               {loading ? 'Processando...' : 'Confirmar entrega'}
             </button>
           </div>
@@ -217,7 +218,7 @@ export const AdminScreen: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#0047ab] flex items-center justify-center p-4 sm:p-8 font-sans">
+    <div className="min-h-screen w-full bg-[#004aad] p-12 overflow-y-auto font-sans flex flex-col items-center">
       <ConfirmationModal 
         isOpen={showConfirmModal} 
         onConfirm={handleRedeem} 
@@ -225,9 +226,9 @@ export const AdminScreen: React.FC = () => {
         loading={loading}
       />
       
-      <div className="w-full max-w-4xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col">
+      <div className="w-full max-w-[1120px] bg-white rounded-b-[28px] shadow-2xl overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="bg-[#f7941d] p-6 text-white flex items-center justify-between">
+        <div className="bg-[#ff920f] px-10 py-5 min-h-[72px] text-white flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-black uppercase italic tracking-tighter leading-none">Validar Brinde</h1>
             <p className="text-sm font-bold opacity-90 uppercase tracking-widest mt-1">Equipe Stand RobustUS</p>
@@ -235,7 +236,7 @@ export const AdminScreen: React.FC = () => {
           <ShieldCheck className="w-12 h-12 opacity-50" />
         </div>
 
-        <div className="p-8 flex flex-col gap-8">
+        <div className="p-10 flex flex-col gap-8">
           {/* Form Section */}
           <form onSubmit={handleValidate} className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
             <div className="md:col-span-1">
