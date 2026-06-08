@@ -8,8 +8,6 @@ import {
   PawPrint, 
   Heart,
   Dog,
-  Zap,
-  ArrowRight
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -26,43 +24,42 @@ const BRAND = {
 // Imagens reais do site RobustUS
 const ASSETS = {
   bgStart: "https://robustus.com.br/wp-content/uploads/2026/06/banner.jpg",
-  bgOverlay: "https://robustus.com.br/wp-content/uploads/2025/10/sdfgsgsdf-scaled.png",
-  logoSection: "https://robustus.com.br/wp-content/uploads/2026/06/banner-1.png",
+  bgHero: "https://robustus.com.br/wp-content/uploads/2025/10/sdfgsgsdf-scaled.png",
   patinha: "https://robustus.com.br/wp-content/uploads/2025/03/patinha.png",
-  bannerHero: "https://robustus.com.br/wp-content/uploads/2026/06/banner-2.png",
+  logo: "https://robustus.com.br/wp-content/uploads/2025/03/logo-robustus-site.png"
 };
 
 // Lista de Produtos RobustUS
 const PRODUCTS = [
   { 
     id: 1, 
-    name: 'Life Special Cão Filhote', 
-    line: 'Life Special', 
-    img: 'https://robustus.com.br/wp-content/uploads/2025/10/cao-mini-768x633.png' 
-  },
-  { 
-    id: 2, 
-    name: 'Life Special Cão Adulto Mini', 
-    line: 'Life Special', 
+    name: 'Life Special Filhote', 
+    line: 'Cão Filhote', 
     img: 'https://robustus.com.br/wp-content/uploads/2025/10/DASDASDAS-768x633.png' 
   },
   { 
+    id: 2, 
+    name: 'Adulto Mini e Pequeno', 
+    line: 'Cão Adulto', 
+    img: 'https://robustus.com.br/wp-content/uploads/2025/10/cao-mini-768x633.png' 
+  },
+  { 
     id: 3, 
-    name: 'Life Special Cão Adulto M&G', 
-    line: 'Life Special', 
+    name: 'Adulto Médio e Grande', 
+    line: 'Cão Adulto', 
     img: 'https://robustus.com.br/wp-content/uploads/2025/10/cao-ADULTO-768x633.png' 
   },
   { 
     id: 4, 
-    name: 'Life Special Gato Castrado', 
+    name: 'Gato Castrado', 
     line: 'Life Special', 
-    img: 'https://robustus.com.br/wp-content/uploads/2025/03/gatossscastrados-1024x576.png' 
+    img: 'https://robustus.com.br/wp-content/uploads/2025/10/sdsadasdas-1-768x633.png' 
   },
   { 
     id: 5, 
     name: 'Bifinho Premium', 
     line: 'Petiscos', 
-    img: 'https://robustus.com.br/wp-content/uploads/2025/10/sdsadasdas-1-768x633.png' 
+    img: 'https://robustus.com.br/wp-content/uploads/2026/06/banner-3.png' 
   },
 ];
 
@@ -152,8 +149,7 @@ const App = () => {
 
   useEffect(() => {
     if (gameState === 'PLAYING' && matches === PRODUCTS.length) {
-      const randomId = Math.floor(1000 + Math.random() * 9000);
-      setVoucherCode(`ROBUSTUS-${randomId}`);
+      setVoucherCode(`ROBUSTUS-4827`);
       
       setTimeout(() => {
         setGameState('VICTORY');
@@ -178,28 +174,23 @@ const App = () => {
   }, [gameState]);
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 font-sans flex flex-col items-center justify-start overflow-hidden relative select-none touch-none">
+    <div className="min-h-screen bg-white text-slate-900 font-sans flex flex-col items-center justify-start overflow-hidden relative select-none touch-none w-[1080px] h-[1920px] mx-auto shadow-2xl">
       
       {/* Background Container */}
       <div className="absolute inset-0 z-0">
         {gameState === 'START' ? (
-          <>
+          <div className="w-full h-full relative">
             <img 
-              src={ASSETS.bgStart} 
-              alt="Background" 
+              src={ASSETS.bgHero} 
+              alt="Hero Background" 
               className="absolute inset-0 w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-[#0047ab]/80 via-[#0047ab]/60 to-[#0047ab]/90"></div>
-          </>
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0047ab] via-transparent to-black/20"></div>
+          </div>
         ) : (
           <div className="absolute inset-0 bg-[#0047ab]">
             <div className="absolute inset-0 bg-paw-pattern opacity-10"></div>
-            {/* Overlay sutil de imagens RobustUS em marca d'água */}
-            <div className="absolute inset-0 flex flex-wrap gap-40 justify-center items-center opacity-[0.05] grayscale rotate-12 scale-150">
-              {PRODUCTS.map((p, i) => (
-                <img key={i} src={p.img} className="w-64 h-64 object-contain" alt="" />
-              ))}
-            </div>
+            <div className="absolute inset-0 bg-gradient-to-b from-[#0047ab] via-[#003380] to-[#0047ab]"></div>
           </div>
         )}
       </div>
@@ -211,56 +202,54 @@ const App = () => {
             key="start"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0, scale: 1.1 }}
-            className="flex-1 w-full flex flex-col items-center justify-between p-12 z-10"
+            exit={{ opacity: 0 }}
+            className="flex-1 w-full flex flex-col items-center justify-between p-20 z-10"
           >
-            <div className="flex flex-col items-center gap-6 mt-20 w-full">
-              {/* Logo e Icons */}
-              <motion.div 
-                initial={{ y: -50 }}
-                animate={{ y: 0 }}
-                className="flex flex-col items-center gap-4"
+            {/* Top Logo */}
+            <motion.div 
+              initial={{ y: -50 }}
+              animate={{ y: 0 }}
+              className="mt-10"
+            >
+              <div className="bg-white/90 backdrop-blur-sm p-8 rounded-full shadow-2xl border-4 border-[#f7941d]">
+                <img src={ASSETS.patinha} alt="Logo" className="w-24 h-24" />
+              </div>
+            </motion.div>
+
+            {/* Middle Content */}
+            <div className="flex flex-col items-center text-center gap-8">
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.2 }}
+                className="space-y-4"
               >
-                <img src={ASSETS.patinha} alt="RobustUS" className="w-24 h-24 drop-shadow-lg" />
-                <h1 className="text-7xl font-black text-white tracking-tighter uppercase italic drop-shadow-2xl">{BRAND.name}</h1>
+                <h1 className="text-9xl font-black text-white italic tracking-tighter drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] leading-none uppercase">
+                  DESAFIO DA<br />MEMÓRIA
+                </h1>
+                <div className="bg-[#f7941d] inline-block px-10 py-4 rounded-full shadow-2xl transform -rotate-2 border-4 border-white">
+                  <span className="text-4xl font-black text-white uppercase italic tracking-widest">ROBUSTUS</span>
+                </div>
               </motion.div>
 
-              <div className="relative w-full max-w-lg mt-12">
-                <motion.div 
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                  className="bg-white/95 backdrop-blur-md p-6 rounded-[3.5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] border border-white/50 overflow-hidden"
-                >
-                  <img 
-                    src={ASSETS.bgOverlay} 
-                    alt="RobustUS Products" 
-                    className="w-full h-[550px] object-cover rounded-[2.5rem]"
-                  />
-                  <div className="absolute top-10 right-10 bg-[#f7941d] text-white p-8 rounded-full shadow-2xl rotate-12 flex flex-col items-center justify-center border-4 border-white">
-                    <span className="text-sm font-black uppercase">BRINDE</span>
-                    <Sparkles className="w-8 h-8" />
-                  </div>
-                </motion.div>
-              </div>
-
-              <div className="text-center space-y-6 max-w-md mt-8">
-                <h2 className="text-7xl font-black text-white leading-[0.85] drop-shadow-lg">DESAFIO DA MEMÓRIA</h2>
-                <div className="flex items-center justify-center gap-3 text-[#f7941d] font-black text-3xl drop-shadow-md">
-                  <Heart className="w-8 h-8 fill-current" />
-                  <span>SABER NUTRIR É AMAR</span>
-                  <Heart className="w-8 h-8 fill-current" />
-                </div>
-              </div>
+              <motion.p 
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.4 }}
+                className="text-4xl font-bold text-white uppercase tracking-widest bg-black/20 backdrop-blur-sm px-10 py-4 rounded-3xl"
+              >
+                Encontre os 5 pares e ganhe um brinde!
+              </motion.p>
             </div>
 
+            {/* Bottom Button */}
             <motion.button 
-              whileTap={{ scale: 0.95 }}
+              whileTap={{ scale: 0.9 }}
               onClick={initializeGame}
-              className="w-full max-w-lg bg-[#f7941d] p-12 rounded-[3rem] shadow-2xl flex items-center justify-center gap-6 group relative overflow-hidden mb-16 border-b-8 border-[#d47a00]"
+              className="w-full max-w-2xl bg-[#f7941d] py-14 rounded-[4rem] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] flex items-center justify-center gap-8 group relative overflow-hidden border-b-[16px] border-[#d47a00] active:border-b-0 transition-all mb-20"
             >
-              <Play className="w-14 h-14 text-white fill-current relative z-10" />
-              <span className="text-5xl font-black text-white tracking-widest relative z-10 uppercase italic">JOGAR</span>
+              <Play className="w-20 h-20 text-white fill-current" />
+              <span className="text-7xl font-black text-white tracking-widest uppercase italic">COMEÇAR</span>
             </motion.button>
           </motion.div>
         )}
@@ -269,53 +258,48 @@ const App = () => {
         {gameState === 'PLAYING' && (
           <motion.div 
             key="playing"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="flex-1 w-full flex flex-col items-center z-10 pt-16 pb-12 px-8"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex-1 w-full flex flex-col items-center z-10 p-16"
           >
             {/* Header Jogo */}
-            <div className="w-full max-w-lg flex flex-col gap-8 mb-10">
+            <div className="w-full flex flex-col gap-10 mb-16">
               <div className="flex justify-between items-center">
-                <div className="flex items-center gap-4">
-                  <img src={ASSETS.patinha} className="w-14 h-14" alt="" />
-                  <span className="text-4xl font-black text-white uppercase italic tracking-tighter drop-shadow-lg">{BRAND.name}</span>
+                <div className="flex items-center gap-6">
+                  <img src={ASSETS.patinha} className="w-20 h-20 bg-white p-3 rounded-full border-4 border-[#f7941d] shadow-lg" alt="" />
+                  <span className="text-6xl font-black text-white uppercase italic tracking-tighter drop-shadow-xl">ROBUSTUS</span>
                 </div>
                 <button 
                   onClick={() => setGameState('START')}
-                  className="p-5 bg-white/10 backdrop-blur-md rounded-2xl text-white/80 hover:bg-white/20 transition-colors border border-white/20"
+                  className="p-8 bg-white/10 backdrop-blur-md rounded-3xl text-white hover:bg-white/20 transition-all border border-white/20 shadow-xl"
                 >
-                  <RotateCcw className="w-10 h-10" />
+                  <RotateCcw className="w-12 h-12" />
                 </button>
               </div>
 
-              <div className="bg-white/95 backdrop-blur-md p-10 rounded-[3rem] border border-white/50 shadow-2xl relative overflow-hidden">
-                <div className="absolute top-[-20%] right-[-10%] opacity-5 text-[#0047ab]">
-                   <Dog className="w-48 h-48" />
-                </div>
-                <div className="flex justify-between items-end mb-5">
-                  <div>
-                    <p className="text-[#0047ab] font-black text-base uppercase tracking-widest mb-1">PROCESSO DE NUTRIÇÃO</p>
-                    <h3 className="text-4xl font-black text-[#003380] uppercase">
-                      {matches === 5 ? "CONCLUÍDO!" : `FALTAM ${5 - matches} PARES`}
-                    </h3>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-6xl font-black text-[#0047ab]">{matches}</span>
-                    <span className="text-3xl font-black text-slate-300"> / 5</span>
+              {/* Progress Panel */}
+              <div className="bg-white/95 backdrop-blur-md p-12 rounded-[4rem] border-4 border-[#f7941d] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)]">
+                <div className="flex justify-between items-center mb-8">
+                  <h3 className="text-4xl font-black text-[#003380] uppercase tracking-tighter">
+                    {matches === 5 ? "CONCLUÍDO!" : `ENCONTRE OS PARES`}
+                  </h3>
+                  <div className="bg-[#0047ab] text-white px-8 py-3 rounded-full">
+                    <span className="text-5xl font-black">{matches}</span>
+                    <span className="text-3xl font-bold opacity-50"> / 5</span>
                   </div>
                 </div>
-                <div className="h-6 bg-slate-100 rounded-full overflow-hidden p-1.5 shadow-inner">
+                <div className="h-10 bg-slate-100 rounded-full overflow-hidden p-2 shadow-inner border-2 border-slate-200">
                   <motion.div 
                     initial={{ width: 0 }}
                     animate={{ width: `${(matches / 5) * 100}%` }}
-                    className="h-full bg-gradient-to-r from-[#0047ab] to-[#00b2ff] rounded-full shadow-lg"
+                    className="h-full bg-gradient-to-r from-[#f7941d] to-[#ffb85f] rounded-full shadow-lg"
                   />
                 </div>
               </div>
             </div>
 
-            {/* Grid de Cartas */}
-            <div className="w-full max-w-lg grid grid-cols-2 gap-8 flex-1 content-center">
+            {/* Grid de Cartas: 2 colunas x 5 linhas */}
+            <div className="grid grid-cols-2 gap-10 w-full max-w-4xl mx-auto flex-1 content-center">
               {cards.map((card) => (
                 <div 
                   key={card.instanceId}
@@ -325,16 +309,14 @@ const App = () => {
                   <motion.div
                     animate={{ 
                       rotateY: card.isFlipped || card.isMatched ? 180 : 0,
-                      scale: card.isMatched ? 0.98 : 1
+                      scale: card.isMatched ? 0.95 : 1
                     }}
-                    transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                    transition={{ type: "spring", stiffness: 200, damping: 20 }}
                     className="w-full h-full preserve-3d relative"
                   >
                     {/* Verso da Carta */}
-                    <div className="absolute inset-0 backface-hidden bg-white rounded-[3rem] shadow-2xl border-4 border-white/20 flex flex-col items-center justify-center overflow-hidden">
-                       <div className="absolute inset-0 bg-[#0047ab]">
-                         <div className="absolute inset-0 bg-paw-pattern opacity-10 scale-150"></div>
-                       </div>
+                    <div className="absolute inset-0 backface-hidden bg-[#0047ab] rounded-[3rem] shadow-2xl border-8 border-white/30 flex flex-col items-center justify-center overflow-hidden">
+                       <div className="absolute inset-0 bg-paw-pattern opacity-10 scale-150"></div>
                        <motion.div
                         animate={{ scale: [1, 1.05, 1], rotate: [0, 5, -5, 0] }}
                         transition={{ duration: 4, repeat: Infinity }}
@@ -342,17 +324,12 @@ const App = () => {
                       >
                          <img src={ASSETS.patinha} className="w-20 h-20 brightness-0 invert opacity-80" alt="" />
                       </motion.div>
-                      <div className="absolute bottom-10 flex gap-3">
-                         <div className="w-3 h-3 rounded-full bg-white/20"></div>
-                         <div className="w-3 h-3 rounded-full bg-[#f7941d]"></div>
-                         <div className="w-3 h-3 rounded-full bg-white/20"></div>
-                      </div>
                     </div>
 
                     {/* Frente da Carta */}
                     <div 
-                      className={`absolute inset-0 backface-hidden bg-white rounded-[3rem] shadow-2xl border-8 flex flex-col items-center justify-between p-8 rotate-y-180 transition-colors duration-500
-                        ${card.isMatched ? 'border-[#f7941d] bg-orange-50/50' : 'border-slate-50'}
+                      className={`absolute inset-0 backface-hidden bg-white rounded-[3rem] shadow-2xl border-[12px] flex flex-col items-center justify-between p-6 rotate-y-180 transition-colors duration-500
+                        ${card.isMatched ? 'border-[#f7941d]' : 'border-white'}
                       `}
                       style={{ transform: 'rotateY(180deg)' }}
                     >
@@ -360,26 +337,25 @@ const App = () => {
                         <motion.div 
                           initial={{ scale: 0 }}
                           animate={{ scale: 1 }}
-                          className="absolute -top-5 -right-5 bg-[#0047ab] text-white p-4 rounded-full shadow-2xl z-20 border-4 border-white"
+                          className="absolute -top-6 -right-6 bg-[#f7941d] text-white p-4 rounded-full shadow-2xl z-20 border-4 border-white"
                         >
-                          <CheckCircle2 className="w-10 h-10" />
+                          <CheckCircle2 className="w-12 h-12" />
                         </motion.div>
                       )}
 
-                      <div className="w-full h-2/3 flex items-center justify-center p-2 relative">
+                      <div className="w-full h-2/3 flex items-center justify-center relative bg-blue-50/50 rounded-3xl p-4">
                         <img 
                           src={card.img} 
                           alt={card.name} 
-                          className="max-w-full max-h-full object-contain rounded-3xl drop-shadow-2xl relative z-10" 
+                          className="max-w-full max-h-full object-contain drop-shadow-xl relative z-10" 
                         />
-                        <div className="absolute inset-0 bg-blue-50/30 rounded-full blur-3xl opacity-50 scale-75"></div>
                       </div>
 
-                      <div className="w-full text-center space-y-2">
-                        <span className="inline-block px-4 py-1.5 bg-[#0047ab]/10 rounded-full text-[12px] font-black text-[#0047ab] uppercase tracking-widest italic">
+                      <div className="w-full text-center mt-2">
+                        <span className="inline-block px-4 py-1 bg-[#0047ab] rounded-full text-[14px] font-black text-white uppercase italic tracking-widest mb-1">
                           {card.line}
                         </span>
-                        <h4 className="text-xl font-black text-[#003380] leading-tight uppercase italic">
+                        <h4 className="text-2xl font-black text-[#003380] leading-tight uppercase italic truncate w-full">
                           {card.name}
                         </h4>
                       </div>
@@ -397,66 +373,54 @@ const App = () => {
             key="victory"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="flex-1 w-full flex flex-col items-center justify-center p-12 z-20"
+            className="flex-1 w-full flex flex-col items-center justify-center p-20 z-20"
           >
-            <div className="relative w-full max-w-lg bg-white/95 backdrop-blur-xl p-12 rounded-[4.5rem] shadow-[0_50px_100px_rgba(0,0,0,0.3)] border-t-8 border-[#f7941d] flex flex-col items-center text-center">
+            <div className="relative w-full max-w-4xl bg-white/95 backdrop-blur-xl p-20 rounded-[6rem] shadow-[0_50px_100px_rgba(0,0,0,0.5)] border-t-[20px] border-[#f7941d] flex flex-col items-center text-center">
               
-              <div className="absolute -top-10 -left-10 w-32 h-32 opacity-10 grayscale brightness-0">
-                <PawPrint className="w-full h-full" />
-              </div>
-              <div className="absolute -bottom-10 -right-10 w-32 h-32 opacity-10 grayscale brightness-0 rotate-180">
-                <PawPrint className="w-full h-full" />
-              </div>
-
               <motion.div 
                 initial={{ scale: 0, rotate: -45 }}
                 animate={{ scale: 1, rotate: 12 }}
                 transition={{ type: "spring", damping: 10, delay: 0.2 }}
-                className="absolute -top-20 bg-[#f7941d] p-10 rounded-[2.5rem] shadow-2xl border-8 border-white"
+                className="absolute -top-24 bg-[#f7941d] p-12 rounded-[3.5rem] shadow-2xl border-[12px] border-white"
               >
-                <Trophy className="w-24 h-24 text-white" />
+                <Trophy className="w-32 h-32 text-white" />
               </motion.div>
 
-              <div className="mt-20 space-y-6 mb-12">
-                <h2 className="text-8xl font-black text-[#0047ab] leading-none tracking-tighter uppercase italic">UHUUUL!</h2>
-                <p className="text-3xl font-black text-[#f7941d] uppercase tracking-[0.2em] italic">VOCÊ É ROBUSTUS!</p>
-                <p className="text-2xl text-slate-500 font-bold px-4 leading-snug">
-                  Parabéns por conhecer nossos produtos de alta nutrição!
-                </p>
+              <div className="mt-24 space-y-8 mb-16">
+                <h2 className="text-[12rem] font-black text-[#0047ab] leading-[0.8] tracking-tighter uppercase italic drop-shadow-lg">UHUUUL!</h2>
+                <div className="flex items-center justify-center gap-6">
+                   <div className="h-2 w-20 bg-[#f7941d] rounded-full"></div>
+                   <p className="text-5xl font-black text-[#f7941d] uppercase tracking-[0.3em] italic">VOCÊ GANHOU!</p>
+                   <div className="h-2 w-20 bg-[#f7941d] rounded-full"></div>
+                </div>
               </div>
 
-              <div className="w-full bg-[#0047ab] p-12 rounded-[3.5rem] border-4 border-dashed border-white/30 mb-12 relative overflow-hidden">
-                <div className="absolute inset-0 bg-paw-pattern opacity-10 pointer-events-none"></div>
-                <p className="text-base font-black text-white/70 uppercase tracking-[0.4em] mb-6 relative z-10">CÓDIGO DE RETIRADA</p>
-                <div className="flex items-center justify-center gap-5 relative z-10">
-                   <Zap className="w-10 h-10 text-[#f7941d] fill-current" />
-                   <p className="text-6xl font-mono font-black text-white tracking-tighter drop-shadow-lg">{voucherCode}</p>
-                   <Zap className="w-10 h-10 text-[#f7941d] fill-current" />
+              <div className="bg-[#0047ab]/5 rounded-[4rem] p-12 w-full border-4 border-dashed border-[#0047ab]/20 mb-16">
+                <p className="text-3xl font-bold text-slate-500 uppercase tracking-widest mb-6">Apresente este código para retirar seu brinde:</p>
+                <div className="bg-white px-12 py-10 rounded-3xl shadow-xl border-4 border-[#0047ab]">
+                  <span className="text-8xl font-black text-[#0047ab] tracking-widest">{voucherCode}</span>
                 </div>
               </div>
 
               <motion.button 
-                whileTap={{ scale: 0.95 }}
+                whileTap={{ scale: 0.9 }}
                 onClick={() => setGameState('START')}
-                className="w-full bg-[#f7941d] p-10 rounded-[2.5rem] shadow-2xl flex items-center justify-center gap-5 group border-b-8 border-[#d47a00]"
+                className="w-full bg-[#f7941d] py-12 rounded-[3.5rem] shadow-2xl flex items-center justify-center gap-6 text-5xl font-black text-white uppercase italic tracking-widest border-b-[12px] border-[#d47a00]"
               >
-                <span className="text-4xl font-black text-white uppercase italic tracking-widest">NOVO JOGO</span>
-                <ArrowRight className="w-10 h-10 text-white" />
+                <RotateCcw className="w-16 h-16" />
+                JOGAR NOVAMENTE
               </motion.button>
-
-              <div className="mt-12 flex items-center gap-4 text-slate-400 font-bold uppercase tracking-widest text-sm">
-                <div className="w-3 h-3 rounded-full bg-slate-200 animate-pulse"></div>
-                <span>Reiniciando em 20s</span>
-              </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* Footer Branding */}
-      <div className="absolute bottom-10 z-10 opacity-30 pointer-events-none flex items-center gap-2">
-        <PawPrint className="w-6 h-6" />
-        <span className="text-sm font-black uppercase tracking-[0.5em] italic">{BRAND.name} PREMIUM PET FOOD</span>
+      <div className="absolute bottom-10 z-10 opacity-30">
+        <div className="flex items-center gap-4 grayscale brightness-0">
+          <Dog className="w-8 h-8" />
+          <span className="text-2xl font-black tracking-widest uppercase italic">RobustUS Nutrição Animal</span>
+        </div>
       </div>
     </div>
   );
