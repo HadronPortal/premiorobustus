@@ -308,13 +308,13 @@ const App = () => {
               </div>
             </div>
 
-            {/* Grid de Cartas: 2 colunas x 5 linhas - taking 70% width */}
-            <div className="grid grid-cols-2 gap-6 w-full max-w-[85%] mx-auto flex-1 content-center">
+            {/* Grid de Cartas: 2 colunas x 5 linhas - taking 90% width */}
+            <div className="grid grid-cols-2 gap-8 w-full max-w-[90%] mx-auto flex-1 content-center">
               {cards.map((card) => (
                 <div 
                   key={card.instanceId}
                   onClick={() => handleCardClick(card.instanceId)}
-                  className="relative h-[240px] w-full perspective-1000 cursor-pointer"
+                  className="relative h-[280px] w-full perspective-1000 cursor-pointer"
                 >
                   <motion.div
                     animate={{ 
