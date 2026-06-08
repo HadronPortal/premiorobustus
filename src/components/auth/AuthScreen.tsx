@@ -39,36 +39,45 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
     setLoading(true);
     setError('');
 
+    const cpf = formData.cpf.replace(/\D/g, '');
+    const name = formData.name;
+    const acceptedTerms = formData.acceptedTerms;
+
     try {
+      console.log("SUPABASE URL:", import.meta.env.VITE_SUPABASE_URL);
+      
       const { data, error: rpcError } = await (supabase.rpc as any)("start_participation_simple", {
         p_event_slug: "robustus-expo-2026",
-        p_cpf: formData.cpf.replace(/\D/g, ''),
-        p_name: formData.name,
-        p_accepted_terms: formData.acceptedTerms
+        p_cpf: cpf,
+        p_name: name,
+        p_accepted_terms: acceptedTerms
       });
 
-      console.log("start_participation_simple data:", data);
-      console.error("start_participation_simple error:", rpcError);
+      console.log("RPC DATA:", data);
+      console.error("RPC ERROR:", rpcError);
 
       if (rpcError) {
-        setError("Não foi possível iniciar agora. Chame a equipe do stand.");
+        setError(rpcError.message || "Erro ao conectar com o Supabase.");
         return;
       }
       
-      const response = data as any;
-
-      if (!response?.ok) {
-        if (response?.status === "invalid_cpf") setError("CPF inválido.");
-        else if (response?.status === "already_played") setError("Este CPF já participou desta ação.");
-        else if (response?.status === "terms_required") setError("Aceite as regras para participar.");
-        else setError(response?.message || "Não foi possível iniciar agora.");
+      if (!data?.ok) {
+        if (data?.status === "invalid_cpf") {
+          setError("CPF inválido.");
+        } else if (data?.status === "already_played") {
+          setError("Este CPF já participou desta ação.");
+        } else if (data?.status === "terms_required") {
+          setError("Aceite as regras para participar.");
+        } else {
+          setError(data?.message || "Não foi possível iniciar agora.");
+        }
         return;
       }
 
-      onStart(response);
+      onStart(data);
     } catch (err: any) {
       console.error("Critical Error:", err);
-      setError('Não foi possível iniciar agora. Chame a equipe do stand.');
+      setError(err.message || 'Não foi possível iniciar agora. Chame a equipe do stand.');
     } finally {
       setLoading(false);
     }
