@@ -39,7 +39,7 @@ const PRODUCTS = [
   { id: 5, name: 'Gato Adulto', line: 'Life Special', img: 'https://robustus.com.br/wp-content/uploads/2025/10/DASDASDAS-2-768x633.png' },
 ];
 
-type GameState = 'START' | 'AUTH' | 'PLAYING' | 'VICTORY' | 'GAMEOVER' | 'ADMIN';
+type GameState = 'START' | 'AUTH' | 'PLAYING' | 'VICTORY' | 'GAMEOVER' | 'ADMIN' | 'ERROR';
 
 interface Card {
   instanceId: number;
@@ -71,6 +71,7 @@ const App = () => {
   const [attemptsUsed, setAttemptsUsed] = useState(0);
   const [timeLeft, setTimeLeft] = useState(0);
   const [startTime, setStartTime] = useState<number>(0);
+  const [error, setError] = useState('');
 
   // Verificar rota de admin
   useEffect(() => {
@@ -127,34 +128,65 @@ const App = () => {
     if (gameState !== 'PLAYING') return;
     setLockBoard(true);
     
-    const elapsed = Math.floor((Date.now() - startTime) / 1000);
-    
+    const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+    const playId = session?.play_id;
+    const playToken = session?.play_token;
+
     try {
-      const { data, error } = await (supabase.rpc as any)("finish_play", {
-        p_play_id: session?.play_id,
-        p_play_token: session?.play_token,
+      console.log("CALLING FINISH PLAY WITH:", {
+        p_play_id: playId,
+        p_play_token: playToken,
         p_pairs_found: matches,
         p_attempts_used: attemptsUsed,
-        p_client_time_seconds: elapsed
+        p_client_time_seconds: elapsedSeconds
       });
 
-      if (error) throw error;
+      const { data, error: rpcError } = await (supabase.rpc as any)("finish_play", {
+        p_play_id: playId,
+        p_play_token: playToken,
+        p_pairs_found: matches,
+        p_attempts_used: attemptsUsed,
+        p_client_time_seconds: elapsedSeconds
+      });
 
-      if (data?.result === 'won' || reason === 'won') {
-        setPrizeCode(data?.prize_code || 'ERRO-CODE');
-        setGameState('VICTORY');
+      console.log("FINISH PLAY DATA:", data);
+      console.error("FINISH PLAY ERROR:", rpcError);
+
+      if (rpcError) {
+        setError("Não foi possível gerar seu código. Chame a equipe do stand.");
+        setGameState("ERROR");
+        return;
+      }
+
+      if (!data?.ok) {
+        setError(data?.message || "Não foi possível finalizar a jogada.");
+        setGameState("ERROR");
+        return;
+      }
+
+      if (data.result === "won" && data.prize_code) {
+        setPrizeCode(data.prize_code);
+        setGameState("VICTORY");
         confetti({
           particleCount: 200,
           spread: 80,
           origin: { y: 0.5 },
           colors: [BRAND.primary, BRAND.orange, BRAND.white]
         });
-      } else {
-        setGameState('GAMEOVER');
+        return;
       }
+
+      if (data.result === "lost") {
+        setGameState("GAMEOVER");
+        return;
+      }
+
+      setError("Não foi possível gerar seu código. Chame a equipe do stand.");
+      setGameState("ERROR");
     } catch (err) {
-      console.error("Erro ao finalizar:", err);
-      setGameState(reason === 'won' ? 'VICTORY' : 'GAMEOVER');
+      console.error("Erro crítico ao finalizar:", err);
+      setError("Não foi possível gerar seu código. Chame a equipe do stand.");
+      setGameState("ERROR");
     }
   };
 
@@ -385,6 +417,21 @@ const App = () => {
               <p className="text-3xl text-slate-400 font-bold uppercase mb-16 italic">OBRIGADO POR PARTICIPAR!</p>
               <motion.button whileTap={{ scale: 0.94 }} onClick={() => setGameState('START')} className="w-full bg-slate-200 py-12 rounded-[4rem] flex items-center justify-center gap-6 text-5xl font-black text-slate-500 uppercase italic tracking-widest border-b-[15px] border-slate-300">
                 <RotateCcw className="w-16 h-16" /> TENTAR DE NOVO
+              </motion.button>
+            </div>
+          </motion.div>
+        )}
+        
+        {gameState === 'ERROR' && (
+          <motion.div key="error" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex-1 w-full flex flex-col items-center justify-center p-8 z-20">
+            <div className="relative w-full max-w-[900px] bg-white/95 backdrop-blur-3xl p-20 rounded-[6rem] shadow-[0_50px_100px_rgba(0,0,0,0.6)] border-t-[24px] border-red-500 flex flex-col items-center text-center overflow-hidden">
+              <div className="space-y-8 mb-16">
+                <XCircle className="w-48 h-48 text-red-500 mx-auto" />
+                <h2 className="text-7xl font-black text-[#0047ab] leading-none tracking-tighter uppercase italic">AVISO</h2>
+                <p className="text-5xl font-bold text-slate-500 uppercase tracking-widest leading-tight">{error}</p>
+              </div>
+              <motion.button whileTap={{ scale: 0.94 }} onClick={() => setGameState('START')} className="w-full bg-slate-200 py-12 rounded-[4rem] flex items-center justify-center gap-6 text-5xl font-black text-slate-500 uppercase italic tracking-widest border-b-[15px] border-slate-300">
+                <RotateCcw className="w-16 h-16" /> VOLTAR AO INÍCIO
               </motion.button>
             </div>
           </motion.div>
