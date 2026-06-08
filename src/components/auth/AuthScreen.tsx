@@ -14,7 +14,7 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
     acceptedTerms: false
   });
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [isStarting, setIsStarting] = useState(false);
 
   const formatCPF = (value: string) => {
     const raw = value.replace(/\D/g, '').slice(0, 11);
@@ -32,11 +32,12 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
                       formData.name.trim().length >= 3 && 
                       formData.acceptedTerms;
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
+  const handleStartGame = async (event?: React.FormEvent | React.MouseEvent) => {
+    event?.preventDefault?.();
 
-    console.log("Supabase URL usada:", import.meta.env.VITE_SUPABASE_URL);
+    if (isStarting) return;
+
+    setError("");
 
     const { cpf, name, acceptedTerms } = formData;
     const cleanedCpf = String(cpf || "").replace(/\D/g, "");
@@ -57,23 +58,27 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
       return;
     }
 
-    setLoading(true);
+    setIsStarting(true);
 
     try {
+      const payload = {
+        p_cpf: cleanedCpf,
+        p_event_slug: "robustus-expo-2026",
+        p_name: cleanedName
+      };
+
+      console.log("REGISTER PAYLOAD:", payload);
+
       const { data, error: rpcError } = await (supabase.rpc as any)(
         "register_and_start_play",
-        {
-          p_cpf: cleanedCpf,
-          p_event_slug: "robustus-expo-2026",
-          p_name: cleanedName
-        }
+        payload
       );
 
-      console.log("REGISTER START DATA:", data);
-      console.error("REGISTER START ERROR:", rpcError);
+      console.log("REGISTER DATA:", data);
+      console.error("REGISTER ERROR:", rpcError);
 
       if (rpcError) {
-        setError("Não foi possível iniciar agora. Chame a equipe do stand.");
+        setError(rpcError.message || "Não foi possível iniciar agora.");
         return;
       }
 
@@ -83,7 +88,7 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
         } else if (data?.status === "already_played") {
           setError("Este CPF já participou desta ação.");
         } else {
-          setError(data?.message || "Não foi possível iniciar agora. Chame a equipe do stand.");
+          setError(data?.message || "Não foi possível iniciar agora.");
         }
         return;
       }
@@ -91,9 +96,9 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
       onStart(data);
     } catch (err: any) {
       console.error("Critical Error:", err);
-      setError('Não foi possível iniciar agora. Chame a equipe do stand.');
+      setError("Não foi possível iniciar agora.");
     } finally {
-      setLoading(false);
+      setIsStarting(false);
     }
   };
 
@@ -110,7 +115,7 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
           <p className="text-3xl font-bold text-slate-500 uppercase tracking-widest leading-tight">Preencha para começar o desafio!</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-10 w-full">
+        <form className="flex flex-col gap-10 w-full">
           
           <div className="flex flex-col gap-8">
             <div className="relative">
@@ -173,18 +178,20 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
 
           <motion.button 
             whileTap={isFormValid ? { scale: 0.96 } : {}}
-            disabled={loading || !isFormValid}
+            type="button"
+            disabled={isStarting || !isFormValid}
+            onClick={handleStartGame}
             className={`w-full py-12 rounded-[3.5rem] shadow-2xl flex items-center justify-center gap-6 border-b-[16px] transition-all mt-4
               ${isFormValid 
                 ? 'bg-[#f7941d] border-[#d47a00] active:border-b-0' 
                 : 'bg-slate-300 border-slate-400 cursor-not-allowed opacity-60'}
-              ${loading ? 'opacity-70 grayscale' : ''}
+              ${isStarting ? 'opacity-70 grayscale' : ''}
             `}
           >
             <span className="text-6xl font-black text-white tracking-widest uppercase italic">
-              {loading ? 'PROCESSANDO...' : 'COMEÇAR O DESAFIO'}
+              {isStarting ? 'INICIANDO...' : 'COMEÇAR O DESAFIO'}
             </span>
-            {!loading && <ChevronRight className="w-20 h-20 text-white" />}
+            {!isStarting && <ChevronRight className="w-20 h-20 text-white" />}
           </motion.button>
         </form>
       </div>
