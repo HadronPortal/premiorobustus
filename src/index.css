@@ -90,6 +90,15 @@
   }
 }
 
+/* Utility for long prize codes */
+.overflow-wrap-anywhere {
+  overflow-wrap: anywhere;
+}
+
+.word-break-all {
+  word-break: break-all;
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 0px;
