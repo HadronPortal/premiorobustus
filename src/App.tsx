@@ -21,8 +21,8 @@ const BRAND = {
 
 // Imagens reais do site RobustUS
 const ASSETS = {
-  bgHero: "https://robustus.com.br/wp-content/uploads/2025/10/sdfgsgsdf-scaled.png",
-  logo: "https://robustus.com.br/wp-content/uploads/2025/03/logo-robustus-site.png",
+  bgHero: "https://robustus.com.br/wp-content/uploads/2025/10/site-scaled.jpg",
+  logo: "https://robustus.com.br/wp-content/uploads/2025/03/logo.png",
   paw: "https://robustus.com.br/wp-content/uploads/2025/03/patinha.png",
 };
 
