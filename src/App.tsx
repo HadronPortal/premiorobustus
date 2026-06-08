@@ -362,7 +362,7 @@ const App = () => {
               <div className="bg-[#0047ab]/5 rounded-[4rem] p-12 w-full border-4 border-dashed border-[#0047ab]/20 mb-16 shadow-inner">
                 <p className="text-3xl font-bold text-slate-500 uppercase tracking-widest mb-6 px-4">Apresente este código para retirar seu brinde:</p>
                 <div className="bg-white px-8 py-10 rounded-[3rem] shadow-2xl border-4 border-[#0047ab] flex items-center justify-center w-full">
-                  <span className="text-7xl sm:text-8xl font-black text-[#0047ab] tracking-tight uppercase leading-none overflow-wrap-anywhere word-break-all max-w-full">
+                  <span className="text-7xl sm:text-8xl font-black text-[#0047ab] tracking-tight uppercase leading-none truncate max-w-full inline-block">
                     {prizeCode}
                   </span>
                 </div>
