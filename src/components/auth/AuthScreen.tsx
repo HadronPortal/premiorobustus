@@ -34,19 +34,25 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    const { cpf, name, acceptedTerms } = formData;
-    const cleanedCpf = cpf.replace(/\D/g, "");
+    setError("");
 
-    console.log("CPF NA TELA:", cpf);
-    console.log("CPF LIMPO ENVIADO:", cleanedCpf);
+    const cpf = formData.cpf;
+    const name = formData.name;
+    const acceptedTerms = formData.acceptedTerms;
 
-    if (!cleanedCpf || cleanedCpf.length !== 11) {
+    const cleanedCpf = String(cpf || "").replace(/\D/g, "");
+    const cleanedName = String(name || "").trim();
+
+    console.log("CPF state:", cpf);
+    console.log("CPF limpo enviado:", cleanedCpf);
+    console.log("Nome enviado:", cleanedName);
+
+    if (cleanedCpf.length !== 11) {
       setError("Informe um CPF válido.");
       return;
     }
 
-    if (!name.trim()) {
+    if (!cleanedName) {
       setError("Informe seu nome.");
       return;
     }
@@ -55,27 +61,39 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
       setError("Aceite as regras para participar.");
       return;
     }
-    
+
+    const payload = {
+      p_cpf: cleanedCpf,
+      p_event_slug: "robustus-expo-2026",
+      p_name: cleanedName
+    };
+
+    console.log("Payload start_participation_simple:", payload);
+
     setLoading(true);
-    setError('');
 
     try {
-      const { data, error: rpcError } = await (supabase.rpc as any)("start_participation_simple", {
-        p_cpf: cleanedCpf,
-        p_event_slug: "robustus-expo-2026",
-        p_name: name.trim()
-      });
+      const { data, error: rpcError } = await (supabase.rpc as any)(
+        "start_participation_simple",
+        payload
+      );
 
       console.log("START DATA:", data);
       console.error("START ERROR:", rpcError);
-      
+
       if (rpcError) {
         setError(rpcError.message || "Não foi possível iniciar agora.");
         return;
       }
-      
+
       if (!data?.ok) {
-        setError(data?.message || "Não foi possível iniciar agora.");
+        if (data?.status === "invalid_cpf") {
+          setError("CPF inválido.");
+        } else if (data?.status === "already_played") {
+          setError("Este CPF já participou desta ação.");
+        } else {
+          setError(data?.message || "Não foi possível iniciar agora.");
+        }
         return;
       }
 
