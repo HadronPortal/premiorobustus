@@ -131,12 +131,15 @@ const App = () => {
     const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
     const playId = session?.play_id;
     const playToken = session?.play_token;
+    
+    // Garantir que enviamos 5 se for vitória, mesmo que o estado 'matches' ainda não tenha atualizado
+    const finalPairsFound = reason === 'won' ? 5 : matches;
 
     try {
-      console.log("CALLING FINISH PLAY WITH:", {
+      console.log("CALLING FINISH_PLAY WITH:", {
         p_play_id: playId,
         p_play_token: playToken,
-        p_pairs_found: matches,
+        p_pairs_found: finalPairsFound,
         p_attempts_used: attemptsUsed,
         p_client_time_seconds: elapsedSeconds
       });
@@ -144,16 +147,16 @@ const App = () => {
       const { data, error: rpcError } = await (supabase.rpc as any)("finish_play", {
         p_play_id: playId,
         p_play_token: playToken,
-        p_pairs_found: matches,
+        p_pairs_found: finalPairsFound,
         p_attempts_used: attemptsUsed,
         p_client_time_seconds: elapsedSeconds
       });
 
-      console.log("FINISH PLAY DATA:", data);
-      console.error("FINISH PLAY ERROR:", rpcError);
+      console.log("FINISH_PLAY_DATA:", data);
+      console.error("FINISH_PLAY_ERROR:", rpcError);
 
       if (rpcError) {
-        setError("Não foi possível gerar seu código. Chame a equipe do stand.");
+        setError("Não foi possível finalizar a jogada. Chame a equipe do stand.");
         setGameState("ERROR");
         return;
       }
@@ -177,6 +180,13 @@ const App = () => {
       }
 
       if (data.result === "lost") {
+        console.log("Motivo da derrota:", {
+          pairs_found: data.pairs_found,
+          attempts_used: data.attempts_used,
+          time_seconds: data.time_seconds,
+          max_attempts: data.max_attempts,
+          max_seconds: data.max_seconds
+        });
         setGameState("GAMEOVER");
         return;
       }
@@ -205,11 +215,13 @@ const App = () => {
 
     if (newFlipped.length === 2) {
       setLockBoard(true);
-      setAttemptsUsed(prev => prev + 1);
       
       const [firstId, secondId] = newFlipped;
       const firstCard = cards.find(c => c.instanceId === firstId)!;
       const secondCard = newCards.find(c => c.instanceId === secondId)!;
+      
+      const newAttempts = attemptsUsed + 1;
+      setAttemptsUsed(newAttempts);
 
       if (firstCard.productId === secondCard.productId) {
         setTimeout(() => {
@@ -241,7 +253,7 @@ const App = () => {
           setFlippedCards([]);
           setLockBoard(false);
 
-          if (session && attemptsUsed + 1 >= session.max_attempts) {
+          if (session && newAttempts >= session.max_attempts) {
             handleGameOver('attempts');
           }
         }, 1000);
