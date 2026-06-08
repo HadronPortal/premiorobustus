@@ -215,11 +215,13 @@ const App = () => {
 
     if (newFlipped.length === 2) {
       setLockBoard(true);
-      setAttemptsUsed(prev => prev + 1);
       
       const [firstId, secondId] = newFlipped;
       const firstCard = cards.find(c => c.instanceId === firstId)!;
       const secondCard = newCards.find(c => c.instanceId === secondId)!;
+      
+      const newAttempts = attemptsUsed + 1;
+      setAttemptsUsed(newAttempts);
 
       if (firstCard.productId === secondCard.productId) {
         setTimeout(() => {
@@ -251,7 +253,7 @@ const App = () => {
           setFlippedCards([]);
           setLockBoard(false);
 
-          if (session && attemptsUsed + 1 >= session.max_attempts) {
+          if (session && newAttempts >= session.max_attempts) {
             handleGameOver('attempts');
           }
         }, 1000);
