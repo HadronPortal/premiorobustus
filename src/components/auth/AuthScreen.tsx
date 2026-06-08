@@ -36,16 +36,19 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
     e.preventDefault();
     setError("");
 
-    const cpf = formData.cpf;
-    const name = formData.name;
-    const acceptedTerms = formData.acceptedTerms;
+    console.log("Supabase URL usada:", import.meta.env.VITE_SUPABASE_URL);
 
+    const { cpf, name, acceptedTerms } = formData;
     const cleanedCpf = String(cpf || "").replace(/\D/g, "");
     const cleanedName = String(name || "").trim();
 
-    console.log("CPF state:", cpf);
-    console.log("CPF limpo enviado:", cleanedCpf);
-    console.log("Nome enviado:", cleanedName);
+    const rpcPayload = {
+      p_cpf: cleanedCpf,
+      p_event_slug: "robustus-expo-2026",
+      p_name: cleanedName
+    };
+
+    console.log("RPC PAYLOAD REAL:", JSON.stringify(rpcPayload));
 
     if (cleanedCpf.length !== 11) {
       setError("Informe um CPF válido.");
@@ -62,20 +65,12 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
       return;
     }
 
-    const payload = {
-      p_cpf: cleanedCpf,
-      p_event_slug: "robustus-expo-2026",
-      p_name: cleanedName
-    };
-
-    console.log("Payload start_participation_simple:", payload);
-
     setLoading(true);
 
     try {
       const { data, error: rpcError } = await (supabase.rpc as any)(
         "start_participation_simple",
-        payload
+        rpcPayload
       );
 
       console.log("START DATA:", data);
