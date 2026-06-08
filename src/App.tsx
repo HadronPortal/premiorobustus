@@ -379,8 +379,8 @@ const GameContent = () => {
                           <img src={ASSETS.paw} className="w-14 h-14 brightness-0 invert opacity-60" alt="" />
                        </div>
                     </div>
-                    <div className={`absolute inset-0 backface-hidden bg-white rounded-[2.5rem] shadow-xl border-[8px] flex flex-col items-center justify-between p-4 rotate-y-180 transition-all duration-300 overflow-hidden ${card.isMatched ? 'border-[#f7941d] bg-orange-50' : 'border-white'}`} style={{ transform: 'rotateY(180deg)' }}>
-                      {card.isMatched && <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute -top-4 -right-4 bg-[#f7941d] text-white p-2.5 rounded-full shadow-lg z-20 border-4 border-white"><CheckCircle2 className="w-8 h-8" /></motion.div>}
+                    <div className={`absolute inset-0 backface-hidden bg-white rounded-[2.5rem] shadow-xl border-[8px] flex flex-col items-center justify-between p-4 rotate-y-180 transition-all duration-300 overflow-visible ${card.isMatched ? 'border-[#f7941d] bg-orange-50' : 'border-white'}`} style={{ transform: 'rotateY(180deg)' }}>
+                      {card.isMatched && <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute top-[10px] right-[10px] bg-[#f7941d] text-white p-1.5 rounded-full shadow-lg z-[2] border-2 border-white"><CheckCircle2 className="w-[18px] h-[18px]" /></motion.div>}
                       <div className="w-full h-[65%] flex items-center justify-center relative bg-slate-50 rounded-2xl p-2 overflow-hidden">
                         <img src={card.img} alt={card.name} className="max-w-full max-h-full object-contain drop-shadow-md" />
                       </div>
