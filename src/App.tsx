@@ -54,9 +54,9 @@ const PRODUCTS = [
   },
   { 
     id: 5, 
-    name: 'Bifinho Premium', 
-    line: 'Petiscos', 
-    img: 'https://robustus.com.br/wp-content/uploads/2026/06/banner-3.png' 
+    name: 'Gato Adulto', 
+    line: 'Life Special', 
+    img: 'https://robustus.com.br/wp-content/uploads/2025/10/DASDASDAS-2-768x633.png' 
   },
 ];
 
