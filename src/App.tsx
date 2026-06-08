@@ -213,26 +213,26 @@ const App = () => {
             exit={{ opacity: 0 }}
             className="flex-1 w-full flex flex-col items-center justify-between py-24 px-12 z-10"
           >
-            {/* Top Logo */}
+            {/* Top Logo - Proportional to 1080px totem */}
             <motion.div 
               initial={{ y: -50, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              className="w-full flex justify-center"
+              className="w-full flex justify-center mt-12"
             >
-              <div className="bg-white/95 px-10 py-8 rounded-[3rem] shadow-2xl border-4 border-[#f7941d] w-full max-w-sm flex items-center justify-center">
+              <div className="bg-white p-8 rounded-[3.5rem] shadow-2xl border-4 border-[#f7941d] w-80 h-80 flex items-center justify-center">
                 <img src={ASSETS.logo} alt="RobustUS Logo" className="w-full h-auto object-contain" />
               </div>
             </motion.div>
 
             {/* Middle Content */}
-            <div className="flex flex-col items-center text-center gap-10">
+            <div className="flex flex-col items-center text-center gap-12 mb-20">
               <motion.div
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 0.2 }}
                 className="space-y-4"
               >
-                <h1 className="text-[10rem] font-black text-white italic tracking-tighter drop-shadow-2xl leading-[0.8] uppercase">
+                <h1 className="text-[12rem] font-black text-white italic tracking-tighter drop-shadow-[0_15px_15px_rgba(0,0,0,0.6)] leading-[0.8] uppercase">
                   DESAFIO DA<br />
                   <span className="text-[#f7941d]">MEMÓRIA</span>
                 </h1>
@@ -242,23 +242,23 @@ const App = () => {
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.4 }}
-                className="bg-white/10 backdrop-blur-md px-12 py-8 rounded-[3rem] border border-white/20 shadow-xl"
+                className="bg-white/15 backdrop-blur-xl px-16 py-10 rounded-[4rem] border-2 border-white/30 shadow-2xl"
               >
-                <p className="text-4xl font-bold text-white uppercase tracking-wider leading-tight">
-                  Encontre os 5 pares<br />
-                  <span className="text-[#f7941d] text-5xl">e ganhe um brinde!</span>
+                <p className="text-5xl font-black text-white uppercase tracking-wider leading-tight">
+                  ENCONTRE OS 5 PARES<br />
+                  <span className="text-[#f7941d] text-6xl drop-shadow-md">E GANHE UM BRINDE!</span>
                 </p>
               </motion.div>
             </div>
 
-            {/* Bottom Button */}
+            {/* Bottom Button - Large for touch */}
             <motion.button 
-              whileTap={{ scale: 0.95 }}
+              whileTap={{ scale: 0.94 }}
               onClick={initializeGame}
-              className="w-full bg-[#f7941d] py-12 rounded-[4rem] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] flex items-center justify-center gap-6 relative overflow-hidden border-b-[16px] border-[#d47a00] active:border-b-0 transition-all"
+              className="w-full max-w-[90%] bg-[#f7941d] py-14 rounded-[5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.6)] flex items-center justify-center gap-8 relative overflow-hidden border-b-[20px] border-[#d47a00] active:border-b-0 transition-all mb-12"
             >
-              <Play className="w-16 h-16 text-white fill-current" />
-              <span className="text-6xl font-black text-white tracking-widest uppercase italic">COMEÇAR</span>
+              <Play className="w-20 h-20 text-white fill-current" />
+              <span className="text-7xl font-black text-white tracking-widest uppercase italic">COMEÇAR</span>
             </motion.button>
           </motion.div>
         )}
