@@ -84,6 +84,10 @@
   .robustus-gradient {
     background: linear-gradient(180deg, #0047ab 0%, #003380 100%);
   }
+
+  .clip-path-ellipse {
+    clip-path: ellipse(120% 100% at 50% 100%);
+  }
 }
 
 /* Custom Scrollbar */
