@@ -419,4 +419,3 @@ export const AdminScreen: React.FC = () => {
     </div>
   );
 };
-};
