@@ -54,10 +54,9 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
 
     try {
       const { data, error: rpcError } = await (supabase.rpc as any)("start_participation_simple", {
+        p_cpf: cpf.replace(/\D/g, ""),
         p_event_slug: "robustus-expo-2026",
-        p_cpf: cpf,
-        p_name: name,
-        p_accepted_terms: acceptedTerms
+        p_name: name.trim()
       });
 
       console.log("RPC DATA:", data);
