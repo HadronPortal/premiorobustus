@@ -42,14 +42,6 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
     const cleanedCpf = String(cpf || "").replace(/\D/g, "");
     const cleanedName = String(name || "").trim();
 
-    const rpcPayload = {
-      p_cpf: cleanedCpf,
-      p_event_slug: "robustus-expo-2026",
-      p_name: cleanedName
-    };
-
-    console.log("RPC PAYLOAD REAL:", JSON.stringify(rpcPayload));
-
     if (cleanedCpf.length !== 11) {
       setError("Informe um CPF válido.");
       return;
@@ -69,15 +61,19 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
 
     try {
       const { data, error: rpcError } = await (supabase.rpc as any)(
-        "start_participation_simple",
-        rpcPayload
+        "register_and_start_play",
+        {
+          p_cpf: cleanedCpf,
+          p_event_slug: "robustus-expo-2026",
+          p_name: cleanedName
+        }
       );
 
-      console.log("START DATA:", data);
-      console.error("START ERROR:", rpcError);
+      console.log("REGISTER START DATA:", data);
+      console.error("REGISTER START ERROR:", rpcError);
 
       if (rpcError) {
-        setError(rpcError.message || "Não foi possível iniciar agora.");
+        setError("Não foi possível iniciar agora. Chame a equipe do stand.");
         return;
       }
 
@@ -87,7 +83,7 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
         } else if (data?.status === "already_played") {
           setError("Este CPF já participou desta ação.");
         } else {
-          setError(data?.message || "Não foi possível iniciar agora.");
+          setError(data?.message || "Não foi possível iniciar agora. Chame a equipe do stand.");
         }
         return;
       }
@@ -95,7 +91,7 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
       onStart(data);
     } catch (err: any) {
       console.error("Critical Error:", err);
-      setError(err.message || 'Não foi possível iniciar agora. Chame a equipe do stand.');
+      setError('Não foi possível iniciar agora. Chame a equipe do stand.');
     } finally {
       setLoading(false);
     }
