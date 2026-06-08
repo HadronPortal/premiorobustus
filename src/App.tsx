@@ -174,23 +174,31 @@ const App = () => {
       {/* Background Container */}
       <div className="absolute inset-0 z-0">
         {gameState === 'START' ? (
-          <div className="w-full h-full relative">
+          <div className="w-full h-full relative overflow-hidden">
             <img 
               src={ASSETS.bgHero} 
               alt="Hero Background" 
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-cover object-[center_30%]"
             />
-            {/* Overlay to improve readability and hide existing text on the banner */}
-            <div className="absolute inset-0 bg-gradient-to-b from-[#0047ab]/80 via-transparent to-[#0047ab]/90"></div>
-            <div className="absolute inset-0 backdrop-blur-[2px]"></div>
+            {/* Stronger overlay to improve readability and mask banner text */}
+            <div className="absolute inset-0 bg-[#0047ab]/40"></div>
+            <div className="absolute inset-0 bg-gradient-to-b from-[#00348c]/35 via-transparent to-[#00348c]/90"></div>
+            <div className="absolute inset-0 backdrop-blur-[1px]"></div>
           </div>
         ) : (
-          <div className="absolute inset-0 robustus-gradient">
-            <div className="absolute inset-0 bg-paw-pattern opacity-5"></div>
-            {/* Rounded shapes for visual richness */}
-            <div className="absolute top-[-10%] left-[-20%] w-[140%] h-[40%] bg-white/5 rounded-full blur-3xl"></div>
-            <div className="absolute bottom-[-10%] right-[-20%] w-[140%] h-[40%] bg-white/5 rounded-full blur-3xl"></div>
-            <div className="robustus-waves opacity-20"></div>
+          <div className="absolute inset-0 bg-[#0047ab]">
+            {/* Base gradient */}
+            <div className="absolute inset-0 bg-gradient-to-b from-[#0056cf] via-[#0047ab] to-[#003380]"></div>
+            
+            {/* Patterns with very low opacity */}
+            <div className="absolute inset-0 bg-paw-pattern opacity-[0.06]"></div>
+            
+            {/* Visual richness: Large abstract waves/shapes */}
+            <div className="absolute top-[-15%] left-[-25%] w-[150%] h-[50%] bg-blue-400/10 rounded-full blur-[100px] animate-pulse"></div>
+            <div className="absolute bottom-[-20%] right-[-25%] w-[150%] h-[60%] bg-orange-400/5 rounded-full blur-[120px]"></div>
+            
+            {/* Bottom wave */}
+            <div className="absolute bottom-0 left-0 w-full h-[40%] bg-white/5 clip-path-ellipse"></div>
           </div>
         )}
       </div>
