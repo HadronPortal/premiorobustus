@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { supabase } from "@/integrations/supabase/client";
-import { Ticket, Search, ShieldCheck, XCircle, Gift, User, Calendar, FileText, ChevronRight, RotateCcw, CheckCircle2 } from 'lucide-react';
+import { Ticket, Search, ShieldCheck, XCircle, Gift, User, Calendar, FileText, ChevronRight, RotateCcw, CheckCircle2, AlertTriangle, CheckCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
 
 type ValidationResult = {
   type: 'pending' | 'redeemed' | 'invalid' | 'unauthorized' | 'error';
@@ -13,11 +14,50 @@ type ValidationResult = {
   redeemedAt?: string;
 };
 
+const ConfirmationModal = ({ isOpen, onConfirm, onCancel, loading }: { isOpen: boolean, onConfirm: () => void, onCancel: () => void, loading: boolean }) => (
+  <AnimatePresence>
+    {isOpen && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#003380]/80 backdrop-blur-sm">
+        <motion.div 
+          initial={{ scale: 0.9, opacity: 0 }} 
+          animate={{ scale: 1, opacity: 1 }} 
+          exit={{ scale: 0.9, opacity: 0 }}
+          className="bg-white rounded-[2.5rem] p-10 max-w-lg w-full shadow-2xl border-4 border-[#f7941d] text-center"
+        >
+          <div className="w-24 h-24 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-6">
+            <AlertTriangle className="w-12 h-12 text-[#f7941d]" />
+          </div>
+          <h2 className="text-4xl font-black text-[#003380] uppercase italic italic tracking-tighter mb-4">Confirmar entrega?</h2>
+          <p className="text-xl text-slate-500 font-bold uppercase tracking-tight mb-10">Você está prestes a marcar este brinde como entregue.</p>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <button 
+              onClick={onCancel}
+              disabled={loading}
+              className="flex-1 py-5 rounded-2xl font-black uppercase italic tracking-widest text-slate-400 hover:bg-slate-100 transition-all"
+            >
+              Cancelar
+            </button>
+            <button 
+              onClick={onConfirm}
+              disabled={loading}
+              className="flex-1 bg-[#0047ab] py-5 rounded-2xl font-black uppercase italic tracking-widest text-white shadow-xl hover:bg-[#003380] active:scale-95 transition-all flex items-center justify-center gap-3"
+            >
+              {loading ? <RotateCcw className="w-6 h-6 animate-spin" /> : <CheckCircle className="w-6 h-6" />}
+              {loading ? 'Processando...' : 'Confirmar entrega'}
+            </button>
+          </div>
+        </motion.div>
+      </div>
+    )}
+  </AnimatePresence>
+);
+
 export const AdminScreen: React.FC = () => {
   const [code, setCode] = useState('');
   const [pin, setPin] = useState('');
   const [loading, setLoading] = useState(false);
   const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const formatTime = (isoString?: string) => {
     if (!isoString) return '';
@@ -36,13 +76,13 @@ export const AdminScreen: React.FC = () => {
     return cleaned;
   };
 
-  const handleValidate = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleValidate = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     const normalizedCode = normalizeCode(code);
     setCode(normalizedCode);
     
     setLoading(true);
-    setValidationResult(null);
+    if (e) setValidationResult(null);
 
     try {
       const { data, error } = await (supabase.rpc as any)("validate_prize_code", {
@@ -50,10 +90,10 @@ export const AdminScreen: React.FC = () => {
         p_admin_pin: pin
       });
 
-      console.log("VALIDATE DATA:", data);
-      console.error("VALIDATE ERROR:", error);
-
       if (error) {
+        toast.error("Não foi possível concluir", {
+          description: "Tente novamente ou chame o responsável pela ativação."
+        });
         setValidationResult({
           type: "error",
           message: "Não foi possível validar agora."
@@ -63,16 +103,25 @@ export const AdminScreen: React.FC = () => {
 
       if (!data?.ok) {
         if (data?.status === "invalid_code") {
+          toast.error("Código não encontrado", {
+            description: "Verifique se o código foi digitado corretamente."
+          });
           setValidationResult({
             type: "invalid",
-            message: "Código inválido."
+            message: "Código não encontrado"
           });
         } else if (data?.status === "unauthorized") {
+          toast.error("PIN inválido", {
+            description: "Confira o PIN da equipe e tente novamente."
+          });
           setValidationResult({
             type: "unauthorized",
-            message: "PIN inválido."
+            message: "PIN inválido"
           });
         } else {
+          toast.error("Não foi possível concluir", {
+            description: data?.message || "Erro desconhecido."
+          });
           setValidationResult({
             type: "error",
             message: data?.message || "Não foi possível validar."
@@ -93,6 +142,9 @@ export const AdminScreen: React.FC = () => {
       }
     } catch (err: any) {
       console.error("Critical Error:", err);
+      toast.error("Não foi possível concluir", {
+        description: "Tente novamente ou chame o responsável pela ativação."
+      });
       setValidationResult({
         type: "error",
         message: "Erro de conexão."
@@ -103,7 +155,7 @@ export const AdminScreen: React.FC = () => {
   };
 
   const handleRedeem = async () => {
-    if (!validationResult?.prizeCode || !window.confirm("Confirmar entrega do brinde?")) return;
+    if (!validationResult?.prizeCode) return;
 
     setLoading(true);
 
@@ -113,28 +165,46 @@ export const AdminScreen: React.FC = () => {
         p_admin_pin: pin
       });
 
-      console.log("REDEEM DATA:", data);
-      console.error("REDEEM ERROR:", error);
-
       if (error) {
-        alert("Não foi possível validar agora.");
+        toast.error("Não foi possível concluir", {
+          description: "Tente novamente ou chame o responsável pela ativação."
+        });
         return;
       }
 
       if (!data?.ok) {
-        if (data?.status === 'already_redeemed') alert('Brinde já foi retirado anteriormente.');
-        else if (data?.status === 'invalid_code') alert('Código inválido.');
-        else if (data?.status === 'unauthorized') alert('PIN inválido.');
-        else alert(data?.message || 'Erro ao resgatar brinde.');
+        if (data?.status === 'already_redeemed') {
+          toast.warning("Brinde já retirado", {
+            description: "Este código já foi usado anteriormente."
+          });
+        } else if (data?.status === 'invalid_code') {
+          toast.error("Código não encontrado", {
+            description: "Verifique se o código foi digitado corretamente."
+          });
+        } else if (data?.status === 'unauthorized') {
+          toast.error("PIN inválido", {
+            description: "Confira o PIN da equipe e tente novamente."
+          });
+        } else {
+          toast.error("Erro ao resgatar", {
+            description: data?.message || "Não foi possível concluir."
+          });
+        }
         return;
       }
 
       // Sucesso na entrega
-      alert("Brinde entregue com sucesso!");
-      handleValidate(new Event('submit') as any); // Re-valida para atualizar status
+      toast.success("Brinde entregue", {
+        description: "Entrega registrada com sucesso."
+      });
+      
+      setShowConfirmModal(false);
+      await handleValidate(); // Re-valida para atualizar status sem limpar campos
     } catch (err: any) {
       console.error("Critical Redeem Error:", err);
-      alert('Erro de conexão.');
+      toast.error("Não foi possível concluir", {
+        description: "Tente novamente ou chame o responsável pela ativação."
+      });
     } finally {
       setLoading(false);
     }
