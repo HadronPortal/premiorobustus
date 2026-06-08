@@ -8,6 +8,7 @@ import {
   Clock,
   Zap,
   XCircle,
+  Clock as ClockIcon,
   Timer
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
@@ -15,6 +16,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from "@/integrations/supabase/client";
 import { AuthScreen } from './components/auth/AuthScreen';
 import { AdminScreen } from './components/admin/AdminScreen';
+import { DogFoodGame } from './components/DogFoodGame';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { Toaster } from 'sonner';
 
@@ -328,10 +330,17 @@ const GameContent = () => {
               </motion.div>
             </div>
 
-            <motion.button whileTap={{ scale: 0.94 }} onClick={() => setGameState('AUTH')} className="w-full max-w-[90%] bg-[#f7941d] py-14 rounded-[5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.6)] flex items-center justify-center gap-8 border-b-[20px] border-[#d47a00] active:border-b-0 transition-all mb-12">
+            <motion.button whileTap={{ scale: 0.94 }} onClick={() => setGameState('AUTH')} className="w-full max-w-[90%] bg-[#f7941d] py-14 rounded-[5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.6)] flex items-center justify-center gap-8 border-b-[20px] border-[#d47a00] active:border-b-0 transition-all mb-4">
               <Play className="w-20 h-20 text-white fill-current" />
               <span className="text-7xl font-black text-white tracking-widest uppercase italic">JOGAR</span>
             </motion.button>
+
+            <button 
+              onClick={() => window.location.href = '/cachorro-racao'} 
+              className="mb-12 text-white/50 text-3xl font-bold hover:text-white/80 transition-colors"
+            >
+              Ir para o Desafio Pet RobustUS
+            </button>
           </motion.div>
         )}
 
@@ -475,10 +484,11 @@ const GameContent = () => {
 const App = () => {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<GameContent />} />
-        <Route path="/validar-brinde" element={<AdminScreen />} />
-      </Routes>
+        <Routes>
+          <Route path="/" element={<GameContent />} />
+          <Route path="/cachorro-racao" element={<DogFoodGame />} />
+          <Route path="/validar-brinde" element={<AdminScreen />} />
+        </Routes>
       <Toaster position="top-center" richColors />
     </BrowserRouter>
   );
