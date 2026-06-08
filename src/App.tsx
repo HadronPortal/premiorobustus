@@ -174,23 +174,31 @@ const App = () => {
       {/* Background Container */}
       <div className="absolute inset-0 z-0">
         {gameState === 'START' ? (
-          <div className="w-full h-full relative">
+          <div className="w-full h-full relative overflow-hidden">
             <img 
               src={ASSETS.bgHero} 
               alt="Hero Background" 
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-cover object-[center_30%]"
             />
-            {/* Overlay to improve readability and hide existing text on the banner */}
-            <div className="absolute inset-0 bg-gradient-to-b from-[#0047ab]/80 via-transparent to-[#0047ab]/90"></div>
-            <div className="absolute inset-0 backdrop-blur-[2px]"></div>
+            {/* Stronger overlay to improve readability and mask banner text */}
+            <div className="absolute inset-0 bg-[#0047ab]/40"></div>
+            <div className="absolute inset-0 bg-gradient-to-b from-[#00348c]/35 via-transparent to-[#00348c]/90"></div>
+            <div className="absolute inset-0 backdrop-blur-[1px]"></div>
           </div>
         ) : (
-          <div className="absolute inset-0 robustus-gradient">
-            <div className="absolute inset-0 bg-paw-pattern opacity-5"></div>
-            {/* Rounded shapes for visual richness */}
-            <div className="absolute top-[-10%] left-[-20%] w-[140%] h-[40%] bg-white/5 rounded-full blur-3xl"></div>
-            <div className="absolute bottom-[-10%] right-[-20%] w-[140%] h-[40%] bg-white/5 rounded-full blur-3xl"></div>
-            <div className="robustus-waves opacity-20"></div>
+          <div className="absolute inset-0 bg-[#0047ab]">
+            {/* Base gradient */}
+            <div className="absolute inset-0 bg-gradient-to-b from-[#0056cf] via-[#0047ab] to-[#003380]"></div>
+            
+            {/* Patterns with very low opacity */}
+            <div className="absolute inset-0 bg-paw-pattern opacity-[0.06]"></div>
+            
+            {/* Visual richness: Large abstract waves/shapes */}
+            <div className="absolute top-[-15%] left-[-25%] w-[150%] h-[50%] bg-blue-400/10 rounded-full blur-[100px] animate-pulse"></div>
+            <div className="absolute bottom-[-20%] right-[-25%] w-[150%] h-[60%] bg-orange-400/5 rounded-full blur-[120px]"></div>
+            
+            {/* Bottom wave */}
+            <div className="absolute bottom-0 left-0 w-full h-[40%] bg-white/5 clip-path-ellipse"></div>
           </div>
         )}
       </div>
@@ -205,26 +213,26 @@ const App = () => {
             exit={{ opacity: 0 }}
             className="flex-1 w-full flex flex-col items-center justify-between py-24 px-12 z-10"
           >
-            {/* Top Logo */}
+            {/* Top Logo - Proportional to 1080px totem */}
             <motion.div 
               initial={{ y: -50, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              className="w-full flex justify-center"
+              className="w-full flex justify-center mt-12"
             >
-              <div className="bg-white/95 px-10 py-8 rounded-[3rem] shadow-2xl border-4 border-[#f7941d] w-full max-w-sm flex items-center justify-center">
+              <div className="bg-white p-8 rounded-[3.5rem] shadow-2xl border-4 border-[#f7941d] w-80 h-80 flex items-center justify-center">
                 <img src={ASSETS.logo} alt="RobustUS Logo" className="w-full h-auto object-contain" />
               </div>
             </motion.div>
 
             {/* Middle Content */}
-            <div className="flex flex-col items-center text-center gap-10">
+            <div className="flex flex-col items-center text-center gap-12 mb-20">
               <motion.div
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 0.2 }}
                 className="space-y-4"
               >
-                <h1 className="text-[10rem] font-black text-white italic tracking-tighter drop-shadow-2xl leading-[0.8] uppercase">
+                <h1 className="text-[12rem] font-black text-white italic tracking-tighter drop-shadow-[0_15px_15px_rgba(0,0,0,0.6)] leading-[0.8] uppercase">
                   DESAFIO DA<br />
                   <span className="text-[#f7941d]">MEMÓRIA</span>
                 </h1>
@@ -234,23 +242,23 @@ const App = () => {
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.4 }}
-                className="bg-white/10 backdrop-blur-md px-12 py-8 rounded-[3rem] border border-white/20 shadow-xl"
+                className="bg-white/15 backdrop-blur-xl px-16 py-10 rounded-[4rem] border-2 border-white/30 shadow-2xl"
               >
-                <p className="text-4xl font-bold text-white uppercase tracking-wider leading-tight">
-                  Encontre os 5 pares<br />
-                  <span className="text-[#f7941d] text-5xl">e ganhe um brinde!</span>
+                <p className="text-5xl font-black text-white uppercase tracking-wider leading-tight">
+                  ENCONTRE OS 5 PARES<br />
+                  <span className="text-[#f7941d] text-6xl drop-shadow-md">E GANHE UM BRINDE!</span>
                 </p>
               </motion.div>
             </div>
 
-            {/* Bottom Button */}
+            {/* Bottom Button - Large for touch */}
             <motion.button 
-              whileTap={{ scale: 0.95 }}
+              whileTap={{ scale: 0.94 }}
               onClick={initializeGame}
-              className="w-full bg-[#f7941d] py-12 rounded-[4rem] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] flex items-center justify-center gap-6 relative overflow-hidden border-b-[16px] border-[#d47a00] active:border-b-0 transition-all"
+              className="w-full max-w-[90%] bg-[#f7941d] py-14 rounded-[5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.6)] flex items-center justify-center gap-8 relative overflow-hidden border-b-[20px] border-[#d47a00] active:border-b-0 transition-all mb-12"
             >
-              <Play className="w-16 h-16 text-white fill-current" />
-              <span className="text-6xl font-black text-white tracking-widest uppercase italic">COMEÇAR</span>
+              <Play className="w-20 h-20 text-white fill-current" />
+              <span className="text-7xl font-black text-white tracking-widest uppercase italic">COMEÇAR</span>
             </motion.button>
           </motion.div>
         )}
@@ -264,30 +272,33 @@ const App = () => {
             className="flex-1 w-full flex flex-col items-center z-10 py-16 px-8"
           >
             {/* Header Jogo */}
-            <div className="w-full max-w-[85%] flex flex-col gap-8 mb-12">
+            <div className="w-full max-w-[90%] flex flex-col gap-10 mb-12">
               <div className="flex justify-between items-center">
-                <div className="bg-white p-4 rounded-3xl shadow-lg border-2 border-[#f7941d] w-48">
+                <div className="bg-white p-6 rounded-[2.5rem] shadow-xl border-2 border-[#f7941d] w-64">
                   <img src={ASSETS.logo} className="w-full h-auto object-contain" alt="Logo" />
                 </div>
                 <button 
                   onClick={() => setGameState('START')}
-                  className="p-6 bg-white/10 backdrop-blur-md rounded-3xl text-white hover:bg-white/20 transition-all border border-white/20 shadow-xl"
+                  className="p-8 bg-white/15 backdrop-blur-xl rounded-[2.5rem] text-white hover:bg-white/25 transition-all border border-white/30 shadow-2xl"
                 >
-                  <RotateCcw className="w-10 h-10" />
+                  <RotateCcw className="w-12 h-12" />
                 </button>
               </div>
 
-              {/* Progress Panel - Compact and centered */}
-              <div className="bg-white/95 backdrop-blur-md p-8 rounded-[3.5rem] border-4 border-[#f7941d] shadow-2xl mx-auto w-full">
-                <div className="flex justify-between items-center mb-6 px-2">
-                  <h3 className="text-3xl font-black text-[#003380] uppercase tracking-tighter">
-                    {matches === 5 ? "CONCLUÍDO!" : `FALTAM ${5 - matches} PARES`}
+              {/* Progress Panel - Proportional to totem width */}
+              <div className="bg-white/95 backdrop-blur-xl p-10 rounded-[4rem] border-4 border-[#f7941d] shadow-2xl w-full">
+                <div className="flex flex-col gap-4 mb-8 px-4">
+                  <h3 className="text-4xl font-black text-[#003380] uppercase tracking-tighter leading-tight">
+                    {matches === 5 ? "PARABÉNS! JOGO CONCLUÍDO!" : "ENCONTRE OS 5 PARES E GANHE UM BRINDE!"}
                   </h3>
-                  <div className="bg-[#0047ab] text-white px-6 py-2 rounded-full border-2 border-[#f7941d]/30">
-                    <span className="text-4xl font-black">{matches} / 5</span>
+                  <div className="flex justify-between items-center">
+                    <span className="text-3xl font-bold text-[#f7941d] uppercase tracking-widest italic">PROGRESSO</span>
+                    <div className="bg-[#0047ab] text-white px-8 py-3 rounded-full border-2 border-[#f7941d]/30">
+                      <span className="text-5xl font-black">{matches} / 5</span>
+                    </div>
                   </div>
                 </div>
-                <div className="h-8 bg-slate-100 rounded-full overflow-hidden p-1.5 shadow-inner border-2 border-slate-200">
+                <div className="h-10 bg-slate-100 rounded-full overflow-hidden p-2 shadow-inner border-2 border-slate-200">
                   <motion.div 
                     initial={{ width: 0 }}
                     animate={{ width: `${(matches / 5) * 100}%` }}
@@ -297,13 +308,13 @@ const App = () => {
               </div>
             </div>
 
-            {/* Grid de Cartas: 2 colunas x 5 linhas - taking 70% width */}
-            <div className="grid grid-cols-2 gap-6 w-full max-w-[85%] mx-auto flex-1 content-center">
+            {/* Grid de Cartas: 2 colunas x 5 linhas - taking 90% width */}
+            <div className="grid grid-cols-2 gap-8 w-full max-w-[90%] mx-auto flex-1 content-center">
               {cards.map((card) => (
                 <div 
                   key={card.instanceId}
                   onClick={() => handleCardClick(card.instanceId)}
-                  className="relative h-[240px] w-full perspective-1000 cursor-pointer"
+                  className="relative h-[280px] w-full perspective-1000 cursor-pointer"
                 >
                   <motion.div
                     animate={{ 
@@ -368,39 +379,48 @@ const App = () => {
             key="victory"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="flex-1 w-full flex flex-col items-center justify-center p-12 z-20"
+            className="flex-1 w-full flex flex-col items-center justify-center p-8 z-20"
           >
-            <div className="relative w-full max-w-2xl bg-white/95 backdrop-blur-2xl p-16 rounded-[5rem] shadow-[0_50px_100px_rgba(0,0,0,0.5)] border-t-[16px] border-[#f7941d] flex flex-col items-center text-center">
+            <div className="relative w-full max-w-[950px] bg-white/95 backdrop-blur-3xl p-20 rounded-[6rem] shadow-[0_50px_100px_rgba(0,0,0,0.6)] border-t-[24px] border-[#f7941d] flex flex-col items-center text-center overflow-hidden">
               
               <motion.div 
                 initial={{ scale: 0, rotate: -45 }}
                 animate={{ scale: 1, rotate: 12 }}
                 transition={{ type: "spring", damping: 12, delay: 0.2 }}
-                className="absolute -top-20 bg-[#f7941d] p-10 rounded-[3rem] shadow-2xl border-[8px] border-white"
+                className="absolute -top-20 bg-[#f7941d] p-12 rounded-[3.5rem] shadow-2xl border-[10px] border-white"
               >
-                <Trophy className="w-24 h-24 text-white" />
+                <Trophy className="w-28 h-28 text-white" />
               </motion.div>
 
-              <div className="mt-16 space-y-6 mb-12">
-                <h2 className="text-9xl font-black text-[#0047ab] leading-none tracking-tighter uppercase italic drop-shadow-lg">UHUUUL!</h2>
-                <div className="bg-[#f7941d] inline-block px-8 py-2 rounded-full border-2 border-white shadow-lg rotate-[-2deg]">
-                   <p className="text-3xl font-black text-white uppercase tracking-widest italic">VOCÊ GANHOU UM BRINDE!</p>
+              <div className="mt-20 space-y-8 mb-16">
+                <h2 className="text-[10rem] font-black text-[#0047ab] leading-none tracking-tighter uppercase italic drop-shadow-xl">PARABÉNS!</h2>
+                <div className="bg-[#f7941d] inline-block px-12 py-4 rounded-full border-4 border-white shadow-2xl rotate-[-2deg]">
+                   <p className="text-4xl font-black text-white uppercase tracking-[0.2em] italic">VOCÊ GANHOU UM BRINDE!</p>
                 </div>
               </div>
 
-              <div className="bg-slate-50 rounded-[3rem] p-10 w-full border-4 border-dashed border-[#0047ab]/20 mb-12 shadow-inner">
-                <p className="text-2xl font-bold text-slate-500 uppercase tracking-widest mb-4">Código de retirada:</p>
-                <div className="bg-white px-8 py-8 rounded-[2.5rem] shadow-xl border-4 border-[#0047ab]">
-                  <span className="text-7xl font-black text-[#0047ab] tracking-widest">{voucherCode}</span>
+              <div className="bg-[#0047ab]/5 rounded-[4rem] p-12 w-full border-4 border-dashed border-[#0047ab]/20 mb-16 shadow-inner">
+                <p className="text-3xl font-bold text-slate-500 uppercase tracking-widest mb-6 px-4">Apresente este código para retirar seu brinde:</p>
+                <div className="bg-white px-8 py-10 rounded-[3rem] shadow-2xl border-4 border-[#0047ab] flex items-center justify-center">
+                  <span className="text-7xl sm:text-8xl font-black text-[#0047ab] tracking-tight break-all leading-none uppercase">
+                    {voucherCode.includes('-') ? (
+                      <>
+                        <span className="block">{voucherCode.split('-')[0]}</span>
+                        <span className="block text-6xl mt-2 text-[#f7941d]">{voucherCode.split('-')[1]}</span>
+                      </>
+                    ) : (
+                      voucherCode
+                    )}
+                  </span>
                 </div>
               </div>
 
               <motion.button 
-                whileTap={{ scale: 0.95 }}
+                whileTap={{ scale: 0.94 }}
                 onClick={() => setGameState('START')}
-                className="w-full bg-[#f7941d] py-10 rounded-[3.5rem] shadow-2xl flex items-center justify-center gap-5 text-4xl font-black text-white uppercase italic tracking-widest border-b-[10px] border-[#d47a00]"
+                className="w-full bg-[#f7941d] py-12 rounded-[4rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.4)] flex items-center justify-center gap-6 text-5xl font-black text-white uppercase italic tracking-widest border-b-[15px] border-[#d47a00]"
               >
-                <RotateCcw className="w-12 h-12" />
+                <RotateCcw className="w-16 h-16" />
                 JOGAR NOVAMENTE
               </motion.button>
             </div>
