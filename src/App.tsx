@@ -416,11 +416,9 @@ const App = () => {
       </AnimatePresence>
 
       {/* Footer Branding */}
-      <div className="absolute bottom-10 z-10 opacity-30">
-        <div className="flex items-center gap-4 grayscale brightness-0">
-          <Dog className="w-8 h-8" />
-          <span className="text-2xl font-black tracking-widest uppercase italic">RobustUS Nutrição Animal</span>
-        </div>
+      <div className="absolute bottom-10 z-10 opacity-30 flex items-center gap-4 grayscale brightness-0">
+        <Dog className="w-8 h-8" />
+        <span className="text-2xl font-black tracking-widest uppercase italic">RobustUS Nutrição Animal</span>
       </div>
     </div>
   );
