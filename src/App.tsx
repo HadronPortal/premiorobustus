@@ -17,9 +17,6 @@ import { AuthScreen } from './components/auth/AuthScreen';
 import { AdminScreen } from './components/admin/AdminScreen';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 
-const GameContent = () => {
-  const location = useLocation();
-
 // Configuração da Marca RobustUS
 const BRAND = {
   name: "RobustUS",
@@ -62,7 +59,8 @@ interface PlaySession {
   max_seconds: number;
 }
 
-const App = () => {
+const GameContent = () => {
+  const location = useLocation();
   const [gameState, setGameState] = useState<GameState>('START');
   const [cards, setCards] = useState<Card[]>([]);
   const [flippedCards, setFlippedCards] = useState<number[]>([]);
@@ -79,10 +77,12 @@ const App = () => {
 
   // Verificar rota de admin
   useEffect(() => {
-    if (window.location.pathname === '/validar-brinde') {
+    if (location.pathname === '/validar-brinde') {
       setGameState('ADMIN');
+    } else {
+      setGameState('START');
     }
-  }, []);
+  }, [location.pathname]);
 
   const initializeGame = (sessionData: any) => {
     const playSession: PlaySession = {
@@ -464,6 +464,17 @@ const App = () => {
         <span className="text-xl font-black tracking-widest uppercase italic">RobustUS Nutrição Animal</span>
       </div>
     </div>
+  );
+};
+
+const App = () => {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<GameContent />} />
+        <Route path="/validar-brinde" element={<GameContent />} />
+      </Routes>
+    </BrowserRouter>
   );
 };
 
