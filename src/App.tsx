@@ -475,6 +475,7 @@ const App = () => {
         <Route path="/" element={<GameContent />} />
         <Route path="/validar-brinde" element={<GameContent />} />
       </Routes>
+      <Toaster position="top-center" richColors />
     </BrowserRouter>
   );
 };
