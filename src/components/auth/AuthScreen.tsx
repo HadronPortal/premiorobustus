@@ -60,9 +60,9 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
       });
 
       console.log("RPC DATA:", data);
+      console.error("RPC ERROR:", rpcError);
       
       if (rpcError) {
-        console.error("RPC ERROR:", rpcError);
         setError(rpcError.message || "Não foi possível iniciar agora.");
         return;
       }
