@@ -133,7 +133,7 @@ const App = () => {
     const playToken = session?.play_token;
 
     try {
-      console.log(\"CALLING FINISH PLAY WITH:\", {
+      console.log("CALLING FINISH PLAY WITH:", {
         p_play_id: playId,
         p_play_token: playToken,
         p_pairs_found: matches,
@@ -141,7 +141,7 @@ const App = () => {
         p_client_time_seconds: elapsedSeconds
       });
 
-      const { data, error: rpcError } = await (supabase.rpc as any)(\"finish_play\", {
+      const { data, error: rpcError } = await (supabase.rpc as any)("finish_play", {
         p_play_id: playId,
         p_play_token: playToken,
         p_pairs_found: matches,
@@ -149,24 +149,24 @@ const App = () => {
         p_client_time_seconds: elapsedSeconds
       });
 
-      console.log(\"FINISH PLAY DATA:\", data);
-      console.error(\"FINISH PLAY ERROR:\", rpcError);
+      console.log("FINISH PLAY DATA:", data);
+      console.error("FINISH PLAY ERROR:", rpcError);
 
       if (rpcError) {
-        setError(\"Não foi possível gerar seu código. Chame a equipe do stand.\");
-        setGameState(\"ERROR\");
+        setError("Não foi possível gerar seu código. Chame a equipe do stand.");
+        setGameState("ERROR");
         return;
       }
 
       if (!data?.ok) {
-        setError(data?.message || \"Não foi possível finalizar a jogada.\");
-        setGameState(\"ERROR\");
+        setError(data?.message || "Não foi possível finalizar a jogada.");
+        setGameState("ERROR");
         return;
       }
 
-      if (data.result === \"won\" && data.prize_code) {
+      if (data.result === "won" && data.prize_code) {
         setPrizeCode(data.prize_code);
-        setGameState(\"VICTORY\");
+        setGameState("VICTORY");
         confetti({
           particleCount: 200,
           spread: 80,
@@ -176,17 +176,17 @@ const App = () => {
         return;
       }
 
-      if (data.result === \"lost\") {
-        setGameState(\"GAMEOVER\");
+      if (data.result === "lost") {
+        setGameState("GAMEOVER");
         return;
       }
 
-      setError(\"Não foi possível gerar seu código. Chame a equipe do stand.\");
-      setGameState(\"ERROR\");
+      setError("Não foi possível gerar seu código. Chame a equipe do stand.");
+      setGameState("ERROR");
     } catch (err) {
-      console.error(\"Erro crítico ao finalizar:\", err);
-      setError(\"Não foi possível gerar seu código. Chame a equipe do stand.\");
-      setGameState(\"ERROR\");
+      console.error("Erro crítico ao finalizar:", err);
+      setError("Não foi possível gerar seu código. Chame a equipe do stand.");
+      setGameState("ERROR");
     }
   };
 
@@ -423,15 +423,15 @@ const App = () => {
         )}
         
         {gameState === 'ERROR' && (
-          <motion.div key=\"error\" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className=\"flex-1 w-full flex flex-col items-center justify-center p-8 z-20\">
-            <div className=\"relative w-full max-w-[900px] bg-white/95 backdrop-blur-3xl p-20 rounded-[6rem] shadow-[0_50px_100px_rgba(0,0,0,0.6)] border-t-[24px] border-red-500 flex flex-col items-center text-center overflow-hidden\">
-              <div className=\"space-y-8 mb-16\">
-                <XCircle className=\"w-48 h-48 text-red-500 mx-auto\" />
-                <h2 className=\"text-7xl font-black text-[#0047ab] leading-none tracking-tighter uppercase italic\">AVISO</h2>
-                <p className=\"text-5xl font-bold text-slate-500 uppercase tracking-widest leading-tight\">{error}</p>
+          <motion.div key="error" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex-1 w-full flex flex-col items-center justify-center p-8 z-20">
+            <div className="relative w-full max-w-[900px] bg-white/95 backdrop-blur-3xl p-20 rounded-[6rem] shadow-[0_50px_100px_rgba(0,0,0,0.6)] border-t-[24px] border-red-500 flex flex-col items-center text-center overflow-hidden">
+              <div className="space-y-8 mb-16">
+                <XCircle className="w-48 h-48 text-red-500 mx-auto" />
+                <h2 className="text-7xl font-black text-[#0047ab] leading-none tracking-tighter uppercase italic">AVISO</h2>
+                <p className="text-5xl font-bold text-slate-500 uppercase tracking-widest leading-tight">{error}</p>
               </div>
-              <motion.button whileTap={{ scale: 0.94 }} onClick={() => setGameState('START')} className=\"w-full bg-slate-200 py-12 rounded-[4rem] flex items-center justify-center gap-6 text-5xl font-black text-slate-500 uppercase italic tracking-widest border-b-[15px] border-slate-300\">
-                <RotateCcw className=\"w-16 h-16\" /> VOLTAR AO INÍCIO
+              <motion.button whileTap={{ scale: 0.94 }} onClick={() => setGameState('START')} className="w-full bg-slate-200 py-12 rounded-[4rem] flex items-center justify-center gap-6 text-5xl font-black text-slate-500 uppercase italic tracking-widest border-b-[15px] border-slate-300">
+                <RotateCcw className="w-16 h-16" /> VOLTAR AO INÍCIO
               </motion.button>
             </div>
           </motion.div>
