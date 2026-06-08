@@ -15,6 +15,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from "@/integrations/supabase/client";
 import { AuthScreen } from './components/auth/AuthScreen';
 import { AdminScreen } from './components/admin/AdminScreen';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+
+const GameContent = () => {
+  const location = useLocation();
 
 // Configuração da Marca RobustUS
 const BRAND = {
