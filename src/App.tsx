@@ -381,7 +381,7 @@ const App = () => {
             animate={{ opacity: 1, scale: 1 }}
             className="flex-1 w-full flex flex-col items-center justify-center p-8 z-20"
           >
-            <div className="relative w-full max-w-[95%] bg-white/95 backdrop-blur-3xl p-16 rounded-[6rem] shadow-[0_50px_100px_rgba(0,0,0,0.6)] border-t-[24px] border-[#f7941d] flex flex-col items-center text-center overflow-hidden">
+            <div className="relative w-full max-w-[950px] bg-white/95 backdrop-blur-3xl p-20 rounded-[6rem] shadow-[0_50px_100px_rgba(0,0,0,0.6)] border-t-[24px] border-[#f7941d] flex flex-col items-center text-center overflow-hidden">
               
               <motion.div 
                 initial={{ scale: 0, rotate: -45 }}
