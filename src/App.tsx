@@ -174,7 +174,7 @@ const App = () => {
   }, [gameState]);
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 font-sans flex flex-col items-center justify-start overflow-hidden relative select-none touch-none w-[1080px] h-[1920px] mx-auto shadow-2xl">
+    <div className="min-h-screen bg-white text-slate-900 font-sans flex flex-col items-center justify-start overflow-hidden relative select-none touch-none mx-auto shadow-2xl">
       
       {/* Background Container */}
       <div className="absolute inset-0 z-0">
