@@ -34,18 +34,25 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isFormValid) return;
+    
+    if (!formData.acceptedTerms) {
+      setError("Aceite as regras para participar.");
+      return;
+    }
+
+    if (!formData.cpf || !formData.name.trim()) {
+      setError("Preencha CPF e nome.");
+      return;
+    }
     
     setLoading(true);
     setError('');
 
     const cpf = formData.cpf.replace(/\D/g, '');
-    const name = formData.name;
-    const acceptedTerms = formData.acceptedTerms;
+    const name = formData.name.trim();
+    const acceptedTerms = formData.acceptedTerms === true;
 
     try {
-      console.log("SUPABASE URL:", import.meta.env.VITE_SUPABASE_URL);
-      
       const { data, error: rpcError } = await (supabase.rpc as any)("start_participation_simple", {
         p_event_slug: "robustus-expo-2026",
         p_cpf: cpf,
@@ -54,23 +61,15 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
       });
 
       console.log("RPC DATA:", data);
-      console.error("RPC ERROR:", rpcError);
-
+      
       if (rpcError) {
-        setError(rpcError.message || "Erro ao conectar com o Supabase.");
+        console.error("RPC ERROR:", rpcError);
+        setError(rpcError.message || "Não foi possível iniciar agora.");
         return;
       }
       
       if (!data?.ok) {
-        if (data?.status === "invalid_cpf") {
-          setError("CPF inválido.");
-        } else if (data?.status === "already_played") {
-          setError("Este CPF já participou desta ação.");
-        } else if (data?.status === "terms_required") {
-          setError("Aceite as regras para participar.");
-        } else {
-          setError(data?.message || "Não foi possível iniciar agora.");
-        }
+        setError(data?.message || "Não foi possível iniciar agora.");
         return;
       }
 
