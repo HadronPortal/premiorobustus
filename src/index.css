@@ -2,140 +2,36 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
-
 @layer base {
   :root {
-    --background: 220 14% 96%;
-    --foreground: 220 14% 15%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 220 14% 15%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 14% 15%;
-
-    --primary: 24 100% 50%; /* Kabum Orange */
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 47 100% 50%; /* Yellow */
-    --secondary-foreground: 220 14% 15%;
-
-    --muted: 220 14% 90%;
-    --muted-foreground: 220 14% 45%;
-
-    --accent: 220 100% 45%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 220 14% 90%;
-    --input: 220 14% 90%;
-    --ring: 24 100% 50%;
-
-    --radius: 0.25rem;
-
-    --sidebar-background: 47 100% 50%;
-    --sidebar-foreground: 220 14% 15%;
-    --sidebar-primary: 24 100% 50%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 47 100% 45%;
-    --sidebar-accent-foreground: 220 14% 15%;
-    --sidebar-border: 47 100% 45%;
-    --sidebar-ring: 24 100% 50%;
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+    --radius: 1.5rem;
   }
-
-  .dark {
-    --background: 120 5% 3%;
-    --foreground: 120 5% 95%;
-    --card: 120 5% 6%;
-    --card-foreground: 120 5% 95%;
-    --popover: 120 5% 6%;
-    --popover-foreground: 120 5% 95%;
-    --primary: 142 71% 45%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 120 5% 11%;
-    --secondary-foreground: 120 5% 95%;
-    --muted: 120 5% 11%;
-    --muted-foreground: 120 5% 55%;
-    --accent: 120 5% 14%;
-    --accent-foreground: 120 5% 95%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 120 5% 13%;
-    --input: 120 5% 13%;
-    --ring: 142 71% 45%;
-    --sidebar-background: 120 5% 4%;
-    --sidebar-foreground: 120 5% 90%;
-    --sidebar-primary: 142 71% 45%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 120 5% 11%;
-    --sidebar-accent-foreground: 120 5% 90%;
-    --sidebar-border: 120 5% 13%;
-    --sidebar-ring: 142 71% 45%;
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border;
-  }
-
+  
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'Roboto', system-ui, sans-serif;
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Roboto', sans-serif;
-  }
-}
-
-@layer components {
-  .hover-scale {
-    @apply transition-transform duration-300 hover:scale-105;
-  }
-
-  .glass-card {
-    @apply bg-card/80 backdrop-blur-xl border border-border/50;
+    overflow: hidden;
+    user-select: none;
+    touch-action: manipulation;
   }
 }
 
 @layer utilities {
-  @keyframes fade-in {
-    0% { opacity: 0; transform: translateY(20px); }
-    100% { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes fade-in-up {
-    0% { opacity: 0; transform: translateY(40px); }
-    100% { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes slide-in-right {
-    0% { opacity: 0; transform: translateX(30px); }
-    100% { opacity: 1; transform: translateX(0); }
-  }
-
-  @keyframes pulse-glow {
-    0%, 100% { box-shadow: 0 0 20px hsl(142 71% 45% / 0.3); }
-    50% { box-shadow: 0 0 40px hsl(142 71% 45% / 0.5); }
-  }
-
   .animate-fade-in {
-    animation: fade-in 0.6s ease-out forwards;
+    animation: fadeIn 0.5s ease-out forwards;
   }
-
   .animate-fade-in-up {
-    animation: fade-in-up 0.8s ease-out forwards;
+    animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
-
-  .animate-slide-in-right {
-    animation: slide-in-right 0.5s ease-out forwards;
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
-
-  .animate-pulse-glow {
-    animation: pulse-glow 2s ease-in-out infinite;
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 }
+
