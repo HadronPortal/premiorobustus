@@ -61,13 +61,13 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
     setIsStarting(true);
 
     try {
+      console.log("SUPABASE URL REAL: https://hayodojtfomtzkzathhq.supabase.co");
+      
       const payload = {
         p_cpf: cleanedCpf,
         p_event_slug: "robustus-expo-2026",
         p_name: cleanedName
       };
-
-      console.log("REGISTER PAYLOAD:", payload);
 
       const { data, error: rpcError } = await (supabase.rpc as any)(
         "register_and_start_play",
