@@ -3,29 +3,33 @@ import { supabase } from "@/integrations/supabase/client";
 import { Ticket, Search, ShieldCheck, XCircle, Gift, User, Calendar, FileText, ChevronRight, RotateCcw, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+type ValidationResult = {
+  type: 'pending' | 'redeemed' | 'invalid' | 'unauthorized' | 'error';
+  message?: string;
+  prizeCode?: string;
+  name?: string;
+  cpfMasked?: string;
+  createdAt?: string;
+  redeemedAt?: string;
+};
+
 export const AdminScreen: React.FC = () => {
   const [code, setCode] = useState('');
   const [pin, setPin] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [prizeInfo, setPrizeInfo] = useState<any>(null);
-  const [redeemSuccess, setRedeemSuccess] = useState(false);
+  const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
 
-  const formatTime = (isoString: string) => {
+  const formatTime = (isoString?: string) => {
     if (!isoString) return '';
     return new Date(isoString).toLocaleString('pt-BR');
   };
 
   const normalizeCode = (input: string) => {
     let cleaned = input.toUpperCase().replace(/\s+/g, '').replace(/[^A-Z0-9-]/g, '');
-    
-    // Se não tiver o prefixo, adiciona
     if (cleaned && !cleaned.startsWith('ROBUSTUS-')) {
       if (cleaned.startsWith('ROBUSTUS')) {
-        // Caso ROBUSTUS123
         cleaned = cleaned.replace('ROBUSTUS', 'ROBUSTUS-');
       } else {
-        // Caso apenas 123
         cleaned = `ROBUSTUS-${cleaned}`;
       }
     }
@@ -34,84 +38,103 @@ export const AdminScreen: React.FC = () => {
 
   const handleValidate = async (e: React.FormEvent) => {
     e.preventDefault();
-    const normalized = normalizeCode(code);
-    setCode(normalized);
+    const normalizedCode = normalizeCode(code);
+    setCode(normalizedCode);
     
     setLoading(true);
-    setError('');
-    setPrizeInfo(null);
-    setRedeemSuccess(false);
+    setValidationResult(null);
 
     try {
-      const { data, error: rpcError } = await (supabase.rpc as any)("validate_prize_code", {
-        p_code: normalized,
+      const { data, error } = await (supabase.rpc as any)("validate_prize_code", {
+        p_code: normalizedCode,
         p_admin_pin: pin
       });
 
       console.log("VALIDATE DATA:", data);
-      console.error("VALIDATE ERROR:", rpcError);
+      console.error("VALIDATE ERROR:", error);
 
-      if (rpcError) {
-        setError("Não foi possível validar agora.");
+      if (error) {
+        setValidationResult({
+          type: "error",
+          message: "Não foi possível validar agora."
+        });
         return;
       }
 
       if (!data?.ok) {
-        if (data?.status === 'invalid_code') setError('Código inválido');
-        else if (data?.status === 'unauthorized') setError('PIN inválido');
-        else setError(data?.message || 'Erro ao validar código.');
+        if (data?.status === "invalid_code") {
+          setValidationResult({
+            type: "invalid",
+            message: "Código inválido."
+          });
+        } else if (data?.status === "unauthorized") {
+          setValidationResult({
+            type: "unauthorized",
+            message: "PIN inválido."
+          });
+        } else {
+          setValidationResult({
+            type: "error",
+            message: data?.message || "Não foi possível validar."
+          });
+        }
         return;
       }
 
-      setPrizeInfo({
-        ...data.data,
-        code: normalized
-      });
+      if (data.status === "found") {
+        setValidationResult({
+          type: data.prize_status, // pending ou redeemed
+          prizeCode: data.prize_code,
+          name: data.name,
+          cpfMasked: data.cpf_masked,
+          createdAt: data.created_at,
+          redeemedAt: data.redeemed_at
+        });
+      }
     } catch (err: any) {
-      console.error("Critical Validate Error:", err);
-      setError('Não foi possível validar agora.');
+      console.error("Critical Error:", err);
+      setValidationResult({
+        type: "error",
+        message: "Erro de conexão."
+      });
     } finally {
       setLoading(false);
     }
   };
 
   const handleRedeem = async () => {
-    if (!window.confirm("Confirmar entrega do brinde?")) return;
+    if (!validationResult?.prizeCode || !window.confirm("Confirmar entrega do brinde?")) return;
 
     setLoading(true);
-    setError('');
 
     try {
-      const { data, error: rpcError } = await (supabase.rpc as any)("redeem_prize_code", {
-        p_code: prizeInfo.code,
+      const { data, error } = await (supabase.rpc as any)("redeem_prize_code", {
+        p_code: validationResult.prizeCode,
         p_admin_pin: pin
       });
 
       console.log("REDEEM DATA:", data);
-      console.error("REDEEM ERROR:", rpcError);
+      console.error("REDEEM ERROR:", error);
 
-      if (rpcError) {
-        setError("Não foi possível validar agora.");
+      if (error) {
+        alert("Não foi possível validar agora.");
         return;
       }
 
       if (!data?.ok) {
-        if (data?.status === 'already_redeemed') setError('Brinde já foi retirado anteriormente.');
-        else if (data?.status === 'invalid_code') setError('Código inválido.');
-        else if (data?.status === 'unauthorized') setError('PIN inválido.');
-        else setError(data?.message || 'Erro ao resgatar brinde.');
+        if (data?.status === 'already_redeemed') alert('Brinde já foi retirado anteriormente.');
+        else if (data?.status === 'invalid_code') alert('Código inválido.');
+        else if (data?.status === 'unauthorized') alert('PIN inválido.');
+        else alert(data?.message || 'Erro ao resgatar brinde.');
         return;
       }
 
-      setRedeemSuccess(true);
-      setPrizeInfo({
-        ...prizeInfo,
-        status: 'redeemed',
-        redeemed_at: new Date().toISOString()
-      });
+      // Sucesso na entrega
+      alert("Brinde entregue com sucesso!");
+      handleValidate(new Event('submit') as any); // Re-valida para atualizar status
     } catch (err: any) {
       console.error("Critical Redeem Error:", err);
-      setError('Não foi possível validar agora.');
+      alert('Erro de conexão.');
     } finally {
       setLoading(false);
     }
@@ -119,193 +142,160 @@ export const AdminScreen: React.FC = () => {
 
   const resetForm = () => {
     setCode('');
-    setPrizeInfo(null);
-    setRedeemSuccess(false);
-    setError('');
+    setPin('');
+    setValidationResult(null);
   };
 
   return (
-    <div className="flex-1 w-full min-h-screen flex flex-col items-center justify-center p-8 z-10 bg-[#0047ab]">
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0056cf] via-[#0047ab] to-[#003380] opacity-50"></div>
-      
-      <div className="relative w-full max-w-[900px] bg-white rounded-[4rem] shadow-2xl p-16 flex flex-col gap-10 overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-4 bg-[#f7941d]"></div>
-        
-        <div className="text-center space-y-4">
-          <h2 className="text-7xl font-black text-[#0047ab] uppercase italic tracking-tighter leading-none">VALIDAR BRINDE</h2>
-          <p className="text-3xl font-bold text-slate-500 uppercase tracking-widest leading-tight px-4">Use esta tela apenas para a equipe do stand.</p>
+    <div className="min-h-screen w-full bg-[#0047ab] flex items-center justify-center p-4 sm:p-8 font-sans">
+      <div className="w-full max-w-4xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col">
+        {/* Header */}
+        <div className="bg-[#f7941d] p-6 text-white flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-black uppercase italic tracking-tighter">Validar Brinde</h1>
+            <p className="text-sm font-bold opacity-90 uppercase tracking-widest">Equipe Stand RobustUS</p>
+          </div>
+          <ShieldCheck className="w-12 h-12 opacity-50" />
         </div>
 
-        {!prizeInfo ? (
-          <form onSubmit={handleValidate} className="flex flex-col gap-8 w-full">
-            <div className="flex flex-col gap-6">
+        <div className="p-8 flex flex-col gap-8">
+          {/* Form Section */}
+          <form onSubmit={handleValidate} className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+            <div className="md:col-span-1">
+              <label className="block text-xs font-bold text-slate-400 uppercase mb-2 ml-1">Código do Brinde</label>
               <div className="relative">
-                <div className="absolute left-8 top-1/2 -translate-y-1/2 text-[#0047ab]">
-                  <Ticket className="w-12 h-12" />
-                </div>
+                <Ticket className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#0047ab]" />
                 <input 
                   type="text"
-                  placeholder="CÓDIGO DO BRINDE"
+                  placeholder="EX: 1234"
                   value={code}
                   onChange={e => setCode(e.target.value)}
-                  required
-                  className="w-full bg-slate-100 p-12 pl-24 rounded-3xl text-5xl font-bold text-[#003380] border-4 border-transparent focus:border-[#f7941d] outline-none uppercase placeholder:text-slate-300"
+                  className="w-full bg-slate-50 border-2 border-slate-100 p-4 pl-12 rounded-xl text-xl font-bold text-[#003380] focus:border-[#f7941d] outline-none transition-all uppercase"
                 />
               </div>
+            </div>
+            <div className="md:col-span-1">
+              <label className="block text-xs font-bold text-slate-400 uppercase mb-2 ml-1">PIN da Equipe</label>
               <div className="relative">
-                <div className="absolute left-8 top-1/2 -translate-y-1/2 text-[#0047ab]">
-                  <ShieldCheck className="w-12 h-12" />
-                </div>
+                <ShieldCheck className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#0047ab]" />
                 <input 
                   type="password"
                   inputMode="numeric"
-                  placeholder="PIN DA EQUIPE"
+                  placeholder="PIN"
                   value={pin}
                   onChange={e => setPin(e.target.value)}
-                  required
-                  className="w-full bg-slate-100 p-12 pl-24 rounded-3xl text-5xl font-bold text-[#003380] border-4 border-transparent focus:border-[#f7941d] outline-none placeholder:text-slate-300"
+                  className="w-full bg-slate-50 border-2 border-slate-100 p-4 pl-12 rounded-xl text-xl font-bold text-[#003380] focus:border-[#f7941d] outline-none transition-all"
                 />
               </div>
             </div>
-
-            <motion.button 
-              whileTap={{ scale: 0.96 }}
-              disabled={loading}
-              className={`w-full bg-[#0047ab] py-14 rounded-[4rem] shadow-2xl flex items-center justify-center gap-6 border-b-[18px] border-[#002b6b] active:border-b-0 transition-all
-                ${loading ? 'opacity-70 grayscale' : ''}
-              `}
-            >
-              <Search className="w-16 h-16 text-white" />
-              <span className="text-5xl font-black text-white tracking-widest uppercase italic">
-                {loading ? 'VALIDANDO...' : 'VALIDAR CÓDIGO'}
-              </span>
-            </motion.button>
+            <div className="md:col-span-1">
+              <button 
+                type="submit"
+                disabled={loading}
+                className="w-full bg-[#0047ab] text-white py-4 rounded-xl font-black uppercase italic tracking-widest hover:bg-[#003380] transition-all flex items-center justify-center gap-3 disabled:opacity-50"
+              >
+                {loading ? <RotateCcw className="w-6 h-6 animate-spin" /> : <Search className="w-6 h-6" />}
+                {loading ? 'Validando...' : 'Validar Código'}
+              </button>
+            </div>
           </form>
-        ) : (
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="flex flex-col gap-10 w-full"
-          >
-            {redeemSuccess && (
-              <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} className="bg-green-50 border-4 border-green-200 p-10 rounded-3xl flex items-center gap-8">
-                <CheckCircle2 className="w-20 h-20 text-green-500 shrink-0" />
-                <div className="flex-1">
-                  <p className="text-4xl font-black text-green-600 uppercase leading-none">BRINDE ENTREGUE COM SUCESSO</p>
-                  <p className="text-2xl font-bold text-green-500 mt-2">Horário: {formatTime(prizeInfo.redeemed_at)}</p>
-                </div>
-              </motion.div>
-            )}
 
-            <div className="bg-slate-50 border-4 border-slate-100 p-12 rounded-[3.5rem] flex flex-col gap-8">
-              <div className="flex items-center gap-8">
-                <div className="bg-[#0047ab]/10 p-6 rounded-3xl">
-                  <Ticket className="w-16 h-16 text-[#0047ab]" />
-                </div>
-                <div>
-                  <p className="text-2xl font-black text-slate-400 uppercase tracking-widest italic">CÓDIGO</p>
-                  <p className="text-6xl font-black text-[#0047ab] italic">{prizeInfo.code}</p>
-                </div>
-              </div>
-
-              <div className="h-px bg-slate-200 w-full"></div>
-
-              <div className="grid grid-cols-1 gap-10">
-                <div className="flex items-center gap-8">
-                  <User className="w-12 h-12 text-[#0047ab]/50" />
-                  <div>
-                    <p className="text-xl font-black text-slate-400 uppercase italic">PARTICIPANTE</p>
-                    <p className="text-4xl font-black text-[#003380] uppercase italic">{prizeInfo.name}</p>
+          {/* Results Area */}
+          <div className="min-h-[300px] border-2 border-dashed border-slate-100 rounded-2xl bg-slate-50/50 flex flex-col items-center justify-center p-8">
+            <AnimatePresence mode="wait">
+              {!validationResult ? (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center text-slate-300">
+                  <Ticket className="w-16 h-16 mx-auto mb-4 opacity-20" />
+                  <p className="text-xl font-bold uppercase italic">Aguardando validação...</p>
+                </motion.div>
+              ) : validationResult.type === 'invalid' || validationResult.type === 'unauthorized' || validationResult.type === 'error' ? (
+                <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center space-y-4">
+                  <XCircle className="w-20 h-20 text-red-500 mx-auto" />
+                  <h2 className="text-4xl font-black text-red-600 uppercase italic tracking-tighter">{validationResult.message}</h2>
+                  <button onClick={() => setValidationResult(null)} className="text-[#0047ab] font-bold uppercase text-sm hover:underline">Tentar novamente</button>
+                </motion.div>
+              ) : (
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full space-y-8">
+                  {/* Status Banner */}
+                  <div className={`p-6 rounded-2xl flex items-center justify-between shadow-sm border-2 ${
+                    validationResult.type === 'pending' 
+                      ? 'bg-amber-50 border-amber-100 text-amber-700' 
+                      : 'bg-slate-100 border-slate-200 text-slate-500'
+                  }`}>
+                    <div className="flex items-center gap-4">
+                      {validationResult.type === 'pending' ? <RotateCcw className="w-8 h-8" /> : <CheckCircle2 className="w-8 h-8" />}
+                      <span className="text-3xl font-black uppercase italic tracking-tight">
+                        {validationResult.type === 'pending' ? 'Brinde Pendente' : 'Brinde já Retirado'}
+                      </span>
+                    </div>
+                    {validationResult.type === 'pending' && (
+                      <button 
+                        onClick={handleRedeem}
+                        disabled={loading}
+                        className="bg-[#f7941d] text-white px-8 py-3 rounded-xl font-black uppercase italic tracking-widest hover:bg-[#d47a00] transition-all shadow-lg active:scale-95"
+                      >
+                        Entregar Brinde
+                      </button>
+                    )}
                   </div>
-                </div>
 
-                <div className="flex items-center gap-8">
-                  <FileText className="w-12 h-12 text-[#0047ab]/50" />
-                  <div>
-                    <p className="text-xl font-black text-slate-400 uppercase italic">CPF</p>
-                    <p className="text-4xl font-black text-[#003380] italic">{prizeInfo.cpf_masked}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-8">
-                  <Calendar className="w-12 h-12 text-[#0047ab]/50" />
-                  <div>
-                    <p className="text-xl font-black text-slate-400 uppercase italic">DATA DA VITÓRIA</p>
-                    <p className="text-3xl font-bold text-[#003380] italic">{formatTime(prizeInfo.won_at)}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-8">
-                  <Gift className="w-12 h-12 text-[#0047ab]/50" />
-                  <div className="flex-1">
-                    <p className="text-xl font-black text-slate-400 uppercase italic">STATUS DO BRINDE</p>
-                    <div className="mt-2 flex items-center gap-4">
-                      {prizeInfo.status === 'pending' ? (
-                        <div className="bg-amber-500 px-8 py-3 rounded-full border-4 border-white shadow-lg rotate-[-1deg]">
-                          <p className="text-3xl font-black text-white uppercase italic tracking-wider">BRINDE PENDENTE</p>
-                        </div>
-                      ) : (
-                        <div className="flex flex-col gap-2">
-                          <div className="bg-slate-400 px-8 py-3 rounded-full border-4 border-white shadow-lg inline-block">
-                            <p className="text-3xl font-black text-white uppercase italic tracking-wider">BRINDE JÁ RETIRADO</p>
-                          </div>
-                          {prizeInfo.redeemed_at && (
-                            <p className="text-xl font-bold text-slate-400 italic">Retirado em: {formatTime(prizeInfo.redeemed_at)}</p>
-                          )}
-                        </div>
-                      )}
+                  {/* Info Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                      <p className="text-[10px] font-bold text-slate-400 uppercase mb-2 tracking-widest">Participante</p>
+                      <div className="flex items-center gap-3">
+                        <User className="w-5 h-5 text-[#0047ab]" />
+                        <p className="text-xl font-black text-[#003380] uppercase truncate">{validationResult.name}</p>
+                      </div>
+                    </div>
+                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                      <p className="text-[10px] font-bold text-slate-400 uppercase mb-2 tracking-widest">Documento (CPF)</p>
+                      <div className="flex items-center gap-3">
+                        <FileText className="w-5 h-5 text-[#0047ab]" />
+                        <p className="text-xl font-black text-[#003380]">{validationResult.cpfMasked}</p>
+                      </div>
+                    </div>
+                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                      <p className="text-[10px] font-bold text-slate-400 uppercase mb-2 tracking-widest">Código Validado</p>
+                      <div className="flex items-center gap-3">
+                        <Ticket className="w-5 h-5 text-[#f7941d]" />
+                        <p className="text-xl font-black text-[#003380] italic">{validationResult.prizeCode}</p>
+                      </div>
+                    </div>
+                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                      <p className="text-[10px] font-bold text-slate-400 uppercase mb-2 tracking-widest">
+                        {validationResult.type === 'pending' ? 'Data da Vitória' : 'Data da Retirada'}
+                      </p>
+                      <div className="flex items-center gap-3">
+                        <Calendar className="w-5 h-5 text-[#0047ab]" />
+                        <p className="text-lg font-bold text-[#003380]">
+                          {validationResult.type === 'pending' ? formatTime(validationResult.createdAt) : formatTime(validationResult.redeemedAt)}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            </div>
+                  
+                  <div className="flex justify-center pt-4">
+                    <button onClick={resetForm} className="text-slate-400 hover:text-[#0047ab] font-bold uppercase text-xs tracking-widest flex items-center gap-2">
+                      <RotateCcw className="w-4 h-4" /> Limpar pesquisa
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
 
-            {prizeInfo.status === 'pending' && (
-              <motion.button 
-                whileTap={{ scale: 0.96 }}
-                onClick={handleRedeem}
-                disabled={loading}
-                className="w-full bg-[#f7941d] py-14 rounded-[4rem] shadow-2xl flex items-center justify-center gap-6 border-b-[18px] border-[#d47a00] active:border-b-0 transition-all mt-4"
-              >
-                <Gift className="w-16 h-16 text-white" />
-                <span className="text-5xl font-black text-white tracking-widest uppercase italic">
-                  {loading ? 'PROCESSANDO...' : 'ENTREGAR BRINDE'}
-                </span>
-              </motion.button>
-            )}
-
-            <button 
-              onClick={resetForm}
-              className="w-full py-10 rounded-[3rem] border-4 border-slate-200 text-3xl font-black text-slate-400 uppercase italic tracking-widest hover:bg-slate-50 transition-colors"
-            >
-              LIMPAR E VALIDAR OUTRO
-            </button>
-          </motion.div>
-        )}
-
-        <AnimatePresence>
-          {error && (
-            <motion.div 
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-red-50 border-4 border-red-200 p-10 rounded-3xl flex items-center gap-8"
-            >
-              <XCircle className="w-20 h-20 text-red-500 shrink-0" />
-              <p className="text-4xl font-black text-red-600 uppercase leading-tight italic">{error}</p>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {!prizeInfo && (
+        {/* Footer */}
+        <div className="p-6 bg-slate-50 border-t border-slate-100 flex justify-between items-center text-slate-400">
           <button 
-            onClick={() => window.location.href = '/'}
-            className="flex items-center justify-center gap-4 text-3xl font-black text-slate-300 uppercase italic tracking-widest hover:text-[#0047ab] transition-colors mt-4"
+            onClick={() => window.location.href = '/'} 
+            className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest hover:text-[#0047ab]"
           >
-            <RotateCcw className="w-10 h-10" />
-            VOLTAR AO JOGO
+            <ChevronRight className="w-4 h-4 rotate-180" /> Voltar ao Totem
           </button>
-        )}
+          <p className="text-[10px] font-bold uppercase italic tracking-widest">RobustUS Nutrição Animal</p>
+        </div>
       </div>
     </div>
   );
