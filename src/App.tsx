@@ -78,10 +78,11 @@ const GameContent = () => {
 
   // Verificar rota de admin
   useEffect(() => {
-    if (location.pathname === '/validar-brinde') {
-      setGameState('ADMIN');
+    // Adiciona classe para o modo totem se não estiver no admin
+    if (location.pathname !== '/validar-brinde') {
+      document.documentElement.classList.add('totem-mode');
     } else {
-      setGameState('START');
+      document.documentElement.classList.remove('totem-mode');
     }
   }, [location.pathname]);
 
@@ -278,10 +279,12 @@ const GameContent = () => {
     return () => clearTimeout(timer);
   }, [gameState]);
 
-  if (gameState === 'ADMIN') return <AdminScreen />;
+  // A rota /validar-brinde agora é tratada diretamente no App.tsx
+  // para evitar o container do totem e seus estilos restritivos.
 
   return (
-    <div className="totem-container flex flex-col items-center justify-start relative select-none touch-none shadow-2xl overflow-hidden">
+    <div className="totem-wrapper">
+      <div className="totem-container flex flex-col items-center justify-start relative select-none touch-none shadow-2xl overflow-hidden">
       
       {/* Background Container */}
       <div className="absolute inset-0 z-0">
@@ -464,6 +467,7 @@ const GameContent = () => {
         <PawPrint className="w-6 h-6" />
         <span className="text-xl font-black tracking-widest uppercase italic">RobustUS Nutrição Animal</span>
       </div>
+      </div>
     </div>
   );
 };
@@ -473,7 +477,7 @@ const App = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<GameContent />} />
-        <Route path="/validar-brinde" element={<GameContent />} />
+        <Route path="/validar-brinde" element={<AdminScreen />} />
       </Routes>
       <Toaster position="top-center" richColors />
     </BrowserRouter>
