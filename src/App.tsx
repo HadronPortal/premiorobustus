@@ -4,9 +4,7 @@ import {
   RotateCcw, 
   Play, 
   CheckCircle2, 
-  Sparkles, 
-  PawPrint, 
-  Heart,
+  PawPrint,
   Dog,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
@@ -23,10 +21,9 @@ const BRAND = {
 
 // Imagens reais do site RobustUS
 const ASSETS = {
-  bgStart: "https://robustus.com.br/wp-content/uploads/2026/06/banner.jpg",
-  bgHero: "https://robustus.com.br/wp-content/uploads/2025/10/sdfgsgsdf-scaled.png",
-  patinha: "https://robustus.com.br/wp-content/uploads/2025/03/patinha.png",
-  logo: "https://robustus.com.br/wp-content/uploads/2025/03/logo-robustus-site.png"
+  bgHero: "https://robustus.com.br/wp-content/uploads/2025/10/site-scaled.jpg",
+  logo: "https://robustus.com.br/wp-content/uploads/2025/03/logo.png",
+  paw: "https://robustus.com.br/wp-content/uploads/2025/03/patinha.png",
 };
 
 // Lista de Produtos RobustUS
@@ -57,9 +54,9 @@ const PRODUCTS = [
   },
   { 
     id: 5, 
-    name: 'Bifinho Premium', 
-    line: 'Petiscos', 
-    img: 'https://robustus.com.br/wp-content/uploads/2026/06/banner-3.png' 
+    name: 'Gato Adulto', 
+    line: 'Life Special', 
+    img: 'https://robustus.com.br/wp-content/uploads/2025/10/DASDASDAS-2-768x633.png' 
   },
 ];
 
@@ -79,7 +76,7 @@ const App = () => {
   const [gameState, setGameState] = useState<GameState>('START');
   const [cards, setCards] = useState<Card[]>([]);
   const [flippedCards, setFlippedCards] = useState<number[]>([]);
-  const [voucherCode, setVoucherCode] = useState('');
+  const [voucherCode] = useState('ROBUSTUS-4827');
   const [lockBoard, setLockBoard] = useState(false);
   const [matches, setMatches] = useState(0);
 
@@ -149,8 +146,6 @@ const App = () => {
 
   useEffect(() => {
     if (gameState === 'PLAYING' && matches === PRODUCTS.length) {
-      setVoucherCode(`ROBUSTUS-4827`);
-      
       setTimeout(() => {
         setGameState('VICTORY');
         confetti({
@@ -174,7 +169,7 @@ const App = () => {
   }, [gameState]);
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 font-sans flex flex-col items-center justify-start overflow-hidden relative select-none touch-none mx-auto shadow-2xl">
+    <div className="totem-container flex flex-col items-center justify-start relative select-none touch-none shadow-2xl overflow-hidden">
       
       {/* Background Container */}
       <div className="absolute inset-0 z-0">
@@ -185,12 +180,17 @@ const App = () => {
               alt="Hero Background" 
               className="absolute inset-0 w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0047ab] via-transparent to-black/20"></div>
+            {/* Overlay to improve readability and hide existing text on the banner */}
+            <div className="absolute inset-0 bg-gradient-to-b from-[#0047ab]/80 via-transparent to-[#0047ab]/90"></div>
+            <div className="absolute inset-0 backdrop-blur-[2px]"></div>
           </div>
         ) : (
-          <div className="absolute inset-0 bg-[#0047ab]">
-            <div className="absolute inset-0 bg-paw-pattern opacity-10"></div>
-            <div className="absolute inset-0 bg-gradient-to-b from-[#0047ab] via-[#003380] to-[#0047ab]"></div>
+          <div className="absolute inset-0 robustus-gradient">
+            <div className="absolute inset-0 bg-paw-pattern opacity-5"></div>
+            {/* Rounded shapes for visual richness */}
+            <div className="absolute top-[-10%] left-[-20%] w-[140%] h-[40%] bg-white/5 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-[-10%] right-[-20%] w-[140%] h-[40%] bg-white/5 rounded-full blur-3xl"></div>
+            <div className="robustus-waves opacity-20"></div>
           </div>
         )}
       </div>
@@ -203,53 +203,54 @@ const App = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="flex-1 w-full flex flex-col items-center justify-between p-20 z-10"
+            className="flex-1 w-full flex flex-col items-center justify-between py-24 px-12 z-10"
           >
             {/* Top Logo */}
             <motion.div 
-              initial={{ y: -50 }}
-              animate={{ y: 0 }}
-              className="mt-10"
+              initial={{ y: -50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              className="w-full flex justify-center"
             >
-              <div className="bg-white/90 backdrop-blur-sm p-8 rounded-full shadow-2xl border-4 border-[#f7941d]">
-                <img src={ASSETS.patinha} alt="Logo" className="w-24 h-24" />
+              <div className="bg-white/95 px-10 py-8 rounded-[3rem] shadow-2xl border-4 border-[#f7941d] w-full max-w-sm flex items-center justify-center">
+                <img src={ASSETS.logo} alt="RobustUS Logo" className="w-full h-auto object-contain" />
               </div>
             </motion.div>
 
             {/* Middle Content */}
-            <div className="flex flex-col items-center text-center gap-8">
+            <div className="flex flex-col items-center text-center gap-10">
               <motion.div
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 0.2 }}
                 className="space-y-4"
               >
-                <h1 className="text-9xl font-black text-white italic tracking-tighter drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] leading-none uppercase">
-                  DESAFIO DA<br />MEMÓRIA
+                <h1 className="text-[10rem] font-black text-white italic tracking-tighter drop-shadow-2xl leading-[0.8] uppercase">
+                  DESAFIO DA<br />
+                  <span className="text-[#f7941d]">MEMÓRIA</span>
                 </h1>
-                <div className="bg-[#f7941d] inline-block px-10 py-4 rounded-full shadow-2xl transform -rotate-2 border-4 border-white">
-                  <span className="text-4xl font-black text-white uppercase italic tracking-widest">ROBUSTUS</span>
-                </div>
               </motion.div>
 
-              <motion.p 
+              <motion.div 
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.4 }}
-                className="text-4xl font-bold text-white uppercase tracking-widest bg-black/20 backdrop-blur-sm px-10 py-4 rounded-3xl"
+                className="bg-white/10 backdrop-blur-md px-12 py-8 rounded-[3rem] border border-white/20 shadow-xl"
               >
-                Encontre os 5 pares e ganhe um brinde!
-              </motion.p>
+                <p className="text-4xl font-bold text-white uppercase tracking-wider leading-tight">
+                  Encontre os 5 pares<br />
+                  <span className="text-[#f7941d] text-5xl">e ganhe um brinde!</span>
+                </p>
+              </motion.div>
             </div>
 
             {/* Bottom Button */}
             <motion.button 
-              whileTap={{ scale: 0.9 }}
+              whileTap={{ scale: 0.95 }}
               onClick={initializeGame}
-              className="w-full max-w-2xl bg-[#f7941d] py-14 rounded-[4rem] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] flex items-center justify-center gap-8 group relative overflow-hidden border-b-[16px] border-[#d47a00] active:border-b-0 transition-all mb-20"
+              className="w-full bg-[#f7941d] py-12 rounded-[4rem] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] flex items-center justify-center gap-6 relative overflow-hidden border-b-[16px] border-[#d47a00] active:border-b-0 transition-all"
             >
-              <Play className="w-20 h-20 text-white fill-current" />
-              <span className="text-7xl font-black text-white tracking-widest uppercase italic">COMEÇAR</span>
+              <Play className="w-16 h-16 text-white fill-current" />
+              <span className="text-6xl font-black text-white tracking-widest uppercase italic">COMEÇAR</span>
             </motion.button>
           </motion.div>
         )}
@@ -260,35 +261,33 @@ const App = () => {
             key="playing"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="flex-1 w-full flex flex-col items-center z-10 p-16"
+            className="flex-1 w-full flex flex-col items-center z-10 py-16 px-8"
           >
             {/* Header Jogo */}
-            <div className="w-full flex flex-col gap-10 mb-16">
+            <div className="w-full max-w-[85%] flex flex-col gap-8 mb-12">
               <div className="flex justify-between items-center">
-                <div className="flex items-center gap-6">
-                  <img src={ASSETS.patinha} className="w-20 h-20 bg-white p-3 rounded-full border-4 border-[#f7941d] shadow-lg" alt="" />
-                  <span className="text-6xl font-black text-white uppercase italic tracking-tighter drop-shadow-xl">ROBUSTUS</span>
+                <div className="bg-white p-4 rounded-3xl shadow-lg border-2 border-[#f7941d] w-48">
+                  <img src={ASSETS.logo} className="w-full h-auto object-contain" alt="Logo" />
                 </div>
                 <button 
                   onClick={() => setGameState('START')}
-                  className="p-8 bg-white/10 backdrop-blur-md rounded-3xl text-white hover:bg-white/20 transition-all border border-white/20 shadow-xl"
+                  className="p-6 bg-white/10 backdrop-blur-md rounded-3xl text-white hover:bg-white/20 transition-all border border-white/20 shadow-xl"
                 >
-                  <RotateCcw className="w-12 h-12" />
+                  <RotateCcw className="w-10 h-10" />
                 </button>
               </div>
 
-              {/* Progress Panel */}
-              <div className="bg-white/95 backdrop-blur-md p-12 rounded-[4rem] border-4 border-[#f7941d] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)]">
-                <div className="flex justify-between items-center mb-8">
-                  <h3 className="text-4xl font-black text-[#003380] uppercase tracking-tighter">
-                    {matches === 5 ? "CONCLUÍDO!" : `ENCONTRE OS PARES`}
+              {/* Progress Panel - Compact and centered */}
+              <div className="bg-white/95 backdrop-blur-md p-8 rounded-[3.5rem] border-4 border-[#f7941d] shadow-2xl mx-auto w-full">
+                <div className="flex justify-between items-center mb-6 px-2">
+                  <h3 className="text-3xl font-black text-[#003380] uppercase tracking-tighter">
+                    {matches === 5 ? "CONCLUÍDO!" : `FALTAM ${5 - matches} PARES`}
                   </h3>
-                  <div className="bg-[#0047ab] text-white px-8 py-3 rounded-full">
-                    <span className="text-5xl font-black">{matches}</span>
-                    <span className="text-3xl font-bold opacity-50"> / 5</span>
+                  <div className="bg-[#0047ab] text-white px-6 py-2 rounded-full border-2 border-[#f7941d]/30">
+                    <span className="text-4xl font-black">{matches} / 5</span>
                   </div>
                 </div>
-                <div className="h-10 bg-slate-100 rounded-full overflow-hidden p-2 shadow-inner border-2 border-slate-200">
+                <div className="h-8 bg-slate-100 rounded-full overflow-hidden p-1.5 shadow-inner border-2 border-slate-200">
                   <motion.div 
                     initial={{ width: 0 }}
                     animate={{ width: `${(matches / 5) * 100}%` }}
@@ -298,38 +297,34 @@ const App = () => {
               </div>
             </div>
 
-            {/* Grid de Cartas: 2 colunas x 5 linhas */}
-            <div className="grid grid-cols-2 gap-10 w-full max-w-4xl mx-auto flex-1 content-center">
+            {/* Grid de Cartas: 2 colunas x 5 linhas - taking 70% width */}
+            <div className="grid grid-cols-2 gap-6 w-full max-w-[85%] mx-auto flex-1 content-center">
               {cards.map((card) => (
                 <div 
                   key={card.instanceId}
                   onClick={() => handleCardClick(card.instanceId)}
-                  className="relative h-[300px] w-full perspective-1000 cursor-pointer"
+                  className="relative h-[240px] w-full perspective-1000 cursor-pointer"
                 >
                   <motion.div
                     animate={{ 
                       rotateY: card.isFlipped || card.isMatched ? 180 : 0,
-                      scale: card.isMatched ? 0.95 : 1
+                      scale: card.isMatched ? 0.96 : 1
                     }}
-                    transition={{ type: "spring", stiffness: 200, damping: 20 }}
+                    transition={{ type: "spring", stiffness: 180, damping: 22 }}
                     className="w-full h-full preserve-3d relative"
                   >
                     {/* Verso da Carta */}
-                    <div className="absolute inset-0 backface-hidden bg-[#0047ab] rounded-[3rem] shadow-2xl border-8 border-white/30 flex flex-col items-center justify-center overflow-hidden">
-                       <div className="absolute inset-0 bg-paw-pattern opacity-10 scale-150"></div>
-                       <motion.div
-                        animate={{ scale: [1, 1.05, 1], rotate: [0, 5, -5, 0] }}
-                        transition={{ duration: 4, repeat: Infinity }}
-                        className="w-32 h-32 bg-white/10 rounded-full flex items-center justify-center relative z-10 border-4 border-white/20"
-                      >
-                         <img src={ASSETS.patinha} className="w-20 h-20 brightness-0 invert opacity-80" alt="" />
-                      </motion.div>
+                    <div className="absolute inset-0 backface-hidden bg-[#0047ab] rounded-[2.5rem] shadow-xl border-[6px] border-white/40 flex flex-col items-center justify-center overflow-hidden">
+                       <div className="absolute inset-0 bg-paw-pattern opacity-10"></div>
+                       <div className="w-24 h-24 bg-white/10 rounded-full flex items-center justify-center relative z-10 border-2 border-white/20">
+                          <img src={ASSETS.paw} className="w-14 h-14 brightness-0 invert opacity-60" alt="" />
+                       </div>
                     </div>
 
                     {/* Frente da Carta */}
                     <div 
-                      className={`absolute inset-0 backface-hidden bg-white rounded-[3rem] shadow-2xl border-[12px] flex flex-col items-center justify-between p-6 rotate-y-180 transition-colors duration-500
-                        ${card.isMatched ? 'border-[#f7941d]' : 'border-white'}
+                      className={`absolute inset-0 backface-hidden bg-white rounded-[2.5rem] shadow-xl border-[8px] flex flex-col items-center justify-between p-4 rotate-y-180 transition-all duration-300
+                        ${card.isMatched ? 'border-[#f7941d] bg-orange-50' : 'border-white'}
                       `}
                       style={{ transform: 'rotateY(180deg)' }}
                     >
@@ -337,25 +332,25 @@ const App = () => {
                         <motion.div 
                           initial={{ scale: 0 }}
                           animate={{ scale: 1 }}
-                          className="absolute -top-6 -right-6 bg-[#f7941d] text-white p-4 rounded-full shadow-2xl z-20 border-4 border-white"
+                          className="absolute -top-4 -right-4 bg-[#f7941d] text-white p-2.5 rounded-full shadow-lg z-20 border-4 border-white"
                         >
-                          <CheckCircle2 className="w-12 h-12" />
+                          <CheckCircle2 className="w-8 h-8" />
                         </motion.div>
                       )}
 
-                      <div className="w-full h-2/3 flex items-center justify-center relative bg-blue-50/50 rounded-3xl p-4">
+                      <div className="w-full h-[65%] flex items-center justify-center relative bg-slate-50 rounded-2xl p-2 overflow-hidden">
                         <img 
                           src={card.img} 
                           alt={card.name} 
-                          className="max-w-full max-h-full object-contain drop-shadow-xl relative z-10" 
+                          className="max-w-full max-h-full object-contain drop-shadow-md" 
                         />
                       </div>
 
-                      <div className="w-full text-center mt-2">
-                        <span className="inline-block px-4 py-1 bg-[#0047ab] rounded-full text-[14px] font-black text-white uppercase italic tracking-widest mb-1">
+                      <div className="w-full text-center mt-2 px-1">
+                        <span className="inline-block px-3 py-0.5 bg-[#0047ab] rounded-full text-[10px] font-black text-white uppercase italic tracking-widest mb-1">
                           {card.line}
                         </span>
-                        <h4 className="text-2xl font-black text-[#003380] leading-tight uppercase italic truncate w-full">
+                        <h4 className="text-[1.1rem] font-black text-[#003380] leading-[1.1] uppercase italic truncate w-full">
                           {card.name}
                         </h4>
                       </div>
@@ -371,43 +366,41 @@ const App = () => {
         {gameState === 'VICTORY' && (
           <motion.div 
             key="victory"
-            initial={{ opacity: 0, scale: 0.8 }}
+            initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="flex-1 w-full flex flex-col items-center justify-center p-20 z-20"
+            className="flex-1 w-full flex flex-col items-center justify-center p-12 z-20"
           >
-            <div className="relative w-full max-w-4xl bg-white/95 backdrop-blur-xl p-20 rounded-[6rem] shadow-[0_50px_100px_rgba(0,0,0,0.5)] border-t-[20px] border-[#f7941d] flex flex-col items-center text-center">
+            <div className="relative w-full max-w-2xl bg-white/95 backdrop-blur-2xl p-16 rounded-[5rem] shadow-[0_50px_100px_rgba(0,0,0,0.5)] border-t-[16px] border-[#f7941d] flex flex-col items-center text-center">
               
               <motion.div 
                 initial={{ scale: 0, rotate: -45 }}
                 animate={{ scale: 1, rotate: 12 }}
-                transition={{ type: "spring", damping: 10, delay: 0.2 }}
-                className="absolute -top-24 bg-[#f7941d] p-12 rounded-[3.5rem] shadow-2xl border-[12px] border-white"
+                transition={{ type: "spring", damping: 12, delay: 0.2 }}
+                className="absolute -top-20 bg-[#f7941d] p-10 rounded-[3rem] shadow-2xl border-[8px] border-white"
               >
-                <Trophy className="w-32 h-32 text-white" />
+                <Trophy className="w-24 h-24 text-white" />
               </motion.div>
 
-              <div className="mt-24 space-y-8 mb-16">
-                <h2 className="text-[12rem] font-black text-[#0047ab] leading-[0.8] tracking-tighter uppercase italic drop-shadow-lg">UHUUUL!</h2>
-                <div className="flex items-center justify-center gap-6">
-                   <div className="h-2 w-20 bg-[#f7941d] rounded-full"></div>
-                   <p className="text-5xl font-black text-[#f7941d] uppercase tracking-[0.3em] italic">VOCÊ GANHOU!</p>
-                   <div className="h-2 w-20 bg-[#f7941d] rounded-full"></div>
+              <div className="mt-16 space-y-6 mb-12">
+                <h2 className="text-9xl font-black text-[#0047ab] leading-none tracking-tighter uppercase italic drop-shadow-lg">UHUUUL!</h2>
+                <div className="bg-[#f7941d] inline-block px-8 py-2 rounded-full border-2 border-white shadow-lg rotate-[-2deg]">
+                   <p className="text-3xl font-black text-white uppercase tracking-widest italic">VOCÊ GANHOU UM BRINDE!</p>
                 </div>
               </div>
 
-              <div className="bg-[#0047ab]/5 rounded-[4rem] p-12 w-full border-4 border-dashed border-[#0047ab]/20 mb-16">
-                <p className="text-3xl font-bold text-slate-500 uppercase tracking-widest mb-6">Apresente este código para retirar seu brinde:</p>
-                <div className="bg-white px-12 py-10 rounded-3xl shadow-xl border-4 border-[#0047ab]">
-                  <span className="text-8xl font-black text-[#0047ab] tracking-widest">{voucherCode}</span>
+              <div className="bg-slate-50 rounded-[3rem] p-10 w-full border-4 border-dashed border-[#0047ab]/20 mb-12 shadow-inner">
+                <p className="text-2xl font-bold text-slate-500 uppercase tracking-widest mb-4">Código de retirada:</p>
+                <div className="bg-white px-8 py-8 rounded-[2.5rem] shadow-xl border-4 border-[#0047ab]">
+                  <span className="text-7xl font-black text-[#0047ab] tracking-widest">{voucherCode}</span>
                 </div>
               </div>
 
               <motion.button 
-                whileTap={{ scale: 0.9 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => setGameState('START')}
-                className="w-full bg-[#f7941d] py-12 rounded-[3.5rem] shadow-2xl flex items-center justify-center gap-6 text-5xl font-black text-white uppercase italic tracking-widest border-b-[12px] border-[#d47a00]"
+                className="w-full bg-[#f7941d] py-10 rounded-[3.5rem] shadow-2xl flex items-center justify-center gap-5 text-4xl font-black text-white uppercase italic tracking-widest border-b-[10px] border-[#d47a00]"
               >
-                <RotateCcw className="w-16 h-16" />
+                <RotateCcw className="w-12 h-12" />
                 JOGAR NOVAMENTE
               </motion.button>
             </div>
@@ -416,9 +409,9 @@ const App = () => {
       </AnimatePresence>
 
       {/* Footer Branding */}
-      <div className="absolute bottom-10 z-10 opacity-30 flex items-center gap-4 grayscale brightness-0">
-        <Dog className="w-8 h-8" />
-        <span className="text-2xl font-black tracking-widest uppercase italic">RobustUS Nutrição Animal</span>
+      <div className="absolute bottom-8 z-10 opacity-40 flex items-center gap-4 text-[#0047ab]">
+        <PawPrint className="w-6 h-6" />
+        <span className="text-xl font-black tracking-widest uppercase italic">RobustUS Nutrição Animal</span>
       </div>
     </div>
   );
