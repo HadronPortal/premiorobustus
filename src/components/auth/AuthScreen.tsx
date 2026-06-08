@@ -47,33 +47,27 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
         p_accepted_terms: formData.acceptedTerms
       });
 
-      if (rpcError) throw rpcError;
-      
-      const response = data as { 
-        ok: boolean; 
-        status: string; 
-        message?: string;
-        play_id?: string;
-        play_token?: string;
-        max_attempts?: number;
-        max_seconds?: number;
-      };
+      console.log("start_participation_simple data:", data);
+      console.error("start_participation_simple error:", rpcError);
 
-      if (!response.ok) {
-        if (response.status === 'already_played') {
-          setError('Este CPF já participou desta ação.');
-        } else if (response.status === 'invalid_cpf') {
-          setError('CPF inválido.');
-        } else if (response.status === 'terms_required') {
-          setError('Aceite as regras para participar.');
-        } else {
-          setError(response.message || 'Não foi possível iniciar agora. Chame a equipe do stand.');
-        }
-      } else {
-        onStart(response);
+      if (rpcError) {
+        setError("Não foi possível iniciar agora. Chame a equipe do stand.");
+        return;
       }
+      
+      const response = data as any;
+
+      if (!response?.ok) {
+        if (response?.status === "invalid_cpf") setError("CPF inválido.");
+        else if (response?.status === "already_played") setError("Este CPF já participou desta ação.");
+        else if (response?.status === "terms_required") setError("Aceite as regras para participar.");
+        else setError(response?.message || "Não foi possível iniciar agora.");
+        return;
+      }
+
+      onStart(response);
     } catch (err: any) {
-      console.error("Supabase Error:", err);
+      console.error("Critical Error:", err);
       setError('Não foi possível iniciar agora. Chame a equipe do stand.');
     } finally {
       setLoading(false);
@@ -121,7 +115,7 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
                 value={formData.name}
                 onChange={e => setFormData({...formData, name: e.target.value.toUpperCase()})}
                 required
-                className="w-full bg-slate-100 p-12 pl-24 rounded-3xl text-5xl font-bold text-[#003380] border-4 border-transparent focus:border-[#f7941d] outline-none transition-all placeholder:text-slate-400 uppercase"
+                className="w-full bg-slate-100 p-12 pl-24 rounded-3xl text-5xl font-bold text-[#003380] border-4 border-transparent focus:border-[#f7941d] outline-none transition-all placeholder:text-slate-400 uppercase truncate max-w-full"
               />
             </div>
           </div>
