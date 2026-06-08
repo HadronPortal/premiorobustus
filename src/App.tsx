@@ -211,7 +211,7 @@ const App = () => {
               animate={{ y: 0, opacity: 1 }}
               className="w-full flex justify-center"
             >
-              <div className="bg-white p-6 rounded-[2.5rem] shadow-2xl border-4 border-[#f7941d] w-64 h-64 flex items-center justify-center">
+              <div className="bg-white/95 px-10 py-8 rounded-[3rem] shadow-2xl border-4 border-[#f7941d] w-full max-w-sm flex items-center justify-center">
                 <img src={ASSETS.logo} alt="RobustUS Logo" className="w-full h-auto object-contain" />
               </div>
             </motion.div>
