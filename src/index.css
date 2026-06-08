@@ -12,22 +12,23 @@
   }
   
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply bg-[#0047ab] text-foreground antialiased;
     overflow: hidden;
     user-select: none;
-    touch-action: pan-x pan-y;
+    touch-action: none;
     -webkit-tap-highlight-color: transparent;
   }
 }
 
 @layer utilities {
   .bg-paw-pattern {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath d='M30.5 35c2.5 0 4.5-2 4.5-4.5S33 26 30.5 26 26 28 26 30.5s2 4.5 4.5 4.5zm19 0c2.5 0 4.5-2 4.5-4.5S52 26 49.5 26 45 28 45 30.5s2 4.5 4.5 4.5zm19 0c2.5 0 4.5-2 4.5-4.5S71 26 68.5 26 64 28 64 30.5s2 4.5 4.5 4.5zM49.5 60c-8 0-14.5 6.5-14.5 14.5S41.5 89 49.5 89 64 82.5 64 74.5 57.5 60 49.5 60z' fill='%23ffffff' fill-opacity='0.08'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 100 100'%3E%3Cpath d='M30.5 35c2.5 0 4.5-2 4.5-4.5S33 26 30.5 26 26 28 26 30.5s2 4.5 4.5 4.5zm19 0c2.5 0 4.5-2 4.5-4.5S52 26 49.5 26 45 28 45 30.5s2 4.5 4.5 4.5zm19 0c2.5 0 4.5-2 4.5-4.5S71 26 68.5 26 64 28 64 30.5s2 4.5 4.5 4.5zM49.5 60c-8 0-14.5 6.5-14.5 14.5S41.5 89 49.5 89 64 82.5 64 74.5 57.5 60 49.5 60z' fill='%23ffffff' fill-opacity='1'/%3E%3C/svg%3E");
     background-repeat: repeat;
+    background-size: 80px 80px;
   }
 
   .perspective-1000 {
-    perspective: 1000px;
+    perspective: 1500px;
   }
 
   .backface-hidden {
@@ -37,5 +38,14 @@
   .preserve-3d {
     transform-style: preserve-3d;
   }
+
+  .rotate-y-180 {
+    transform: rotateY(180deg);
+  }
 }
 
+/* Custom Scrollbar if needed */
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
