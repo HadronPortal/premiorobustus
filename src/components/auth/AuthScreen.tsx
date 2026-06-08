@@ -123,7 +123,7 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
                 value={formData.name}
                 onChange={e => setFormData({...formData, name: e.target.value.toUpperCase()})}
                 required
-                className="w-full bg-slate-100 p-12 pl-24 rounded-3xl text-5xl font-bold text-[#003380] border-4 border-transparent focus:border-[#f7941d] outline-none transition-all placeholder:text-slate-400 uppercase truncate max-w-full"
+                className="w-full bg-slate-100 p-12 pl-24 rounded-3xl text-5xl font-bold text-[#003380] border-4 border-transparent focus:border-[#f7941d] outline-none transition-all placeholder:text-slate-400 uppercase truncate max-w-full text-ellipsis overflow-hidden whitespace-nowrap"
               />
             </div>
           </div>
