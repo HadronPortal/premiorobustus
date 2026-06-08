@@ -272,30 +272,33 @@ const App = () => {
             className="flex-1 w-full flex flex-col items-center z-10 py-16 px-8"
           >
             {/* Header Jogo */}
-            <div className="w-full max-w-[85%] flex flex-col gap-8 mb-12">
+            <div className="w-full max-w-[90%] flex flex-col gap-10 mb-12">
               <div className="flex justify-between items-center">
-                <div className="bg-white p-4 rounded-3xl shadow-lg border-2 border-[#f7941d] w-48">
+                <div className="bg-white p-6 rounded-[2.5rem] shadow-xl border-2 border-[#f7941d] w-64">
                   <img src={ASSETS.logo} className="w-full h-auto object-contain" alt="Logo" />
                 </div>
                 <button 
                   onClick={() => setGameState('START')}
-                  className="p-6 bg-white/10 backdrop-blur-md rounded-3xl text-white hover:bg-white/20 transition-all border border-white/20 shadow-xl"
+                  className="p-8 bg-white/15 backdrop-blur-xl rounded-[2.5rem] text-white hover:bg-white/25 transition-all border border-white/30 shadow-2xl"
                 >
-                  <RotateCcw className="w-10 h-10" />
+                  <RotateCcw className="w-12 h-12" />
                 </button>
               </div>
 
-              {/* Progress Panel - Compact and centered */}
-              <div className="bg-white/95 backdrop-blur-md p-8 rounded-[3.5rem] border-4 border-[#f7941d] shadow-2xl mx-auto w-full">
-                <div className="flex justify-between items-center mb-6 px-2">
-                  <h3 className="text-3xl font-black text-[#003380] uppercase tracking-tighter">
-                    {matches === 5 ? "CONCLUÍDO!" : `FALTAM ${5 - matches} PARES`}
+              {/* Progress Panel - Proportional to totem width */}
+              <div className="bg-white/95 backdrop-blur-xl p-10 rounded-[4rem] border-4 border-[#f7941d] shadow-2xl w-full">
+                <div className="flex flex-col gap-4 mb-8 px-4">
+                  <h3 className="text-4xl font-black text-[#003380] uppercase tracking-tighter leading-tight">
+                    {matches === 5 ? "PARABÉNS! JOGO CONCLUÍDO!" : "ENCONTRE OS 5 PARES E GANHE UM BRINDE!"}
                   </h3>
-                  <div className="bg-[#0047ab] text-white px-6 py-2 rounded-full border-2 border-[#f7941d]/30">
-                    <span className="text-4xl font-black">{matches} / 5</span>
+                  <div className="flex justify-between items-center">
+                    <span className="text-3xl font-bold text-[#f7941d] uppercase tracking-widest italic">PROGRESSO</span>
+                    <div className="bg-[#0047ab] text-white px-8 py-3 rounded-full border-2 border-[#f7941d]/30">
+                      <span className="text-5xl font-black">{matches} / 5</span>
+                    </div>
                   </div>
                 </div>
-                <div className="h-8 bg-slate-100 rounded-full overflow-hidden p-1.5 shadow-inner border-2 border-slate-200">
+                <div className="h-10 bg-slate-100 rounded-full overflow-hidden p-2 shadow-inner border-2 border-slate-200">
                   <motion.div 
                     initial={{ width: 0 }}
                     animate={{ width: `${(matches / 5) * 100}%` }}
