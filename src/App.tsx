@@ -222,15 +222,10 @@ const App = () => {
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 0.2 }}
-                className="space-y-6"
+                className="space-y-4"
               >
-                <div className="flex justify-center mb-4">
-                   <div className="bg-[#f7941d] px-8 py-3 rounded-full border-2 border-white shadow-lg">
-                      <span className="text-3xl font-black text-white uppercase italic tracking-widest">DESAFIO</span>
-                   </div>
-                </div>
-                <h1 className="text-8xl font-black text-white italic tracking-tighter drop-shadow-2xl leading-[0.9] uppercase">
-                  JOGO DA<br />
+                <h1 className="text-[10rem] font-black text-white italic tracking-tighter drop-shadow-2xl leading-[0.8] uppercase">
+                  DESAFIO DA<br />
                   <span className="text-[#f7941d]">MEMÓRIA</span>
                 </h1>
               </motion.div>
