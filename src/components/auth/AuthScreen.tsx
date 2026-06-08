@@ -40,7 +40,7 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
     setError('');
 
     try {
-      const { data, error: rpcError } = await supabase.rpc("start_participation_simple", {
+      const { data, error: rpcError } = await (supabase.rpc as any)("start_participation_simple", {
         p_event_slug: "robustus-expo-2026",
         p_cpf: formData.cpf.replace(/\D/g, ''),
         p_name: formData.name,
@@ -55,15 +55,7 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
         return;
       }
       
-      const response = data as { 
-        ok: boolean; 
-        status: string; 
-        message?: string;
-        play_id?: string;
-        play_token?: string;
-        max_attempts?: number;
-        max_seconds?: number;
-      };
+      const response = data as any;
 
       if (!response?.ok) {
         if (response?.status === "invalid_cpf") setError("CPF inválido.");
