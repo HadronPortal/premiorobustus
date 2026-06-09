@@ -106,21 +106,21 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex-1 w-full flex flex-col items-center justify-center p-8 z-10"
+      className="flex-1 w-full flex flex-col items-center justify-center p-4 sm:p-8 z-10"
     >
-      <div className="w-full max-w-[850px] bg-white/95 backdrop-blur-3xl p-16 rounded-[4rem] shadow-[0_50px_100px_rgba(0,0,0,0.6)] border-t-[20px] border-[#f7941d] flex flex-col gap-10 overflow-hidden">
+      <div className="w-full max-w-[min(92vw,460px)] bg-white/95 backdrop-blur-3xl p-6 sm:p-10 rounded-[2rem] sm:rounded-[3rem] shadow-[0_25px_50px_rgba(0,0,0,0.4)] border-t-[10px] sm:border-t-[15px] border-[#f7941d] flex flex-col gap-6 sm:gap-8 overflow-y-auto max-h-[90dvh]">
         
-        <div className="text-center space-y-4">
-          <h2 className="text-7xl font-black text-[#0047ab] uppercase italic tracking-tighter">CADASTRO</h2>
-          <p className="text-3xl font-bold text-slate-500 uppercase tracking-widest leading-tight">Preencha para começar o desafio!</p>
+        <div className="text-center space-y-2">
+          <h2 className="text-4xl sm:text-5xl font-black text-[#0047ab] uppercase italic tracking-tighter">CADASTRO</h2>
+          <p className="text-lg sm:text-xl font-bold text-slate-500 uppercase tracking-widest leading-tight">Preencha para começar!</p>
         </div>
 
-        <form className="flex flex-col gap-10 w-full">
+        <form className="flex flex-col gap-6 w-full" onSubmit={handleStartGame}>
           
-          <div className="flex flex-col gap-8">
+          <div className="flex flex-col gap-4 sm:gap-6">
             <div className="relative">
-              <div className="absolute left-8 top-1/2 -translate-y-1/2 text-[#0047ab]">
-                <FileText className="w-12 h-12" />
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#0047ab]">
+                <FileText className="w-6 h-6 sm:w-8 sm:h-8" />
               </div>
               <input 
                 type="text"
@@ -129,13 +129,13 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
                 value={formData.cpf}
                 onChange={handleCPFChange}
                 required
-                className="w-full bg-slate-100 p-12 pl-24 rounded-3xl text-5xl font-bold text-[#003380] border-4 border-transparent focus:border-[#f7941d] outline-none transition-all placeholder:text-slate-400 uppercase"
+                className="w-full bg-slate-100 p-4 sm:p-6 pl-12 sm:pl-16 rounded-2xl text-xl sm:text-2xl font-bold text-[#003380] border-2 border-transparent focus:border-[#f7941d] outline-none transition-all placeholder:text-slate-400 uppercase"
               />
             </div>
 
             <div className="relative">
-              <div className="absolute left-8 top-1/2 -translate-y-1/2 text-[#0047ab]">
-                <User className="w-12 h-12" />
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#0047ab]">
+                <User className="w-6 h-6 sm:w-8 sm:h-8" />
               </div>
               <input 
                 type="text"
@@ -143,24 +143,24 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
                 value={formData.name}
                 onChange={e => setFormData({...formData, name: e.target.value.toUpperCase()})}
                 required
-                className="w-full bg-slate-100 p-12 pl-24 rounded-3xl text-5xl font-bold text-[#003380] border-4 border-transparent focus:border-[#f7941d] outline-none transition-all placeholder:text-slate-400 uppercase truncate max-w-full text-ellipsis overflow-hidden whitespace-nowrap"
+                className="w-full bg-slate-100 p-4 sm:p-6 pl-12 sm:pl-16 rounded-2xl text-xl sm:text-2xl font-bold text-[#003380] border-2 border-transparent focus:border-[#f7941d] outline-none transition-all placeholder:text-slate-400 uppercase"
               />
             </div>
           </div>
 
-          <div className="bg-slate-50 p-8 rounded-[2rem] border-2 border-slate-100">
-            <label className="flex items-start gap-6 cursor-pointer group">
-              <div className="relative mt-1">
+          <div className="bg-slate-50 p-4 sm:p-6 rounded-2xl border border-slate-100">
+            <label className="flex items-start gap-3 sm:gap-4 cursor-pointer group">
+              <div className="relative mt-1 flex-shrink-0">
                 <input 
                   type="checkbox" 
                   checked={formData.acceptedTerms}
                   onChange={e => setFormData({...formData, acceptedTerms: e.target.checked})}
                   required
-                  className="peer appearance-none w-12 h-12 border-4 border-[#0047ab] rounded-xl checked:bg-[#0047ab] transition-all cursor-pointer"
+                  className="peer appearance-none w-6 h-6 sm:w-8 sm:h-8 border-2 border-[#0047ab] rounded-lg checked:bg-[#0047ab] transition-all cursor-pointer"
                 />
-                <CheckCircle2 className="absolute top-0 left-0 w-12 h-12 text-white scale-0 peer-checked:scale-100 transition-all pointer-events-none" />
+                <CheckCircle2 className="absolute top-0 left-0 w-6 h-6 sm:w-8 sm:h-8 text-white scale-0 peer-checked:scale-100 transition-all pointer-events-none" />
               </div>
-              <span className="text-3xl font-semibold text-slate-600 leading-tight">
+              <span className="text-sm sm:text-base font-semibold text-slate-600 leading-snug">
                 Aceito participar da ação promocional e autorizo o uso dos meus dados para validar minha participação e entrega do brinde.
               </span>
             </label>
@@ -170,28 +170,27 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
             <motion.div 
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="bg-red-50 border-4 border-red-200 p-10 rounded-3xl"
+              className="bg-red-50 border-2 border-red-200 p-4 rounded-xl"
             >
-              <p className="text-4xl font-black text-red-600 text-center uppercase leading-tight">{error}</p>
+              <p className="text-sm sm:text-base font-black text-red-600 text-center uppercase leading-tight">{error}</p>
             </motion.div>
           )}
 
           <motion.button 
-            whileTap={isFormValid ? { scale: 0.96 } : {}}
-            type="button"
+            whileTap={isFormValid ? { scale: 0.98 } : {}}
+            type="submit"
             disabled={isStarting || !isFormValid}
-            onClick={handleStartGame}
-            className={`w-full py-12 rounded-[3.5rem] shadow-2xl flex items-center justify-center gap-6 border-b-[16px] transition-all mt-4
+            className={`w-full py-4 sm:py-6 rounded-2xl sm:rounded-3xl shadow-xl flex items-center justify-center gap-3 border-b-[6px] sm:border-b-[10px] transition-all mt-2
               ${isFormValid 
                 ? 'bg-[#f7941d] border-[#d47a00] active:border-b-0' 
                 : 'bg-slate-300 border-slate-400 cursor-not-allowed opacity-60'}
               ${isStarting ? 'opacity-70 grayscale' : ''}
             `}
           >
-            <span className="text-6xl font-black text-white tracking-widest uppercase italic">
+            <span className="text-xl sm:text-2xl font-black text-white tracking-widest uppercase italic">
               {isStarting ? 'INICIANDO...' : 'COMEÇAR O DESAFIO'}
             </span>
-            {!isStarting && <ChevronRight className="w-20 h-20 text-white" />}
+            {!isStarting && <ChevronRight className="w-8 h-8 sm:w-10 sm:h-10 text-white" />}
           </motion.button>
         </form>
       </div>
