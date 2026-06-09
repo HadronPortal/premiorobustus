@@ -119,3 +119,71 @@
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.3);
 }
+
+/* Memory Game Responsive Styles */
+.game-screen {
+  height: 100dvh;
+  min-height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 12px;
+  box-sizing: border-box;
+}
+
+.game-header {
+  flex: 0 0 auto;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.memory-board {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: min(94vw, 560px);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(8px, 1.2vh, 14px);
+  align-content: center;
+}
+
+.memory-card {
+  min-height: 0;
+  aspect-ratio: 0.82 / 1;
+  max-height: calc((100dvh - 170px) / 5);
+}
+
+@media (min-width: 1024px) {
+  .memory-board {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    width: min(94vw, 720px);
+  }
+}
+
+@media (max-height: 760px) {
+  .game-screen {
+    padding: 6px 10px;
+  }
+
+  .game-header {
+    margin-bottom: 6px;
+    transform: scale(0.92);
+    transform-origin: top center;
+  }
+
+  .memory-board {
+    gap: 7px;
+  }
+
+  .memory-card {
+    max-height: calc((100dvh - 145px) / 5);
+  }
+}
+
+.card-inner,
+.card-front,
+.card-back {
+  width: 100%;
+  height: 100%;
+}
