@@ -549,22 +549,24 @@ const GameContent = () => {
         )}
 
         {gameState === 'VICTORY' && (
-          <motion.div key="victory" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex-1 w-full flex flex-col items-center justify-center p-4 sm:p-8 z-20">
-            <div className="relative w-full max-w-[min(92vw,480px)] bg-white/95 backdrop-blur-3xl p-8 sm:p-12 rounded-[2rem] sm:rounded-[3rem] shadow-[0_25px_50px_rgba(0,0,0,0.4)] border-t-[10px] sm:border-t-[15px] border-[#f7941d] flex flex-col items-center text-center overflow-hidden">
-              <motion.div initial={{ scale: 0, rotate: -45 }} animate={{ scale: 1, rotate: 12 }} transition={{ type: "spring", damping: 12, delay: 0.2 }} className="absolute -top-10 sm:-top-16 bg-[#f7941d] p-6 sm:p-10 rounded-2xl sm:rounded-[2.5rem] shadow-2xl border-4 sm:border-[8px] border-white">
-                <Trophy className="w-12 h-12 sm:w-20 sm:h-20 text-white" />
+          <motion.div key="victory" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="victory-screen">
+            <div className="victory-card bg-white/95 backdrop-blur-3xl rounded-[2rem] sm:rounded-[3rem] shadow-[0_25px_50px_rgba(0,0,0,0.4)] border-t-[8px] sm:border-t-[12px] border-[#f7941d]">
+              <motion.div initial={{ scale: 0, rotate: -45 }} animate={{ scale: 1, rotate: 12 }} transition={{ type: "spring", damping: 12, delay: 0.2 }} className="absolute -top-6 sm:-top-10 right-4 bg-[#f7941d] p-3 sm:p-5 rounded-xl sm:rounded-2xl shadow-xl border-2 sm:border-4 border-white">
+                <Trophy className="w-8 h-8 sm:w-12 sm:h-12 text-white" />
               </motion.div>
-              <div className="mt-8 sm:mt-12 space-y-4 sm:space-y-6 mb-8 sm:mb-10">
-                <h2 className="text-5xl sm:text-7xl font-black text-[#0047ab] leading-none tracking-tighter uppercase italic drop-shadow-lg">PARABÉNS!</h2>
-                <div className="bg-[#f7941d] inline-block px-6 py-2 sm:px-10 sm:py-3 rounded-full border-2 sm:border-4 border-white shadow-xl rotate-[-2deg]">
-                   <p className="text-lg sm:text-2xl font-black text-white uppercase tracking-wider italic">VOCÊ GANHOU UM BRINDE!</p>
+              
+              <div className="space-y-3 sm:space-y-4 mb-4 sm:mb-6">
+                <h2 className="text-4xl sm:text-6xl font-black text-[#0047ab] leading-none tracking-tighter uppercase italic drop-shadow-lg">PARABÉNS!</h2>
+                <div className="bg-[#f7941d] inline-block px-4 py-1.5 sm:px-8 sm:py-2 rounded-full border-2 sm:border-4 border-white shadow-lg rotate-[-1deg]">
+                   <p className="text-sm sm:text-xl font-black text-white uppercase tracking-wider italic">VOCÊ GANHOU UM BRINDE!</p>
                 </div>
               </div>
-              <div className="bg-[#0047ab]/5 rounded-3xl sm:rounded-[2.5rem] p-6 sm:p-8 w-full border-2 border-dashed border-[#0047ab]/20 mb-8 sm:mb-10 shadow-inner">
-                <p className="text-sm sm:text-base font-bold text-slate-500 uppercase tracking-widest mb-4 px-2">Apresente este código para retirar seu brinde:</p>
-                <div className="bg-white px-4 py-6 rounded-2xl sm:rounded-[2rem] shadow-xl border-2 sm:border-4 border-[#0047ab] flex items-center justify-center w-full min-h-[100px] sm:min-h-[140px]">
+
+              <div className="bg-[#0047ab]/5 rounded-2xl sm:rounded-[2rem] p-4 sm:p-6 w-full border-2 border-dashed border-[#0047ab]/20 mb-4 sm:mb-6 shadow-inner">
+                <p className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-widest mb-2 px-2">Código para retirar seu brinde:</p>
+                <div className="bg-white px-3 py-4 rounded-xl sm:rounded-2xl shadow-lg border-2 border-[#0047ab] flex items-center justify-center w-full min-h-[70px] sm:min-h-[100px]">
                   <span className="font-black text-[#0047ab] uppercase leading-[1.05] tracking-[0.04em] text-center w-full" style={{ 
-                    fontSize: 'clamp(20px, 4vw, 40px)',
+                    fontSize: 'clamp(18px, 4.5vw, 32px)',
                     whiteSpace: 'pre-line',
                     overflowWrap: 'anywhere',
                     wordBreak: 'break-word'
@@ -573,9 +575,18 @@ const GameContent = () => {
                   </span>
                 </div>
               </div>
-              <motion.button whileTap={{ scale: 0.94 }} onClick={() => setGameState('START')} className="w-full bg-[#f7941d] py-4 sm:py-6 rounded-2xl sm:rounded-3xl shadow-xl flex items-center justify-center gap-3 sm:gap-4 text-2xl sm:text-3xl font-black text-white uppercase italic tracking-widest border-b-[6px] sm:border-b-[10px] border-[#d47a00]">
-                <RotateCcw className="w-8 h-8 sm:w-10 sm:h-10" /> JOGAR NOVAMENTE
-              </motion.button>
+
+              <Leaderboard entries={leaderboard} />
+
+              <div className="mt-6 sm:mt-8 w-full flex justify-center">
+                <motion.button 
+                  whileTap={{ scale: 0.96 }} 
+                  onClick={() => { setGameState('START'); setSession(null); }} 
+                  className="play-again-button bg-[#f7941d] shadow-xl font-black text-white uppercase italic tracking-widest border-b-[4px] sm:border-b-[6px] border-[#d47a00]"
+                >
+                  <RotateCcw /> JOGAR NOVAMENTE
+                </motion.button>
+              </div>
             </div>
           </motion.div>
         )}
