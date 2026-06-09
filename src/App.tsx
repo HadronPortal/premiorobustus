@@ -74,15 +74,31 @@ interface LeaderboardEntry {
   attempts: number;
 }
 
-const Leaderboard = ({ entries }: { entries: LeaderboardEntry[] }) => {
-  if (!entries || entries.length === 0) return null;
+const Leaderboard = ({ entries, loading }: { entries: LeaderboardEntry[], loading?: boolean }) => {
+  if (loading) {
+    return (
+      <div className="leaderboard-container flex flex-col items-center justify-center py-8">
+        <div className="w-8 h-8 border-4 border-[#0047ab] border-t-transparent rounded-full animate-spin mb-2"></div>
+        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Carregando placar...</p>
+      </div>
+    );
+  }
+
+  if (!entries || entries.length === 0) {
+    return (
+      <div className="leaderboard-container text-center py-4">
+        <h3 className="leaderboard-title">Melhores tempos</h3>
+        <p className="text-[10px] font-bold text-[#f7941d] uppercase tracking-widest mt-2">Seja o primeiro no placar!</p>
+      </div>
+    );
+  }
 
   return (
     <div className="leaderboard-container">
       <h3 className="leaderboard-title">Melhores tempos</h3>
       <p className="leaderboard-subtitle">Menor tempo e menos tentativas</p>
       <div className="space-y-1">
-        {entries.map((entry, idx) => (
+        {entries.slice(0, 5).map((entry, idx) => (
           <div key={idx} className="leaderboard-row">
             <span className="leaderboard-pos">{entry.rank}º</span>
             <span className="leaderboard-name">{entry.name || 'Anônimo'}</span>
@@ -115,8 +131,10 @@ const GameContent = () => {
   const [startTime, setStartTime] = useState<number>(0);
   const [error, setError] = useState('');
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [loadingLeaderboard, setLoadingLeaderboard] = useState(false);
 
   const fetchLeaderboard = async () => {
+    setLoadingLeaderboard(true);
     try {
       const { data, error: rpcError } = await (supabase.rpc as any)("get_memory_leaderboard", {
         p_event_slug: "robustus-expo-2026",
@@ -128,6 +146,8 @@ const GameContent = () => {
       }
     } catch (err) {
       console.error("Erro ao buscar placar:", err);
+    } finally {
+      setLoadingLeaderboard(false);
     }
   };
 
@@ -414,9 +434,9 @@ const GameContent = () => {
               </div>
             </motion.div>
 
-            <div className="flex flex-col items-center text-center gap-6 sm:gap-12 mb-10 sm:mb-20">
+            <div className="flex flex-col items-center text-center gap-6 sm:gap-12 mb-6">
               <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.2 }} className="space-y-2">
-                <h1 className="text-5xl sm:text-[10rem] font-black text-white italic tracking-tighter drop-shadow-[0_5px_5px_rgba(0,0,0,0.6)] leading-[1] sm:leading-[0.8] uppercase">
+                <h1 className="text-5xl sm:text-[10rem] font-black text-white italic tracking-tighter drop-shadow-[0_25px_50px_rgba(0,0,0,0.6)] leading-[1] sm:leading-[0.8] uppercase">
                   DESAFIO DA<br /><span className="text-[#f7941d]">MEMÓRIA</span>
                 </h1>
               </motion.div>
@@ -432,20 +452,61 @@ const GameContent = () => {
               <span className="text-3xl sm:text-6xl font-black text-white tracking-widest uppercase italic">JOGAR</span>
             </motion.button>
 
-            <div className="flex flex-col gap-2 sm:gap-4 mb-8">
+            <div className="flex flex-col items-center gap-4 mb-8">
               <button 
-                onClick={() => window.location.href = '/cachorro-racao'} 
-                className="text-white/60 text-sm sm:text-2xl font-bold hover:text-white transition-colors"
+                onClick={fetchLeaderboard}
+                className="bg-white/10 hover:bg-white/20 backdrop-blur-md px-6 py-2 rounded-full text-white font-black uppercase italic tracking-wider border border-white/20 transition-all flex items-center gap-2"
               >
-                Ir para o Desafio Pet RobustUS
+                <Trophy className="w-4 h-4 text-[#f7941d]" />
+                Ver Placar
               </button>
-              <button 
-                onClick={() => window.location.href = '/cesta-robustus'} 
-                className="text-white/60 text-sm sm:text-2xl font-bold hover:text-white transition-colors"
-              >
-                Ir para a Cesta RobustUS
-              </button>
+
+              <div className="flex flex-col gap-2">
+                <button 
+                  onClick={() => window.location.href = '/cachorro-racao'} 
+                  className="text-white/60 text-sm sm:text-2xl font-bold hover:text-white transition-colors"
+                >
+                  Ir para o Desafio Pet RobustUS
+                </button>
+                <button 
+                  onClick={() => window.location.href = '/cesta-robustus'} 
+                  className="text-white/60 text-sm sm:text-2xl font-bold hover:text-white transition-colors"
+                >
+                  Ir para a Cesta RobustUS
+                </button>
+              </div>
             </div>
+
+            <AnimatePresence>
+              {loadingLeaderboard || leaderboard.length > 0 ? (
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }} 
+                  animate={{ opacity: 1, y: 0 }} 
+                  exit={{ opacity: 0, y: 20 }}
+                  className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+                  onClick={() => { setLeaderboard([]); setLoadingLeaderboard(false); }}
+                >
+                  <div 
+                    className="bg-white rounded-[2rem] p-6 w-full max-w-[400px] shadow-2xl border-t-[8px] border-[#f7941d]"
+                    onClick={e => e.stopPropagation()}
+                  >
+                    <div className="flex justify-between items-center mb-4">
+                      <h2 className="text-2xl font-black text-[#0047ab] uppercase italic">Placar</h2>
+                      <button onClick={() => { setLeaderboard([]); setLoadingLeaderboard(false); }} className="p-2 text-slate-400 hover:text-slate-600">
+                        <RotateCcw className="w-6 h-6" />
+                      </button>
+                    </div>
+                    <Leaderboard entries={leaderboard} loading={loadingLeaderboard} />
+                    <button 
+                      onClick={() => { setLeaderboard([]); setLoadingLeaderboard(false); }}
+                      className="w-full mt-4 bg-[#0047ab] text-white py-3 rounded-xl font-black uppercase italic"
+                    >
+                      Fechar
+                    </button>
+                  </div>
+                </motion.div>
+              ) : null}
+            </AnimatePresence>
           </motion.div>
         )}
 
@@ -576,7 +637,7 @@ const GameContent = () => {
                 </div>
               </div>
 
-              <Leaderboard entries={leaderboard} />
+              <Leaderboard entries={leaderboard} loading={loadingLeaderboard} />
 
               <div className="mt-6 sm:mt-8 w-full flex justify-center">
                 <motion.button 
@@ -602,7 +663,7 @@ const GameContent = () => {
               
               <p className="text-sm sm:text-base text-slate-400 font-bold uppercase mb-4 italic">OBRIGADO POR PARTICIPAR!</p>
 
-              <Leaderboard entries={leaderboard} />
+              <Leaderboard entries={leaderboard} loading={loadingLeaderboard} />
 
               <div className="mt-6 sm:mt-8 w-full flex justify-center">
                 <motion.button 
