@@ -402,13 +402,13 @@ const GameContent = () => {
                     </div>
                     <div className={`absolute inset-0 backface-hidden bg-white rounded-xl sm:rounded-[2rem] shadow-lg border-[4px] sm:border-[6px] flex flex-col items-center justify-between p-2 sm:p-4 rotate-y-180 transition-all duration-300 overflow-visible ${card.isMatched ? 'border-[#f7941d] bg-orange-50' : 'border-white'}`} style={{ transform: 'rotateY(180deg)' }}>
 
-                      {card.isMatched && <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute top-[10px] right-[10px] bg-[#f7941d] text-white p-1.5 rounded-full shadow-lg z-[2] border-2 border-white"><CheckCircle2 className="w-[18px] h-[18px]" /></motion.div>}
-                      <div className="w-full h-[65%] flex items-center justify-center relative bg-slate-50 rounded-2xl p-2 overflow-hidden">
+                      {card.isMatched && <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute top-[6px] right-[6px] sm:top-[10px] sm:right-[10px] bg-[#f7941d] text-white p-1 sm:p-1.5 rounded-full shadow-lg z-[2] border sm:border-2 border-white"><CheckCircle2 className="w-[12px] h-[12px] sm:w-[18px] sm:h-[18px]" /></motion.div>}
+                      <div className="w-full h-[65%] flex items-center justify-center relative bg-slate-50 rounded-lg sm:rounded-2xl p-1 sm:p-2 overflow-hidden">
                         <img src={card.img} alt={card.name} className="max-w-full max-h-full object-contain drop-shadow-md" />
                       </div>
-                      <div className="w-full text-center mt-2 px-1 overflow-hidden">
-                        <span className="inline-block px-3 py-0.5 bg-[#0047ab] rounded-full text-[10px] font-black text-white uppercase italic tracking-widest mb-1">{card.line}</span>
-                        <h4 className="text-[1.1rem] font-black text-[#003380] leading-[1.1] uppercase italic truncate w-full max-w-full">{card.name}</h4>
+                      <div className="w-full text-center mt-1 sm:mt-2 px-0.5 sm:px-1 overflow-hidden">
+                        <span className="inline-block px-2 sm:px-3 py-0.5 bg-[#0047ab] rounded-full text-[8px] sm:text-[10px] font-black text-white uppercase italic tracking-widest mb-0.5 sm:mb-1">{card.line}</span>
+                        <h4 className="text-[0.8rem] sm:text-[1.1rem] font-black text-[#003380] leading-[1.1] uppercase italic truncate w-full max-w-full">{card.name}</h4>
                       </div>
                     </div>
                   </motion.div>
