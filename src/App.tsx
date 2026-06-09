@@ -594,14 +594,14 @@ const GameContent = () => {
                           <img src={ASSETS.paw} className="w-4 h-4 sm:w-8 sm:h-8 brightness-0 invert opacity-60" alt="" />
                        </div>
                     </div>
-                    <div className={`card-front bg-white border-2 sm:border-4 shadow-lg flex flex-col items-center justify-between p-1.5 sm:p-3 transition-all duration-300 ${card.isMatched ? 'border-[#f7941d] bg-orange-50' : 'border-white'}`} style={{ transform: 'rotateY(180deg)' }}>
+                    <div className={`card-front bg-white border-2 sm:border-4 shadow-lg flex flex-col items-center justify-between transition-all duration-300 ${card.isMatched ? 'border-[#f7941d] bg-orange-50' : 'border-white'}`} style={{ transform: 'rotateY(180deg)' }}>
                       {card.isMatched && <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute top-1 right-1 sm:top-2 sm:right-2 bg-[#f7941d] text-white p-0.5 sm:p-1 rounded-full shadow-lg z-[2] border border-white"><CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4" /></motion.div>}
                       <div className="w-full h-full min-h-0 flex items-center justify-center relative bg-slate-50 rounded-md sm:rounded-xl p-0.5 sm:p-1 overflow-hidden">
-                        <img src={card.img} alt={card.name} className="max-w-full max-h-full object-contain" />
+                        <img src={card.img} alt={card.name} />
                       </div>
-                      <div className="w-full text-center mt-1 px-0.5 overflow-hidden flex flex-col items-center">
-                        <span className="inline-block px-1.5 py-0 bg-[#0047ab] rounded-full text-[6px] sm:text-[8px] font-black text-white uppercase italic tracking-widest mb-0.5">{card.line}</span>
-                        <h4 className="text-[9px] sm:text-xs lg:text-sm font-black text-[#003380] leading-tight uppercase italic w-full line-clamp-2">{card.name}</h4>
+                      <div className="w-full text-center flex flex-col items-center">
+                        <span className="product-badge inline-block px-1.5 py-0.5 bg-[#0047ab] rounded-full font-black text-white uppercase italic tracking-widest mb-0.5">{card.line}</span>
+                        <h4 className="product-name font-black text-[#003380] uppercase italic">{card.name}</h4>
                       </div>
                     </div>
                   </div>
@@ -644,7 +644,8 @@ const GameContent = () => {
               <div className="mt-6 sm:mt-8 w-full flex justify-center">
                 <motion.button 
                   whileTap={{ scale: 0.96 }} 
-                  onClick={() => { setGameState('START'); setSession(null); }} 
+                  onClick={() => { setGameState('AUTH'); setSession(null); setPrizeCode(""); setLeaderboard([]); }} 
+
                   className="play-again-button bg-[#f7941d] shadow-xl font-black text-white uppercase italic tracking-widest border-b-[4px] sm:border-b-[6px] border-[#d47a00]"
                 >
                   <RotateCcw /> JOGAR NOVAMENTE
@@ -670,7 +671,8 @@ const GameContent = () => {
               <div className="mt-6 sm:mt-8 w-full flex justify-center">
                 <motion.button 
                   whileTap={{ scale: 0.96 }} 
-                  onClick={() => { setGameState('START'); setSession(null); }} 
+                  onClick={() => { setGameState('AUTH'); setSession(null); setPrizeCode(""); setLeaderboard([]); }} 
+
                   className="play-again-button bg-slate-200 shadow-lg font-black text-slate-500 uppercase italic tracking-widest border-b-[4px] sm:border-b-[6px] border-slate-300"
                 >
                   <RotateCcw /> TENTAR DE NOVO
@@ -691,7 +693,7 @@ const GameContent = () => {
               <div className="mt-6 sm:mt-8 w-full flex justify-center">
                 <motion.button 
                   whileTap={{ scale: 0.96 }} 
-                  onClick={() => { setGameState('START'); setSession(null); }} 
+                  onClick={() => { setGameState('AUTH'); setSession(null); setPrizeCode(""); setLeaderboard([]); }} 
                   className="play-again-button bg-slate-200 shadow-lg font-black text-slate-500 uppercase italic tracking-widest border-b-[4px] sm:border-b-[6px] border-slate-300"
                 >
                   <RotateCcw /> VOLTAR AO INÍCIO
