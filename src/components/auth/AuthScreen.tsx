@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { supabase } from "@/integrations/supabase/client";
-import { User, Phone, CheckCircle2, ChevronRight } from 'lucide-react';
+import { User, Phone, CheckCircle2, ChevronRight, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface Props {
   onStart: (data: any) => void;
+  onClose?: () => void;
+
 }
 
-export const AuthScreen: React.FC<Props> = ({ onStart }) => {
+export const AuthScreen: React.FC<Props> = ({ onStart, onClose }) => {
   const [formData, setFormData] = useState({
     phone: '',
     name: '',
@@ -105,9 +107,20 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex-1 w-full flex flex-col items-center justify-center p-4 sm:p-8 z-10"
+      className="registration-screen flex-1 w-full flex flex-col items-center justify-center p-4 sm:p-8 z-10"
     >
-      <div className="w-full max-w-[min(92vw,460px)] bg-white/95 backdrop-blur-3xl p-6 sm:p-10 rounded-[2rem] sm:rounded-[3rem] shadow-[0_25px_50px_rgba(0,0,0,0.4)] border-t-[10px] sm:border-t-[15px] border-[#f7941d] flex flex-col gap-6 sm:gap-8 overflow-y-auto max-h-[90dvh]">
+      <div className="registration-card w-full max-w-[min(92vw,460px)] bg-white/95 backdrop-blur-3xl p-6 sm:p-10 rounded-[2rem] sm:rounded-[3rem] shadow-[0_25px_50px_rgba(0,0,0,0.4)] border-t-[10px] sm:border-t-[15px] border-[#f7941d] flex flex-col gap-6 sm:gap-8 relative">
+        {onClose && (
+          <button 
+            onClick={onClose}
+            className="absolute top-4 right-4 p-2 bg-slate-100 hover:bg-slate-200 rounded-full text-slate-400 hover:text-slate-600 transition-colors z-20"
+            aria-label="Fechar cadastro"
+            type="button"
+          >
+            <X className="w-6 h-6 sm:w-8 sm:h-8" />
+          </button>
+        )}
+
         
         <div className="text-center space-y-2">
           <h2 className="text-4xl sm:text-5xl font-black text-[#0047ab] uppercase italic tracking-tighter">CADASTRO</h2>
@@ -127,8 +140,15 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
                 value={formData.name}
                 onChange={e => setFormData({...formData, name: e.target.value.toUpperCase()})}
                 required
+                autoComplete="name"
+                onFocus={(e) => {
+                  setTimeout(() => {
+                    e.target.scrollIntoView({ behavior: "smooth", block: "center" });
+                  }, 250);
+                }}
                 className="w-full bg-slate-100 p-4 sm:p-6 pl-12 sm:pl-16 rounded-2xl text-xl sm:text-2xl font-bold text-[#003380] border-2 border-transparent focus:border-[#f7941d] outline-none transition-all placeholder:text-slate-400 uppercase"
               />
+
             </div>
 
             <div className="relative">
@@ -137,13 +157,20 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
               </div>
               <input 
                 type="text"
-                inputMode="numeric"
+                inputMode="tel"
                 placeholder="TELEFONE"
                 value={formData.phone}
                 onChange={handlePhoneChange}
                 required
+                autoComplete="tel"
+                onFocus={(e) => {
+                  setTimeout(() => {
+                    e.target.scrollIntoView({ behavior: "smooth", block: "center" });
+                  }, 250);
+                }}
                 className="w-full bg-slate-100 p-4 sm:p-6 pl-12 sm:pl-16 rounded-2xl text-xl sm:text-2xl font-bold text-[#003380] border-2 border-transparent focus:border-[#f7941d] outline-none transition-all placeholder:text-slate-400"
               />
+
             </div>
           </div>
 
