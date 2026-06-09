@@ -9,7 +9,9 @@ import {
   Zap,
   XCircle,
   Clock as ClockIcon,
-  Timer
+  Timer,
+  Volume2,
+  VolumeX
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -20,6 +22,7 @@ import { DogFoodGame } from './components/DogFoodGame';
 import { BasketCatcherGame } from './components/BasketCatcherGame';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { Toaster } from 'sonner';
+import { useAudioManager } from './hooks/useAudioManager';
 
 // Configuração da Marca RobustUS
 const BRAND = {
@@ -66,6 +69,7 @@ interface PlaySession {
 const GameContent = () => {
   const location = useLocation();
   const [gameState, setGameState] = useState<GameState>('START');
+  const { isMuted, toggleMute, playSound, startBackgroundMusic, stopBackgroundMusic, initAudio } = useAudioManager();
   const [cards, setCards] = useState<Card[]>([]);
   const [flippedCards, setFlippedCards] = useState<number[]>([]);
   const [prizeCode, setPrizeCode] = useState('');
@@ -121,6 +125,8 @@ const GameContent = () => {
     setPreviewCountdown(4);
     setGameStarted(false);
     setGameState('PLAYING');
+    initAudio();
+    startBackgroundMusic();
   };
 
   // Timer de Memorização
@@ -206,6 +212,8 @@ const GameContent = () => {
       if (data.result === "won" && data.prize_code) {
         setPrizeCode(data.prize_code);
         setGameState("VICTORY");
+        stopBackgroundMusic();
+        playSound('victory');
         confetti({
           particleCount: 200,
           spread: 80,
@@ -224,6 +232,8 @@ const GameContent = () => {
           max_seconds: data.max_seconds
         });
         setGameState("GAMEOVER");
+        stopBackgroundMusic();
+        playSound('lost');
         return;
       }
 
@@ -240,6 +250,8 @@ const GameContent = () => {
     if (lockBoard || gameState !== 'PLAYING' || isPreviewing || !gameStarted) return;
     const card = cards.find(c => c.instanceId === instanceId);
     if (!card || card.isFlipped || card.isMatched) return;
+
+    playSound('flip');
 
     const newCards = cards.map(c => 
       c.instanceId === instanceId ? { ...c, isFlipped: true } : c
@@ -267,6 +279,7 @@ const GameContent = () => {
           setCards(updatedCards);
           const newMatches = matches + 1;
           setMatches(newMatches);
+          playSound('match');
           setFlippedCards([]);
           setLockBoard(false);
           
@@ -286,6 +299,7 @@ const GameContent = () => {
           setCards(prev => prev.map(c => 
             c.instanceId === firstId || c.instanceId === secondId ? { ...c, isFlipped: false } : c
           ));
+          playSound('error');
           setFlippedCards([]);
           setLockBoard(false);
 
@@ -405,9 +419,18 @@ const GameContent = () => {
                     </div>
                   </div>
 
-                  <button onClick={() => setGameState('START')} className="p-2 sm:p-3 bg-white/15 backdrop-blur-md rounded-xl text-white border border-white/20">
-                    <RotateCcw className="w-4 h-4 sm:w-6 sm:h-6" />
-                  </button>
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={toggleMute} 
+                      className="p-2 sm:p-3 bg-white/15 backdrop-blur-md rounded-xl text-white border border-white/20"
+                      aria-label={isMuted ? "Ativar som" : "Desativar som"}
+                    >
+                      {isMuted ? <VolumeX className="w-4 h-4 sm:w-6 sm:h-6" /> : <Volume2 className="w-4 h-4 sm:w-6 sm:h-6" />}
+                    </button>
+                    <button onClick={() => { setGameState('START'); stopBackgroundMusic(); }} className="p-2 sm:p-3 bg-white/15 backdrop-blur-md rounded-xl text-white border border-white/20">
+                      <RotateCcw className="w-4 h-4 sm:w-6 sm:h-6" />
+                    </button>
+                  </div>
                 </div>
 
                 <div className="bg-white/95 backdrop-blur-md p-2 sm:p-4 rounded-2xl sm:rounded-3xl border sm:border-2 border-[#f7941d] shadow-xl w-full">
