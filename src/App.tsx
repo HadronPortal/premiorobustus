@@ -637,7 +637,7 @@ const GameContent = () => {
                 </div>
               </div>
 
-              <Leaderboard entries={leaderboard} />
+              <Leaderboard entries={leaderboard} loading={loadingLeaderboard} />
 
               <div className="mt-6 sm:mt-8 w-full flex justify-center">
                 <motion.button 
