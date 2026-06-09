@@ -618,16 +618,22 @@ const GameContent = () => {
         )}
         
         {gameState === 'ERROR' && (
-          <motion.div key="error" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex-1 w-full flex flex-col items-center justify-center p-4 sm:p-8 z-20">
-            <div className="relative w-full max-w-[min(92vw,480px)] bg-white/95 backdrop-blur-3xl p-8 sm:p-12 rounded-[2rem] sm:rounded-[3rem] shadow-[0_25px_50px_rgba(0,0,0,0.4)] border-t-[10px] sm:border-t-[15px] border-red-500 flex flex-col items-center text-center overflow-hidden">
-              <div className="space-y-4 sm:space-y-6 mb-8 sm:mb-10">
-                <XCircle className="w-24 h-24 sm:w-32 sm:h-32 text-red-500 mx-auto" />
-                <h2 className="text-4xl sm:text-5xl font-black text-[#0047ab] leading-none tracking-tighter uppercase italic">AVISO</h2>
-                <p className="text-xl sm:text-2xl font-bold text-slate-500 uppercase tracking-widest leading-tight">{error}</p>
+          <motion.div key="error" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="victory-screen">
+            <div className="victory-card bg-white/95 backdrop-blur-3xl rounded-[2rem] sm:rounded-[3rem] shadow-[0_25px_50px_rgba(0,0,0,0.4)] border-t-[8px] sm:border-t-[12px] border-red-500">
+              <div className="space-y-3 sm:space-y-4 mb-4 sm:mb-6">
+                <XCircle className="w-16 h-16 sm:w-24 sm:h-24 text-red-500 mx-auto" />
+                <h2 className="text-3xl sm:text-5xl font-black text-[#0047ab] leading-none tracking-tighter uppercase italic">AVISO</h2>
+                <p className="text-lg sm:text-xl font-bold text-slate-500 uppercase tracking-widest leading-tight">{error}</p>
               </div>
-              <motion.button whileTap={{ scale: 0.94 }} onClick={() => setGameState('START')} className="w-full bg-slate-200 py-4 sm:py-6 rounded-2xl sm:rounded-3xl flex items-center justify-center gap-3 sm:gap-4 text-2xl sm:text-3xl font-black text-slate-500 uppercase italic tracking-widest border-b-[6px] sm:border-b-[10px] border-slate-300">
-                <RotateCcw className="w-8 h-8 sm:w-10 sm:h-10" /> VOLTAR AO INÍCIO
-              </motion.button>
+              <div className="mt-6 sm:mt-8 w-full flex justify-center">
+                <motion.button 
+                  whileTap={{ scale: 0.96 }} 
+                  onClick={() => { setGameState('START'); setSession(null); }} 
+                  className="play-again-button bg-slate-200 shadow-lg font-black text-slate-500 uppercase italic tracking-widest border-b-[4px] sm:border-b-[6px] border-slate-300"
+                >
+                  <RotateCcw /> VOLTAR AO INÍCIO
+                </motion.button>
+              </div>
             </div>
           </motion.div>
         )}
