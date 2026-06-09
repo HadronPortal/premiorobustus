@@ -79,6 +79,11 @@ const GameContent = () => {
   const [startTime, setStartTime] = useState<number>(0);
   const [error, setError] = useState('');
 
+  // Fase de Memorização
+  const [isPreviewing, setIsPreviewing] = useState(false);
+  const [previewCountdown, setPreviewCountdown] = useState(4);
+  const [gameStarted, setGameStarted] = useState(false);
+
   // Verificar rota de admin
   useEffect(() => {
     // Adiciona classe para o modo totem se não estiver no admin
