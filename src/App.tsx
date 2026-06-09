@@ -311,41 +311,41 @@ const GameContent = () => {
 
       <AnimatePresence mode="wait">
         {gameState === 'START' && (
-          <motion.div key="start" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 w-full flex flex-col items-center justify-between py-24 px-12 z-10">
-            <motion.div initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="w-full flex justify-center mt-12">
-              <div className="bg-white p-8 rounded-[3.5rem] shadow-2xl border-4 border-[#f7941d] w-80 h-80 flex items-center justify-center">
+          <motion.div key="start" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 w-full flex flex-col items-center justify-between py-12 px-6 sm:py-24 sm:px-12 z-10">
+            <motion.div initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="w-full flex justify-center mt-4 sm:mt-12">
+              <div className="bg-white p-4 sm:p-8 rounded-[2rem] sm:rounded-[3.5rem] shadow-2xl border-4 border-[#f7941d] w-48 h-48 sm:w-80 sm:h-80 flex items-center justify-center">
                 <img src={ASSETS.logo} alt="Logo" className="w-full h-auto object-contain" />
               </div>
             </motion.div>
 
-            <div className="flex flex-col items-center text-center gap-12 mb-20">
-              <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.2 }} className="space-y-4">
-                <h1 className="text-[12rem] font-black text-white italic tracking-tighter drop-shadow-[0_15px_15px_rgba(0,0,0,0.6)] leading-[0.8] uppercase">
+            <div className="flex flex-col items-center text-center gap-6 sm:gap-12 mb-10 sm:mb-20">
+              <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.2 }} className="space-y-2">
+                <h1 className="text-5xl sm:text-[10rem] font-black text-white italic tracking-tighter drop-shadow-[0_5px_5px_rgba(0,0,0,0.6)] leading-[1] sm:leading-[0.8] uppercase">
                   DESAFIO DA<br /><span className="text-[#f7941d]">MEMÓRIA</span>
                 </h1>
               </motion.div>
-              <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.4 }} className="bg-white/15 backdrop-blur-xl px-16 py-10 rounded-[4rem] border-2 border-white/30 shadow-2xl">
-                <p className="text-5xl font-black text-white uppercase tracking-wider leading-tight">
-                  ENCONTRE OS 5 PARES<br /><span className="text-[#f7941d] text-6xl drop-shadow-md">E GANHE UM BRINDE!</span>
+              <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.4 }} className="bg-white/15 backdrop-blur-xl px-8 py-4 sm:px-16 sm:py-10 rounded-3xl sm:rounded-[4rem] border-2 border-white/30 shadow-2xl">
+                <p className="text-xl sm:text-5xl font-black text-white uppercase tracking-wider leading-tight">
+                  ENCONTRE OS 5 PARES<br /><span className="text-[#f7941d] text-2xl sm:text-6xl drop-shadow-md">E GANHE UM BRINDE!</span>
                 </p>
               </motion.div>
             </div>
 
-            <motion.button whileTap={{ scale: 0.94 }} onClick={() => setGameState('AUTH')} className="w-full max-w-[90%] bg-[#f7941d] py-14 rounded-[5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.6)] flex items-center justify-center gap-8 border-b-[20px] border-[#d47a00] active:border-b-0 transition-all mb-4">
-              <Play className="w-20 h-20 text-white fill-current" />
-              <span className="text-7xl font-black text-white tracking-widest uppercase italic">JOGAR</span>
+            <motion.button whileTap={{ scale: 0.94 }} onClick={() => setGameState('AUTH')} className="w-full max-w-[min(90%,480px)] bg-[#f7941d] py-6 sm:py-10 rounded-3xl sm:rounded-[5rem] shadow-[0_20px_40px_-10px_rgba(0,0,0,0.6)] flex items-center justify-center gap-4 sm:gap-8 border-b-[8px] sm:border-b-[16px] border-[#d47a00] active:border-b-0 transition-all mb-4">
+              <Play className="w-10 h-10 sm:w-16 sm:h-16 text-white fill-current" />
+              <span className="text-3xl sm:text-6xl font-black text-white tracking-widest uppercase italic">JOGAR</span>
             </motion.button>
 
-            <div className="flex flex-col gap-4 mb-12">
+            <div className="flex flex-col gap-2 sm:gap-4 mb-8">
               <button 
                 onClick={() => window.location.href = '/cachorro-racao'} 
-                className="text-white/50 text-3xl font-bold hover:text-white/80 transition-colors"
+                className="text-white/60 text-sm sm:text-2xl font-bold hover:text-white transition-colors"
               >
                 Ir para o Desafio Pet RobustUS
               </button>
               <button 
                 onClick={() => window.location.href = '/cesta-robustus'} 
-                className="text-white/50 text-3xl font-bold hover:text-white/80 transition-colors"
+                className="text-white/60 text-sm sm:text-2xl font-bold hover:text-white transition-colors"
               >
                 Ir para a Cesta RobustUS
               </button>
