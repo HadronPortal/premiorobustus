@@ -139,6 +139,7 @@ const GameContent = () => {
             setIsPreviewing(false);
             setGameStarted(true);
             setLockBoard(false);
+            setFlippedCards([]);
             setStartTime(Date.now());
             return 0;
           }
