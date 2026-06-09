@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Timer } from 'lucide-react';
+import { Timer, Gift } from 'lucide-react';
 import { supabase } from "@/integrations/supabase/client";
 import { AuthScreen } from './auth/AuthScreen';
 import confetti from 'canvas-confetti';
