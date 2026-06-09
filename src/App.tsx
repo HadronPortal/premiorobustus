@@ -17,6 +17,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { AuthScreen } from './components/auth/AuthScreen';
 import { AdminScreen } from './components/admin/AdminScreen';
 import { DogFoodGame } from './components/DogFoodGame';
+import { BasketCatcherGame } from './components/BasketCatcherGame';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { Toaster } from 'sonner';
 
@@ -335,12 +336,20 @@ const GameContent = () => {
               <span className="text-7xl font-black text-white tracking-widest uppercase italic">JOGAR</span>
             </motion.button>
 
-            <button 
-              onClick={() => window.location.href = '/cachorro-racao'} 
-              className="mb-12 text-white/50 text-3xl font-bold hover:text-white/80 transition-colors"
-            >
-              Ir para o Desafio Pet RobustUS
-            </button>
+            <div className="flex flex-col gap-4 mb-12">
+              <button 
+                onClick={() => window.location.href = '/cachorro-racao'} 
+                className="text-white/50 text-3xl font-bold hover:text-white/80 transition-colors"
+              >
+                Ir para o Desafio Pet RobustUS
+              </button>
+              <button 
+                onClick={() => window.location.href = '/cesta-robustus'} 
+                className="text-white/50 text-3xl font-bold hover:text-white/80 transition-colors"
+              >
+                Ir para a Cesta RobustUS
+              </button>
+            </div>
           </motion.div>
         )}
 
@@ -486,8 +495,9 @@ const App = () => {
     <BrowserRouter>
         <Routes>
           <Route path="/" element={<GameContent />} />
-          <Route path="/cachorro-racao" element={<DogFoodGame />} />
           <Route path="/validar-brinde" element={<AdminScreen />} />
+          <Route path="/cachorro-racao" element={<DogFoodGame />} />
+          <Route path="/cesta-robustus" element={<BasketCatcherGame />} />
         </Routes>
       <Toaster position="top-center" richColors />
     </BrowserRouter>
