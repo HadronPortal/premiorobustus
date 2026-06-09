@@ -487,8 +487,9 @@ const App = () => {
     <BrowserRouter>
         <Routes>
           <Route path="/" element={<GameContent />} />
-          <Route path="/cachorro-racao" element={<DogFoodGame />} />
           <Route path="/validar-brinde" element={<AdminScreen />} />
+          <Route path="/cachorro-racao" element={<DogFoodGame />} />
+          <Route path="/cesta-robustus" element={<BasketCatcherGame />} />
         </Routes>
       <Toaster position="top-center" richColors />
     </BrowserRouter>

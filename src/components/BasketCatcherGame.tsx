@@ -32,6 +32,7 @@ export const BasketCatcherGame = () => {
   const [gameState, setGameState] = useState<GameState>('START');
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(45);
+  const [prizeCode, setPrizeCode] = useState('');
   const [session, setSession] = useState<{play_id: string, play_token: string} | null>(null);
   const [dogX, setDogX] = useState(50);
   const [items, setItems] = useState<{id: number, x: number, y: number, speed: number, product: any}[]>([]);
@@ -64,6 +65,7 @@ export const BasketCatcherGame = () => {
         return; 
       }
       if (data.result === "won") { 
+        setPrizeCode(data.prize_code || "ERRO-CODIGO");
         setGameState("VICTORY"); 
         confetti({ particleCount: 200, spread: 80, colors: [BRAND.primary, BRAND.orange] });
       } else { 
@@ -241,7 +243,7 @@ export const BasketCatcherGame = () => {
                     <p className="text-4xl font-bold text-white uppercase tracking-widest mb-6">PARABÉNS! VOCÊ ALCANÇOU A META!</p>
                     <div className="bg-white p-8 rounded-3xl border-4 border-[#f7941d]">
                       <p className="text-2xl font-bold text-slate-400 uppercase mb-2">Seu código de brinde:</p>
-                      <p className="text-8xl font-black text-[#0047ab] tracking-tighter italic">ROBUSTUS-GANHOU</p>
+                      <p className="text-8xl font-black text-[#0047ab] tracking-tighter italic">{prizeCode}</p>
                       <p className="text-xl font-bold text-slate-500 mt-4 uppercase">Mostre esta tela para a equipe no stand</p>
                     </div>
                   </div>
