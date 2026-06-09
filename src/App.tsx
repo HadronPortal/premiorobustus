@@ -498,7 +498,8 @@ const GameContent = () => {
           </motion.div>
         )}
 
-        {gameState === 'AUTH' && <AuthScreen key="auth" onStart={initializeGame} />}
+        {gameState === 'AUTH' && <AuthScreen key="auth" onStart={initializeGame} onClose={() => setGameState('START')} />}
+
 
         {gameState === 'PLAYING' && (
           <motion.div key="playing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="game-screen z-10">
@@ -679,9 +680,10 @@ const GameContent = () => {
               <div className="mt-6 sm:mt-8 w-full flex justify-center">
                 <motion.button 
                   whileTap={{ scale: 0.96 }} 
-                  onClick={() => { setGameState('AUTH'); setSession(null); setPrizeCode(""); setLeaderboard([]); }} 
+                  onClick={() => { setGameState('START'); setSession(null); setPrizeCode(""); setLeaderboard([]); }} 
                   className="play-again-button bg-slate-200 shadow-lg font-black text-slate-500 uppercase italic tracking-widest border-b-[4px] sm:border-b-[6px] border-slate-300"
                 >
+
                   <RotateCcw /> VOLTAR AO INÍCIO
                 </motion.button>
               </div>
