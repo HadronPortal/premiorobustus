@@ -85,8 +85,6 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
       if (!data?.ok) {
         if (data?.status === "invalid_cpf") {
           setError("CPF inválido.");
-        } else if (data?.status === "already_played") {
-          setError("Este CPF já participou desta ação.");
         } else {
           setError(data?.message || "Não foi possível iniciar agora.");
         }

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-type SoundType = 'flip' | 'match' | 'error' | 'victory' | 'lost';
+type SoundType = 'flip' | 'match' | 'error' | 'victory' | 'lost' | 'applause' | 'crowd-ahh' | 'victory-applause';
 
 export const useAudioManager = () => {
   const [isMuted, setIsMuted] = useState(() => {
@@ -73,16 +73,19 @@ export const useAudioManager = () => {
         playOscillator([440, 880], 0.1, 'sine', 0.2);
         break;
       case 'match':
-        playOscillator([523.25, 659.25, 783.99], 0.3, 'triangle', 0.4);
+      case 'applause':
+        playOscillator([523.25, 659.25, 783.99, 880], 0.4, 'triangle', 0.4);
         break;
       case 'error':
-        playOscillator([220, 110], 0.2, 'sawtooth', 0.2);
+      case 'crowd-ahh':
+        playOscillator([220, 165, 110], 0.3, 'sawtooth', 0.2);
         break;
       case 'victory':
-        playOscillator([523.25, 659.25, 783.99, 1046.50], 0.6, 'sine', 0.5);
+      case 'victory-applause':
+        playOscillator([523.25, 659.25, 783.99, 1046.50, 1318.51], 0.8, 'sine', 0.5);
         break;
       case 'lost':
-        playOscillator([110, 55], 0.5, 'square', 0.3);
+        playOscillator([110, 82, 55], 0.6, 'square', 0.3);
         break;
     }
 

@@ -213,7 +213,7 @@ const GameContent = () => {
         setPrizeCode(data.prize_code);
         setGameState("VICTORY");
         stopBackgroundMusic();
-        playSound('victory');
+        playSound('victory-applause');
         confetti({
           particleCount: 200,
           spread: 80,
@@ -279,7 +279,7 @@ const GameContent = () => {
           setCards(updatedCards);
           const newMatches = matches + 1;
           setMatches(newMatches);
-          playSound('match');
+          playSound('applause');
           setFlippedCards([]);
           setLockBoard(false);
           
@@ -299,7 +299,7 @@ const GameContent = () => {
           setCards(prev => prev.map(c => 
             c.instanceId === firstId || c.instanceId === secondId ? { ...c, isFlipped: false } : c
           ));
-          playSound('error');
+          playSound('crowd-ahh');
           setFlippedCards([]);
           setLockBoard(false);
 
