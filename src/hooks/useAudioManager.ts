@@ -1,0 +1,121 @@
+import { useEffect, useRef, useState } from 'react';
+
+type SoundType = 'flip' | 'match' | 'error' | 'victory' | 'lost';
+
+export const useAudioManager = () => {
+  const [isMuted, setIsMuted] = useState(() => {
+    const saved = localStorage.getItem('robustus-sound-muted');
+    return saved ? JSON.parse(saved) : false;
+  });
+
+  const audioCtx = useRef<AudioContext | null>(null);
+  const bgMusic = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    localStorage.setItem('robustus-sound-muted', JSON.stringify(isMuted));
+    if (bgMusic.current) {
+      bgMusic.current.muted = isMuted;
+    }
+  }, [isMuted]);
+
+  const initAudio = () => {
+    if (!audioCtx.current) {
+      audioCtx.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+    }
+    
+    if (!bgMusic.current) {
+      // Usaremos um oscilador simples para a música de fundo se o arquivo não existir, 
+      // mas aqui deixamos preparado para o arquivo mp3
+      bgMusic.current = new Audio('/audio/background.mp3');
+      bgMusic.current.loop = true;
+      bgMusic.current.volume = 0.2;
+      bgMusic.current.muted = isMuted;
+    }
+
+    if (audioCtx.current.state === 'suspended') {
+      audioCtx.current.resume();
+    }
+  };
+
+  const playOscillator = (freqs: number[], duration: number, type: OscillatorType = 'sine', volume = 0.3) => {
+    if (isMuted || !audioCtx.current) return;
+
+    const ctx = audioCtx.current;
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = type;
+    
+    // Envelope de volume
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(volume, now + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + duration);
+
+    // Sequência de frequências (para sons complexos)
+    freqs.forEach((freq, i) => {
+      osc.frequency.setValueAtTime(freq, now + (i * duration / freqs.length));
+    });
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + duration);
+  };
+
+  const playSound = (type: SoundType) => {
+    if (isMuted) return;
+    initAudio();
+
+    switch (type) {
+      case 'flip':
+        playOscillator([440, 880], 0.1, 'sine', 0.2);
+        break;
+      case 'match':
+        playOscillator([523.25, 659.25, 783.99], 0.3, 'triangle', 0.4);
+        break;
+      case 'error':
+        playOscillator([220, 110], 0.2, 'sawtooth', 0.2);
+        break;
+      case 'victory':
+        playOscillator([523.25, 659.25, 783.99, 1046.50], 0.6, 'sine', 0.5);
+        break;
+      case 'lost':
+        playOscillator([110, 55], 0.5, 'square', 0.3);
+        break;
+    }
+
+    // Tentar tocar arquivo se existir (fallback para Web Audio)
+    const audioFile = new Audio(`/audio/${type}.mp3`);
+    audioFile.volume = 0.45;
+    audioFile.play().catch(() => {
+      // Silenciosamente falha se o arquivo não existir, o oscilador já tocou
+    });
+  };
+
+  const startBackgroundMusic = () => {
+    initAudio();
+    if (bgMusic.current) {
+      bgMusic.current.play().catch(e => console.log("Erro ao tocar música de fundo:", e));
+    }
+  };
+
+  const stopBackgroundMusic = () => {
+    if (bgMusic.current) {
+      bgMusic.current.pause();
+      bgMusic.current.currentTime = 0;
+    }
+  };
+
+  const toggleMute = () => setIsMuted(!isMuted);
+
+  return {
+    isMuted,
+    toggleMute,
+    playSound,
+    startBackgroundMusic,
+    stopBackgroundMusic,
+    initAudio
+  };
+};
