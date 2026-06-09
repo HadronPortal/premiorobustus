@@ -164,7 +164,7 @@ const GameContent = () => {
       }, 1000);
     }
     return () => clearInterval(timer);
-  }, [gameState, timeLeft]);
+  }, [gameState, gameStarted, isPreviewing, timeLeft]);
 
   const handleGameOver = async (reason: 'time' | 'attempts' | 'won') => {
     if (gameState !== 'PLAYING') return;
