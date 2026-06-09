@@ -116,15 +116,37 @@ const GameContent = () => {
     setMatches(0);
     setAttemptsUsed(0);
     setTimeLeft(playSession.max_seconds);
-    setStartTime(Date.now());
-    setLockBoard(false);
+    setLockBoard(true);
+    setIsPreviewing(true);
+    setPreviewCountdown(4);
+    setGameStarted(false);
     setGameState('PLAYING');
   };
+
+  // Timer de Memorização
+  useEffect(() => {
+    let timer: ReturnType<typeof setInterval>;
+    if (gameState === 'PLAYING' && isPreviewing && previewCountdown > 0) {
+      timer = setInterval(() => {
+        setPreviewCountdown(prev => {
+          if (prev <= 1) {
+            setIsPreviewing(false);
+            setGameStarted(true);
+            setLockBoard(false);
+            setStartTime(Date.now());
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [gameState, isPreviewing, previewCountdown]);
 
   // Timer do jogo
   useEffect(() => {
     let timer: ReturnType<typeof setInterval>;
-    if (gameState === 'PLAYING' && timeLeft > 0) {
+    if (gameState === 'PLAYING' && gameStarted && !isPreviewing && timeLeft > 0) {
       timer = setInterval(() => {
         setTimeLeft(prev => {
           if (prev <= 1) {
