@@ -287,7 +287,7 @@ const GameContent = () => {
 
   return (
     <div className="totem-wrapper">
-      <div className="totem-container flex flex-col items-center justify-start relative select-none touch-none shadow-2xl overflow-hidden">
+      <div className="totem-container flex flex-col items-center justify-start relative select-none shadow-2xl overflow-x-hidden overflow-y-auto">
       
       {/* Background Container */}
       <div className="absolute inset-0 z-0">
