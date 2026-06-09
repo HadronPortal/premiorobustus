@@ -164,7 +164,7 @@ const GameContent = () => {
       }, 1000);
     }
     return () => clearInterval(timer);
-  }, [gameState, timeLeft]);
+  }, [gameState, gameStarted, isPreviewing, timeLeft]);
 
   const handleGameOver = async (reason: 'time' | 'attempts' | 'won') => {
     if (gameState !== 'PLAYING') return;
@@ -398,101 +398,98 @@ const GameContent = () => {
 
         {gameState === 'PLAYING' && (
           <motion.div key="playing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="game-screen z-10">
-            {/* Header Compacto */}
-            <div className="game-header">
-              <div className="w-full flex flex-col gap-2 sm:gap-4">
-                <div className="flex justify-between items-center gap-3">
-                  <div className="bg-white p-2 sm:p-3 rounded-xl sm:rounded-2xl shadow-lg border border-[#f7941d] w-24 sm:w-40">
-                    <img src={ASSETS.logo} className="w-full h-auto object-contain" alt="Logo" />
-                  </div>
-                  
-                  {/* Indicadores em linha para Mobile */}
-                  <div className="flex-1 flex justify-center items-center gap-2 sm:gap-4">
-                    <div className="bg-white/15 backdrop-blur-md px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl flex items-center gap-2 text-white border border-white/20">
-                      <Timer className="w-4 h-4 sm:w-6 sm:h-6 text-[#f7941d]" />
-                      <span className="text-base sm:text-2xl font-black">{timeLeft}s</span>
+            {/* Header Compacto - Ocultar na memorização para liberar espaço */}
+            {!isPreviewing ? (
+              <div className="game-header">
+                <div className="w-full flex flex-col gap-1 sm:gap-4">
+                  <div className="flex justify-between items-center gap-3">
+                    <div className="bg-white p-1.5 sm:p-3 rounded-xl sm:rounded-2xl shadow-lg border border-[#f7941d] w-20 sm:w-40">
+                      <img src={ASSETS.logo} className="w-full h-auto object-contain" alt="Logo" />
                     </div>
                     
-                    <div className="hidden sm:flex bg-white/15 backdrop-blur-md px-4 py-2 rounded-xl items-center gap-2 text-white border border-white/20">
-                      <Zap className="w-5 h-5 text-[#f7941d]" />
-                      <span className="text-xl font-black">{session ? session.max_attempts - attemptsUsed : 0}</span>
+                    <div className="flex-1 flex justify-center items-center gap-2 sm:gap-4">
+                      <div className="bg-white/15 backdrop-blur-md px-3 py-1 sm:px-4 sm:py-2 rounded-xl flex items-center gap-2 text-white border border-white/20">
+                        <Timer className="w-4 h-4 sm:w-6 sm:h-6 text-[#f7941d]" />
+                        <span className="text-base sm:text-2xl font-black">{timeLeft}s</span>
+                      </div>
+                      
+                      <div className="hidden sm:flex bg-white/15 backdrop-blur-md px-4 py-2 rounded-xl items-center gap-2 text-white border border-white/20">
+                        <Zap className="w-5 h-5 text-[#f7941d]" />
+                        <span className="text-xl font-black">{session ? session.max_attempts - attemptsUsed : 0}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2">
+                      <button 
+                        onClick={toggleMute} 
+                        className="p-1.5 sm:p-3 bg-white/15 backdrop-blur-md rounded-xl text-white border border-white/20"
+                        aria-label={isMuted ? "Ativar som" : "Desativar som"}
+                      >
+                        {isMuted ? <VolumeX className="w-4 h-4 sm:w-6 sm:h-6" /> : <Volume2 className="w-4 h-4 sm:w-6 sm:h-6" />}
+                      </button>
+                      <button onClick={() => { setGameState('START'); stopBackgroundMusic(); }} className="p-1.5 sm:p-3 bg-white/15 backdrop-blur-md rounded-xl text-white border border-white/20">
+                        <RotateCcw className="w-4 h-4 sm:w-6 sm:h-6" />
+                      </button>
                     </div>
                   </div>
 
-                  <div className="flex gap-2">
-                    <button 
-                      onClick={toggleMute} 
-                      className="p-2 sm:p-3 bg-white/15 backdrop-blur-md rounded-xl text-white border border-white/20"
-                      aria-label={isMuted ? "Ativar som" : "Desativar som"}
-                    >
-                      {isMuted ? <VolumeX className="w-4 h-4 sm:w-6 sm:h-6" /> : <Volume2 className="w-4 h-4 sm:w-6 sm:h-6" />}
-                    </button>
-                    <button onClick={() => { setGameState('START'); stopBackgroundMusic(); }} className="p-2 sm:p-3 bg-white/15 backdrop-blur-md rounded-xl text-white border border-white/20">
-                      <RotateCcw className="w-4 h-4 sm:w-6 sm:h-6" />
-                    </button>
-                  </div>
-                </div>
-
-                <div className="bg-white/95 backdrop-blur-md p-2 sm:p-4 rounded-2xl sm:rounded-3xl border sm:border-2 border-[#f7941d] shadow-xl w-full">
-                  <div className="flex justify-between items-center px-2 mb-1 sm:mb-2">
-                    <div className="flex items-center gap-2">
-                       <span className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase italic">Pares:</span>
-                       <span className="text-sm sm:text-xl font-black text-[#0047ab]">{matches} / 5</span>
+                  <div className="bg-white/95 backdrop-blur-md p-1.5 sm:p-4 rounded-xl sm:rounded-3xl border sm:border-2 border-[#f7941d] shadow-xl w-full">
+                    <div className="flex justify-between items-center px-2 mb-1">
+                      <div className="flex items-center gap-2">
+                         <span className="text-[9px] sm:text-xs font-bold text-slate-400 uppercase italic">Pares:</span>
+                         <span className="text-xs sm:text-xl font-black text-[#0047ab]">{matches} / 5</span>
+                      </div>
+                      <div className="flex items-center gap-2 sm:hidden">
+                         <span className="text-[9px] sm:text-xs font-bold text-slate-400 uppercase italic">Chances:</span>
+                         <span className="text-xs font-black text-[#f7941d]">{session ? session.max_attempts - attemptsUsed : 0}</span>
+                      </div>
+                      <div className="hidden sm:block h-3 bg-slate-100 rounded-full overflow-hidden flex-1 mx-4 p-0.5 border border-slate-200">
+                        <motion.div initial={{ width: 0 }} animate={{ width: `${(matches / 5) * 100}%` }} className="h-full bg-gradient-to-r from-[#f7941d] to-[#ffb85f] rounded-full" />
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2 sm:hidden">
-                       <span className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase italic">Chances:</span>
-                       <span className="text-sm font-black text-[#f7941d]">{session ? session.max_attempts - attemptsUsed : 0}</span>
-                    </div>
-                    <div className="hidden sm:block h-3 bg-slate-100 rounded-full overflow-hidden flex-1 mx-4 p-0.5 border border-slate-200">
+                    <div className="sm:hidden h-1.5 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200">
                       <motion.div initial={{ width: 0 }} animate={{ width: `${(matches / 5) * 100}%` }} className="h-full bg-gradient-to-r from-[#f7941d] to-[#ffb85f] rounded-full" />
                     </div>
                   </div>
-                  <div className="sm:hidden h-2 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200">
-                    <motion.div initial={{ width: 0 }} animate={{ width: `${(matches / 5) * 100}%` }} className="h-full bg-gradient-to-r from-[#f7941d] to-[#ffb85f] rounded-full" />
-                  </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="game-header flex justify-between items-center py-2 px-2">
+                <div className="bg-white p-1.5 rounded-xl shadow-lg border border-[#f7941d] w-20">
+                  <img src={ASSETS.logo} className="w-full h-auto object-contain" alt="Logo" />
+                </div>
+                <div className="bg-[#f7941d] px-4 py-2 rounded-2xl shadow-xl border-2 border-white flex items-center gap-3">
+                  <span className="text-sm font-black text-white uppercase italic">Memorize os produtos</span>
+                  <span className="text-2xl font-black text-white">{previewCountdown}</span>
+                </div>
+              </div>
+            )}
 
             {/* Board */}
             <div className="memory-board">
               {cards.map((card) => (
-                <div key={card.instanceId} onClick={() => handleCardClick(card.instanceId)} className="memory-card relative perspective-1000 cursor-pointer">
-                  <motion.div animate={{ rotateY: isPreviewing || card.isFlipped || card.isMatched ? 180 : 0, scale: card.isMatched ? 0.96 : 1 }} transition={{ type: "spring", stiffness: 180, damping: 22 }} className="card-inner preserve-3d relative">
-                    <div className="absolute inset-0 backface-hidden bg-[#0047ab] rounded-lg sm:rounded-2xl shadow-lg border-2 sm:border-4 border-white/40 flex flex-col items-center justify-center overflow-hidden">
+                <div key={card.instanceId} onClick={() => handleCardClick(card.instanceId)} className="memory-card">
+                  <div className="card-inner" style={{ transform: isPreviewing || card.isFlipped || card.isMatched ? 'rotateY(180deg)' : 'rotateY(0deg)', transition: 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)' }}>
+                    <div className="card-back bg-[#0047ab] border-2 sm:border-4 border-white/40 flex flex-col items-center justify-center shadow-lg">
                        <div className="absolute inset-0 bg-paw-pattern opacity-10"></div>
                        <div className="w-8 h-8 sm:w-16 sm:h-16 bg-white/10 rounded-full flex items-center justify-center relative z-10 border border-white/20">
                           <img src={ASSETS.paw} className="w-4 h-4 sm:w-8 sm:h-8 brightness-0 invert opacity-60" alt="" />
                        </div>
                     </div>
-                    <div className={`absolute inset-0 backface-hidden bg-white rounded-lg sm:rounded-2xl shadow-lg border-2 sm:border-4 flex flex-col items-center justify-between p-1.5 sm:p-3 rotate-y-180 transition-all duration-300 ${card.isMatched ? 'border-[#f7941d] bg-orange-50' : 'border-white'}`} style={{ transform: 'rotateY(180deg)' }}>
+                    <div className={`card-front bg-white border-2 sm:border-4 shadow-lg flex flex-col items-center justify-between p-1.5 sm:p-3 transition-all duration-300 ${card.isMatched ? 'border-[#f7941d] bg-orange-50' : 'border-white'}`}>
                       {card.isMatched && <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute top-1 right-1 sm:top-2 sm:right-2 bg-[#f7941d] text-white p-0.5 sm:p-1 rounded-full shadow-lg z-[2] border border-white"><CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4" /></motion.div>}
-                      <div className="w-full h-[60%] flex items-center justify-center relative bg-slate-50 rounded-md sm:rounded-xl p-0.5 sm:p-1 overflow-hidden">
+                      <div className="w-full h-full min-h-0 flex items-center justify-center relative bg-slate-50 rounded-md sm:rounded-xl p-0.5 sm:p-1 overflow-hidden">
                         <img src={card.img} alt={card.name} className="max-w-full max-h-full object-contain" />
                       </div>
-                      <div className="w-full text-center mt-0.5 px-0.5 overflow-hidden">
+                      <div className="w-full text-center mt-1 px-0.5 overflow-hidden flex flex-col items-center">
                         <span className="inline-block px-1.5 py-0 bg-[#0047ab] rounded-full text-[6px] sm:text-[8px] font-black text-white uppercase italic tracking-widest mb-0.5">{card.line}</span>
-                        <h4 className="text-[9px] sm:text-xs lg:text-sm font-black text-[#003380] leading-tight uppercase italic truncate w-full">{card.name}</h4>
+                        <h4 className="text-[9px] sm:text-xs lg:text-sm font-black text-[#003380] leading-tight uppercase italic w-full line-clamp-2">{card.name}</h4>
                       </div>
                     </div>
-                  </motion.div>
+                  </div>
                 </div>
               ))}
             </div>
-
-            {/* Overlay de Memorização */}
-            <AnimatePresence>
-              {isPreviewing && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm">
-                  <div className="bg-white p-6 sm:p-10 rounded-[2rem] shadow-2xl border-4 border-[#f7941d] flex flex-col items-center gap-4">
-                    <h3 className="text-2xl sm:text-4xl font-black text-[#0047ab] uppercase italic text-center">Memorize os produtos</h3>
-                    <div className="w-16 h-16 sm:w-24 sm:h-24 bg-[#f7941d] rounded-full flex items-center justify-center shadow-xl border-4 border-white">
-                      <span className="text-4xl sm:text-6xl font-black text-white">{previewCountdown}</span>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
           </motion.div>
         )}
 
