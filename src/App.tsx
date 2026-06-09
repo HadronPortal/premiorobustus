@@ -79,6 +79,11 @@ const GameContent = () => {
   const [startTime, setStartTime] = useState<number>(0);
   const [error, setError] = useState('');
 
+  // Fase de Memorização
+  const [isPreviewing, setIsPreviewing] = useState(false);
+  const [previewCountdown, setPreviewCountdown] = useState(4);
+  const [gameStarted, setGameStarted] = useState(false);
+
   // Verificar rota de admin
   useEffect(() => {
     // Adiciona classe para o modo totem se não estiver no admin
@@ -111,15 +116,37 @@ const GameContent = () => {
     setMatches(0);
     setAttemptsUsed(0);
     setTimeLeft(playSession.max_seconds);
-    setStartTime(Date.now());
-    setLockBoard(false);
+    setLockBoard(true);
+    setIsPreviewing(true);
+    setPreviewCountdown(4);
+    setGameStarted(false);
     setGameState('PLAYING');
   };
+
+  // Timer de Memorização
+  useEffect(() => {
+    let timer: ReturnType<typeof setInterval>;
+    if (gameState === 'PLAYING' && isPreviewing && previewCountdown > 0) {
+      timer = setInterval(() => {
+        setPreviewCountdown(prev => {
+          if (prev <= 1) {
+            setIsPreviewing(false);
+            setGameStarted(true);
+            setLockBoard(false);
+            setStartTime(Date.now());
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [gameState, isPreviewing, previewCountdown]);
 
   // Timer do jogo
   useEffect(() => {
     let timer: ReturnType<typeof setInterval>;
-    if (gameState === 'PLAYING' && timeLeft > 0) {
+    if (gameState === 'PLAYING' && gameStarted && !isPreviewing && timeLeft > 0) {
       timer = setInterval(() => {
         setTimeLeft(prev => {
           if (prev <= 1) {
@@ -210,7 +237,7 @@ const GameContent = () => {
   };
 
   const handleCardClick = (instanceId: number) => {
-    if (lockBoard || gameState !== 'PLAYING') return;
+    if (lockBoard || gameState !== 'PLAYING' || isPreviewing || !gameStarted) return;
     const card = cards.find(c => c.instanceId === instanceId);
     if (!card || card.isFlipped || card.isMatched) return;
 
@@ -287,7 +314,7 @@ const GameContent = () => {
 
   return (
     <div className="totem-wrapper">
-      <div className="totem-container flex flex-col items-center justify-start relative select-none shadow-2xl overflow-x-hidden overflow-y-auto">
+      <div className={`totem-container flex flex-col items-center justify-start relative select-none shadow-2xl overflow-x-hidden ${gameState === 'PLAYING' ? 'overflow-hidden' : 'overflow-y-auto'}`}>
       
       {/* Background Container */}
       <div className="absolute inset-0 z-0">
@@ -356,65 +383,93 @@ const GameContent = () => {
         {gameState === 'AUTH' && <AuthScreen key="auth" onStart={initializeGame} />}
 
         {gameState === 'PLAYING' && (
-          <motion.div key="playing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 w-full flex flex-col items-center z-10 py-4 sm:py-8 px-4 sm:px-8">
-            <div className="w-full max-w-[min(94vw,720px)] flex flex-col gap-4 sm:gap-6 mb-6 sm:mb-8">
-              <div className="flex justify-between items-center gap-4">
-                <div className="bg-white p-3 sm:p-4 rounded-2xl sm:rounded-[2rem] shadow-xl border-2 border-[#f7941d] w-32 sm:w-48">
-                  <img src={ASSETS.logo} className="w-full h-auto object-contain" alt="Logo" />
-                </div>
-                <div className="flex gap-2 sm:gap-4">
-                   <div className="bg-white/15 backdrop-blur-xl px-4 py-2 sm:p-4 rounded-2xl sm:rounded-[2rem] flex items-center gap-2 sm:gap-3 text-white border border-white/30">
-                      <Timer className="w-5 h-5 sm:w-8 sm:h-8 text-[#f7941d]" />
-                      <span className="text-xl sm:text-4xl font-black">{timeLeft}s</span>
-                   </div>
-                   <button onClick={() => setGameState('START')} className="p-3 sm:p-4 bg-white/15 backdrop-blur-xl rounded-2xl sm:rounded-[2rem] text-white border border-white/30 shadow-2xl">
-                    <RotateCcw className="w-5 h-5 sm:w-8 sm:h-8" />
+          <motion.div key="playing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="game-screen z-10">
+            {/* Header Compacto */}
+            <div className="game-header">
+              <div className="w-full flex flex-col gap-2 sm:gap-4">
+                <div className="flex justify-between items-center gap-3">
+                  <div className="bg-white p-2 sm:p-3 rounded-xl sm:rounded-2xl shadow-lg border border-[#f7941d] w-24 sm:w-40">
+                    <img src={ASSETS.logo} className="w-full h-auto object-contain" alt="Logo" />
+                  </div>
+                  
+                  {/* Indicadores em linha para Mobile */}
+                  <div className="flex-1 flex justify-center items-center gap-2 sm:gap-4">
+                    <div className="bg-white/15 backdrop-blur-md px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl flex items-center gap-2 text-white border border-white/20">
+                      <Timer className="w-4 h-4 sm:w-6 sm:h-6 text-[#f7941d]" />
+                      <span className="text-base sm:text-2xl font-black">{timeLeft}s</span>
+                    </div>
+                    
+                    <div className="hidden sm:flex bg-white/15 backdrop-blur-md px-4 py-2 rounded-xl items-center gap-2 text-white border border-white/20">
+                      <Zap className="w-5 h-5 text-[#f7941d]" />
+                      <span className="text-xl font-black">{session ? session.max_attempts - attemptsUsed : 0}</span>
+                    </div>
+                  </div>
+
+                  <button onClick={() => setGameState('START')} className="p-2 sm:p-3 bg-white/15 backdrop-blur-md rounded-xl text-white border border-white/20">
+                    <RotateCcw className="w-4 h-4 sm:w-6 sm:h-6" />
                   </button>
                 </div>
-              </div>
 
-              <div className="bg-white/95 backdrop-blur-xl p-4 sm:p-6 rounded-3xl sm:rounded-[3rem] border-2 sm:border-4 border-[#f7941d] shadow-2xl w-full">
-                <div className="grid grid-cols-2 gap-3 sm:gap-6 mb-3 sm:mb-4">
-                  <div className="flex flex-col items-center bg-[#0047ab]/5 p-2 sm:p-4 rounded-2xl border border-[#0047ab]/10">
-                    <span className="text-[10px] sm:text-sm font-bold text-slate-400 uppercase tracking-widest italic leading-tight">PARES</span>
-                    <span className="text-2xl sm:text-4xl font-black text-[#0047ab]">{matches} / 5</span>
+                <div className="bg-white/95 backdrop-blur-md p-2 sm:p-4 rounded-2xl sm:rounded-3xl border sm:border-2 border-[#f7941d] shadow-xl w-full">
+                  <div className="flex justify-between items-center px-2 mb-1 sm:mb-2">
+                    <div className="flex items-center gap-2">
+                       <span className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase italic">Pares:</span>
+                       <span className="text-sm sm:text-xl font-black text-[#0047ab]">{matches} / 5</span>
+                    </div>
+                    <div className="flex items-center gap-2 sm:hidden">
+                       <span className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase italic">Chances:</span>
+                       <span className="text-sm font-black text-[#f7941d]">{session ? session.max_attempts - attemptsUsed : 0}</span>
+                    </div>
+                    <div className="hidden sm:block h-3 bg-slate-100 rounded-full overflow-hidden flex-1 mx-4 p-0.5 border border-slate-200">
+                      <motion.div initial={{ width: 0 }} animate={{ width: `${(matches / 5) * 100}%` }} className="h-full bg-gradient-to-r from-[#f7941d] to-[#ffb85f] rounded-full" />
+                    </div>
                   </div>
-                  <div className="flex flex-col items-center bg-[#0047ab]/5 p-2 sm:p-4 rounded-2xl border border-[#0047ab]/10">
-                    <span className="text-[10px] sm:text-sm font-bold text-slate-400 uppercase tracking-widest italic leading-tight">CHANCES</span>
-                    <span className="text-2xl sm:text-4xl font-black text-[#f7941d]">{session ? session.max_attempts - attemptsUsed : 0}</span>
+                  <div className="sm:hidden h-2 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200">
+                    <motion.div initial={{ width: 0 }} animate={{ width: `${(matches / 5) * 100}%` }} className="h-full bg-gradient-to-r from-[#f7941d] to-[#ffb85f] rounded-full" />
                   </div>
-                </div>
-                <div className="h-4 sm:h-6 bg-slate-100 rounded-full overflow-hidden p-0.5 sm:p-1 shadow-inner border border-slate-200">
-                  <motion.div initial={{ width: 0 }} animate={{ width: `${(matches / 5) * 100}%` }} className="h-full bg-gradient-to-r from-[#f7941d] to-[#ffb85f] rounded-full shadow-lg" />
                 </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-6 w-full max-w-[min(94vw,720px)] mx-auto flex-1 content-start sm:content-center overflow-y-auto pb-8">
+            {/* Board */}
+            <div className="memory-board">
               {cards.map((card) => (
-                <div key={card.instanceId} onClick={() => handleCardClick(card.instanceId)} className="relative aspect-[3/4] w-full perspective-1000 cursor-pointer">
-                  <motion.div animate={{ rotateY: card.isFlipped || card.isMatched ? 180 : 0, scale: card.isMatched ? 0.96 : 1 }} transition={{ type: "spring", stiffness: 180, damping: 22 }} className="w-full h-full preserve-3d relative">
-                    <div className="absolute inset-0 backface-hidden bg-[#0047ab] rounded-xl sm:rounded-[2rem] shadow-lg border-[3px] sm:border-[6px] border-white/40 flex flex-col items-center justify-center overflow-hidden">
+                <div key={card.instanceId} onClick={() => handleCardClick(card.instanceId)} className="memory-card relative perspective-1000 cursor-pointer">
+                  <motion.div animate={{ rotateY: isPreviewing || card.isFlipped || card.isMatched ? 180 : 0, scale: card.isMatched ? 0.96 : 1 }} transition={{ type: "spring", stiffness: 180, damping: 22 }} className="card-inner preserve-3d relative">
+                    <div className="absolute inset-0 backface-hidden bg-[#0047ab] rounded-lg sm:rounded-2xl shadow-lg border-2 sm:border-4 border-white/40 flex flex-col items-center justify-center overflow-hidden">
                        <div className="absolute inset-0 bg-paw-pattern opacity-10"></div>
-                       <div className="w-12 h-12 sm:w-20 sm:h-20 bg-white/10 rounded-full flex items-center justify-center relative z-10 border sm:border-2 border-white/20">
-                          <img src={ASSETS.paw} className="w-6 h-6 sm:w-12 sm:h-12 brightness-0 invert opacity-60" alt="" />
+                       <div className="w-8 h-8 sm:w-16 sm:h-16 bg-white/10 rounded-full flex items-center justify-center relative z-10 border border-white/20">
+                          <img src={ASSETS.paw} className="w-4 h-4 sm:w-8 sm:h-8 brightness-0 invert opacity-60" alt="" />
                        </div>
                     </div>
-                    <div className={`absolute inset-0 backface-hidden bg-white rounded-xl sm:rounded-[2rem] shadow-lg border-[4px] sm:border-[6px] flex flex-col items-center justify-between p-2 sm:p-4 rotate-y-180 transition-all duration-300 overflow-visible ${card.isMatched ? 'border-[#f7941d] bg-orange-50' : 'border-white'}`} style={{ transform: 'rotateY(180deg)' }}>
-
-                      {card.isMatched && <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute top-[6px] right-[6px] sm:top-[10px] sm:right-[10px] bg-[#f7941d] text-white p-1 sm:p-1.5 rounded-full shadow-lg z-[2] border sm:border-2 border-white"><CheckCircle2 className="w-[12px] h-[12px] sm:w-[18px] sm:h-[18px]" /></motion.div>}
-                      <div className="w-full h-[65%] flex items-center justify-center relative bg-slate-50 rounded-lg sm:rounded-2xl p-1 sm:p-2 overflow-hidden">
-                        <img src={card.img} alt={card.name} className="max-w-full max-h-full object-contain drop-shadow-md" />
+                    <div className={`absolute inset-0 backface-hidden bg-white rounded-lg sm:rounded-2xl shadow-lg border-2 sm:border-4 flex flex-col items-center justify-between p-1.5 sm:p-3 rotate-y-180 transition-all duration-300 ${card.isMatched ? 'border-[#f7941d] bg-orange-50' : 'border-white'}`} style={{ transform: 'rotateY(180deg)' }}>
+                      {card.isMatched && <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute top-1 right-1 sm:top-2 sm:right-2 bg-[#f7941d] text-white p-0.5 sm:p-1 rounded-full shadow-lg z-[2] border border-white"><CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4" /></motion.div>}
+                      <div className="w-full h-[60%] flex items-center justify-center relative bg-slate-50 rounded-md sm:rounded-xl p-0.5 sm:p-1 overflow-hidden">
+                        <img src={card.img} alt={card.name} className="max-w-full max-h-full object-contain" />
                       </div>
-                      <div className="w-full text-center mt-1 sm:mt-2 px-0.5 sm:px-1 overflow-hidden">
-                        <span className="inline-block px-2 sm:px-3 py-0.5 bg-[#0047ab] rounded-full text-[8px] sm:text-[10px] font-black text-white uppercase italic tracking-widest mb-0.5 sm:mb-1">{card.line}</span>
-                        <h4 className="text-[0.8rem] sm:text-[1.1rem] font-black text-[#003380] leading-[1.1] uppercase italic truncate w-full max-w-full">{card.name}</h4>
+                      <div className="w-full text-center mt-0.5 px-0.5 overflow-hidden">
+                        <span className="inline-block px-1.5 py-0 bg-[#0047ab] rounded-full text-[6px] sm:text-[8px] font-black text-white uppercase italic tracking-widest mb-0.5">{card.line}</span>
+                        <h4 className="text-[9px] sm:text-xs lg:text-sm font-black text-[#003380] leading-tight uppercase italic truncate w-full">{card.name}</h4>
                       </div>
                     </div>
                   </motion.div>
                 </div>
               ))}
             </div>
+
+            {/* Overlay de Memorização */}
+            <AnimatePresence>
+              {isPreviewing && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm">
+                  <div className="bg-white p-6 sm:p-10 rounded-[2rem] shadow-2xl border-4 border-[#f7941d] flex flex-col items-center gap-4">
+                    <h3 className="text-2xl sm:text-4xl font-black text-[#0047ab] uppercase italic text-center">Memorize os produtos</h3>
+                    <div className="w-16 h-16 sm:w-24 sm:h-24 bg-[#f7941d] rounded-full flex items-center justify-center shadow-xl border-4 border-white">
+                      <span className="text-4xl sm:text-6xl font-black text-white">{previewCountdown}</span>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
         )}
 
