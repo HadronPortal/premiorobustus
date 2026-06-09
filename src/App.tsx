@@ -663,7 +663,7 @@ const GameContent = () => {
               
               <p className="text-sm sm:text-base text-slate-400 font-bold uppercase mb-4 italic">OBRIGADO POR PARTICIPAR!</p>
 
-              <Leaderboard entries={leaderboard} />
+              <Leaderboard entries={leaderboard} loading={loadingLeaderboard} />
 
               <div className="mt-6 sm:mt-8 w-full flex justify-center">
                 <motion.button 
