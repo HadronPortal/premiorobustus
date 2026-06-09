@@ -336,12 +336,20 @@ const GameContent = () => {
               <span className="text-7xl font-black text-white tracking-widest uppercase italic">JOGAR</span>
             </motion.button>
 
-            <button 
-              onClick={() => window.location.href = '/cachorro-racao'} 
-              className="mb-12 text-white/50 text-3xl font-bold hover:text-white/80 transition-colors"
-            >
-              Ir para o Desafio Pet RobustUS
-            </button>
+            <div className="flex flex-col gap-4 mb-12">
+              <button 
+                onClick={() => window.location.href = '/cachorro-racao'} 
+                className="text-white/50 text-3xl font-bold hover:text-white/80 transition-colors"
+              >
+                Ir para o Desafio Pet RobustUS
+              </button>
+              <button 
+                onClick={() => window.location.href = '/cesta-robustus'} 
+                className="text-white/50 text-3xl font-bold hover:text-white/80 transition-colors"
+              >
+                Ir para a Cesta RobustUS
+              </button>
+            </div>
           </motion.div>
         )}
 
