@@ -74,15 +74,31 @@ interface LeaderboardEntry {
   attempts: number;
 }
 
-const Leaderboard = ({ entries }: { entries: LeaderboardEntry[] }) => {
-  if (!entries || entries.length === 0) return null;
+const Leaderboard = ({ entries, loading }: { entries: LeaderboardEntry[], loading?: boolean }) => {
+  if (loading) {
+    return (
+      <div className="leaderboard-container flex flex-col items-center justify-center py-8">
+        <div className="w-8 h-8 border-4 border-[#0047ab] border-t-transparent rounded-full animate-spin mb-2"></div>
+        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Carregando placar...</p>
+      </div>
+    );
+  }
+
+  if (!entries || entries.length === 0) {
+    return (
+      <div className="leaderboard-container text-center py-4">
+        <h3 className="leaderboard-title">Melhores tempos</h3>
+        <p className="text-[10px] font-bold text-[#f7941d] uppercase tracking-widest mt-2">Seja o primeiro no placar!</p>
+      </div>
+    );
+  }
 
   return (
     <div className="leaderboard-container">
       <h3 className="leaderboard-title">Melhores tempos</h3>
       <p className="leaderboard-subtitle">Menor tempo e menos tentativas</p>
       <div className="space-y-1">
-        {entries.map((entry, idx) => (
+        {entries.slice(0, 5).map((entry, idx) => (
           <div key={idx} className="leaderboard-row">
             <span className="leaderboard-pos">{entry.rank}º</span>
             <span className="leaderboard-name">{entry.name || 'Anônimo'}</span>
