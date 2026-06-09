@@ -139,6 +139,7 @@ const GameContent = () => {
             setIsPreviewing(false);
             setGameStarted(true);
             setLockBoard(false);
+            setFlippedCards([]);
             setStartTime(Date.now());
             return 0;
           }
@@ -213,7 +214,7 @@ const GameContent = () => {
         setPrizeCode(data.prize_code);
         setGameState("VICTORY");
         stopBackgroundMusic();
-        playSound('victory');
+        playSound('victory-applause');
         confetti({
           particleCount: 200,
           spread: 80,
@@ -279,7 +280,7 @@ const GameContent = () => {
           setCards(updatedCards);
           const newMatches = matches + 1;
           setMatches(newMatches);
-          playSound('match');
+          playSound('applause');
           setFlippedCards([]);
           setLockBoard(false);
           
@@ -299,7 +300,7 @@ const GameContent = () => {
           setCards(prev => prev.map(c => 
             c.instanceId === firstId || c.instanceId === secondId ? { ...c, isFlipped: false } : c
           ));
-          playSound('error');
+          playSound('crowd-ahh');
           setFlippedCards([]);
           setLockBoard(false);
 
@@ -476,7 +477,7 @@ const GameContent = () => {
                           <img src={ASSETS.paw} className="w-4 h-4 sm:w-8 sm:h-8 brightness-0 invert opacity-60" alt="" />
                        </div>
                     </div>
-                    <div className={`card-front bg-white border-2 sm:border-4 shadow-lg flex flex-col items-center justify-between p-1.5 sm:p-3 transition-all duration-300 ${card.isMatched ? 'border-[#f7941d] bg-orange-50' : 'border-white'}`}>
+                    <div className={`card-front bg-white border-2 sm:border-4 shadow-lg flex flex-col items-center justify-between p-1.5 sm:p-3 transition-all duration-300 ${card.isMatched ? 'border-[#f7941d] bg-orange-50' : 'border-white'}`} style={{ transform: 'rotateY(180deg)' }}>
                       {card.isMatched && <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute top-1 right-1 sm:top-2 sm:right-2 bg-[#f7941d] text-white p-0.5 sm:p-1 rounded-full shadow-lg z-[2] border border-white"><CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4" /></motion.div>}
                       <div className="w-full h-full min-h-0 flex items-center justify-center relative bg-slate-50 rounded-md sm:rounded-xl p-0.5 sm:p-1 overflow-hidden">
                         <img src={card.img} alt={card.name} className="max-w-full max-h-full object-contain" />
