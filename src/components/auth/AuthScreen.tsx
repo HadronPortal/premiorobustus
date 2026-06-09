@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { supabase } from "@/integrations/supabase/client";
-import { User, FileText, CheckCircle2, ChevronRight } from 'lucide-react';
+import { User, Phone, CheckCircle2, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface Props {
@@ -9,26 +9,26 @@ interface Props {
 
 export const AuthScreen: React.FC<Props> = ({ onStart }) => {
   const [formData, setFormData] = useState({
-    cpf: '',
+    phone: '',
     name: '',
     acceptedTerms: false
   });
   const [error, setError] = useState('');
   const [isStarting, setIsStarting] = useState(false);
 
-  const formatCPF = (value: string) => {
+  const formatPhone = (value: string) => {
     const raw = value.replace(/\D/g, '').slice(0, 11);
-    if (raw.length <= 3) return raw;
-    if (raw.length <= 6) return `${raw.slice(0, 3)}.${raw.slice(3)}`;
-    if (raw.length <= 9) return `${raw.slice(0, 3)}.${raw.slice(3, 6)}.${raw.slice(6)}`;
-    return `${raw.slice(0, 3)}.${raw.slice(3, 6)}.${raw.slice(6, 9)}-${raw.slice(9)}`;
+    if (raw.length <= 2) return raw;
+    if (raw.length <= 6) return `(${raw.slice(0, 2)}) ${raw.slice(2)}`;
+    if (raw.length <= 10) return `(${raw.slice(0, 2)}) ${raw.slice(2, 6)}-${raw.slice(6)}`;
+    return `(${raw.slice(0, 2)}) ${raw.slice(2, 7)}-${raw.slice(7)}`;
   };
 
-  const handleCPFChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, cpf: formatCPF(e.target.value) });
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, phone: formatPhone(e.target.value) });
   };
 
-  const isFormValid = formData.cpf.replace(/\D/g, '').length === 11 && 
+  const isFormValid = formData.phone.replace(/\D/g, '').length >= 10 && 
                       formData.name.trim().length >= 3 && 
                       formData.acceptedTerms;
 
@@ -39,12 +39,12 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
 
     setError("");
 
-    const { cpf, name, acceptedTerms } = formData;
-    const cleanedCpf = String(cpf || "").replace(/\D/g, "");
+    const { phone, name, acceptedTerms } = formData;
+    const cleanedPhone = String(phone || "").replace(/\D/g, "");
     const cleanedName = String(name || "").trim();
 
-    if (cleanedCpf.length !== 11) {
-      setError("Informe um CPF válido.");
+    if (cleanedPhone.length < 10) {
+      setError("Informe um telefone válido.");
       return;
     }
 
@@ -61,30 +61,31 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
     setIsStarting(true);
 
     try {
-      console.log("SUPABASE URL REAL: https://hayodojtfomtzkzathhq.supabase.co");
-      
       const payload = {
-        p_cpf: cleanedCpf,
+        p_phone: cleanedPhone,
         p_event_slug: "robustus-expo-2026",
         p_name: cleanedName
       };
 
       const { data, error: rpcError } = await (supabase.rpc as any)(
-        "register_and_start_play",
+        "register_and_start_play_phone",
         payload
       );
 
       console.log("REGISTER DATA:", data);
-      console.error("REGISTER ERROR:", rpcError);
 
       if (rpcError) {
-        setError(rpcError.message || "Não foi possível iniciar agora.");
+        setError("Não foi possível iniciar agora.");
         return;
       }
 
       if (!data?.ok) {
-        if (data?.status === "invalid_cpf") {
-          setError("CPF inválido.");
+        if (data?.status === "invalid_phone") {
+          setError("Informe um telefone válido.");
+        } else if (data?.status === "invalid_name") {
+          setError("Informe seu nome.");
+        } else if (data?.status === "event_inactive") {
+          setError("Evento indisponível.");
         } else {
           setError(data?.message || "Não foi possível iniciar agora.");
         }
@@ -118,21 +119,6 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
           <div className="flex flex-col gap-4 sm:gap-6">
             <div className="relative">
               <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#0047ab]">
-                <FileText className="w-6 h-6 sm:w-8 sm:h-8" />
-              </div>
-              <input 
-                type="text"
-                inputMode="numeric"
-                placeholder="CPF"
-                value={formData.cpf}
-                onChange={handleCPFChange}
-                required
-                className="w-full bg-slate-100 p-4 sm:p-6 pl-12 sm:pl-16 rounded-2xl text-xl sm:text-2xl font-bold text-[#003380] border-2 border-transparent focus:border-[#f7941d] outline-none transition-all placeholder:text-slate-400 uppercase"
-              />
-            </div>
-
-            <div className="relative">
-              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#0047ab]">
                 <User className="w-6 h-6 sm:w-8 sm:h-8" />
               </div>
               <input 
@@ -142,6 +128,21 @@ export const AuthScreen: React.FC<Props> = ({ onStart }) => {
                 onChange={e => setFormData({...formData, name: e.target.value.toUpperCase()})}
                 required
                 className="w-full bg-slate-100 p-4 sm:p-6 pl-12 sm:pl-16 rounded-2xl text-xl sm:text-2xl font-bold text-[#003380] border-2 border-transparent focus:border-[#f7941d] outline-none transition-all placeholder:text-slate-400 uppercase"
+              />
+            </div>
+
+            <div className="relative">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#0047ab]">
+                <Phone className="w-6 h-6 sm:w-8 sm:h-8" />
+              </div>
+              <input 
+                type="text"
+                inputMode="numeric"
+                placeholder="TELEFONE"
+                value={formData.phone}
+                onChange={handlePhoneChange}
+                required
+                className="w-full bg-slate-100 p-4 sm:p-6 pl-12 sm:pl-16 rounded-2xl text-xl sm:text-2xl font-bold text-[#003380] border-2 border-transparent focus:border-[#f7941d] outline-none transition-all placeholder:text-slate-400"
               />
             </div>
           </div>
