@@ -114,6 +114,28 @@ const GameContent = () => {
   const [timeLeft, setTimeLeft] = useState(0);
   const [startTime, setStartTime] = useState<number>(0);
   const [error, setError] = useState('');
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+
+  const fetchLeaderboard = async () => {
+    try {
+      const { data, error: rpcError } = await (supabase.rpc as any)("get_memory_leaderboard", {
+        p_event_slug: "robustus-expo-2026",
+        p_limit: 5
+      });
+      
+      if (!rpcError && data) {
+        setLeaderboard(data);
+      }
+    } catch (err) {
+      console.error("Erro ao buscar placar:", err);
+    }
+  };
+
+  useEffect(() => {
+    if (gameState === 'VICTORY' || gameState === 'GAMEOVER') {
+      fetchLeaderboard();
+    }
+  }, [gameState]);
 
   // Fase de Memorização
   const [isPreviewing, setIsPreviewing] = useState(false);
