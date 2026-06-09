@@ -66,6 +66,38 @@ interface PlaySession {
   max_seconds: number;
 }
 
+interface LeaderboardEntry {
+  rank: number;
+  name: string;
+  cpf_masked: string;
+  time_seconds: number;
+  attempts: number;
+}
+
+const Leaderboard = ({ entries }: { entries: LeaderboardEntry[] }) => {
+  if (!entries || entries.length === 0) return null;
+
+  return (
+    <div className="leaderboard-container">
+      <h3 className="leaderboard-title">Melhores tempos</h3>
+      <p className="leaderboard-subtitle">Menor tempo e menos tentativas</p>
+      <div className="space-y-1">
+        {entries.map((entry, idx) => (
+          <div key={idx} className="leaderboard-row">
+            <span className="leaderboard-pos">{entry.rank}º</span>
+            <span className="leaderboard-name">{entry.name || 'Anônimo'}</span>
+            <div className="leaderboard-stats">
+              <span className="leaderboard-time">{entry.time_seconds}s</span>
+              <span className="mx-1 text-slate-300">•</span>
+              <span>{entry.attempts} tent.</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 const GameContent = () => {
   const location = useLocation();
   const [gameState, setGameState] = useState<GameState>('START');
