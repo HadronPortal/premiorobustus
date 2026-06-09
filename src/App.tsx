@@ -131,8 +131,10 @@ const GameContent = () => {
   const [startTime, setStartTime] = useState<number>(0);
   const [error, setError] = useState('');
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [loadingLeaderboard, setLoadingLeaderboard] = useState(false);
 
   const fetchLeaderboard = async () => {
+    setLoadingLeaderboard(true);
     try {
       const { data, error: rpcError } = await (supabase.rpc as any)("get_memory_leaderboard", {
         p_event_slug: "robustus-expo-2026",
@@ -144,6 +146,8 @@ const GameContent = () => {
       }
     } catch (err) {
       console.error("Erro ao buscar placar:", err);
+    } finally {
+      setLoadingLeaderboard(false);
     }
   };
 
