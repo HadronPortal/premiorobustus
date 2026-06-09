@@ -463,20 +463,6 @@ const GameContent = () => {
                 Ver Placar
               </button>
 
-              <div className="flex flex-col gap-2">
-                <button 
-                  onClick={() => window.location.href = '/cachorro-racao'} 
-                  className="text-white/60 text-sm sm:text-2xl font-bold hover:text-white transition-colors"
-                >
-                  Ir para o Desafio Pet RobustUS
-                </button>
-                <button 
-                  onClick={() => window.location.href = '/cesta-robustus'} 
-                  className="text-white/60 text-sm sm:text-2xl font-bold hover:text-white transition-colors"
-                >
-                  Ir para a Cesta RobustUS
-                </button>
-              </div>
             </div>
 
             <AnimatePresence>
