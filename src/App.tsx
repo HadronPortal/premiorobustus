@@ -67,11 +67,13 @@ interface PlaySession {
 }
 
 interface LeaderboardEntry {
-  rank: number;
+  rank_position: number;
   name: string;
   cpf_masked: string;
   time_seconds: number;
-  attempts: number;
+  attempts_used: number;
+  prize_code: string;
+  won_at: string;
 }
 
 const Leaderboard = ({ entries, loading }: { entries: LeaderboardEntry[], loading?: boolean }) => {
@@ -100,12 +102,12 @@ const Leaderboard = ({ entries, loading }: { entries: LeaderboardEntry[], loadin
       <div className="space-y-1">
         {entries.slice(0, 5).map((entry, idx) => (
           <div key={idx} className="leaderboard-row">
-            <span className="leaderboard-pos">{entry.rank}º</span>
+            <span className="leaderboard-pos">{entry.rank_position}º</span>
             <span className="leaderboard-name">{entry.name || 'Anônimo'}</span>
             <div className="leaderboard-stats">
               <span className="leaderboard-time">{entry.time_seconds}s</span>
               <span className="mx-1 text-slate-300">•</span>
-              <span>{entry.attempts} tent.</span>
+              <span>{entry.attempts_used} tent.</span>
             </div>
           </div>
         ))}
