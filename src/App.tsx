@@ -237,7 +237,7 @@ const GameContent = () => {
   };
 
   const handleCardClick = (instanceId: number) => {
-    if (lockBoard || gameState !== 'PLAYING') return;
+    if (lockBoard || gameState !== 'PLAYING' || isPreviewing || !gameStarted) return;
     const card = cards.find(c => c.instanceId === instanceId);
     if (!card || card.isFlipped || card.isMatched) return;
 
