@@ -356,51 +356,52 @@ const GameContent = () => {
         {gameState === 'AUTH' && <AuthScreen key="auth" onStart={initializeGame} />}
 
         {gameState === 'PLAYING' && (
-          <motion.div key="playing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 w-full flex flex-col items-center z-10 py-16 px-8">
-            <div className="w-full max-w-[90%] flex flex-col gap-10 mb-12">
-              <div className="flex justify-between items-center">
-                <div className="bg-white p-6 rounded-[2.5rem] shadow-xl border-2 border-[#f7941d] w-64">
+          <motion.div key="playing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 w-full flex flex-col items-center z-10 py-4 sm:py-8 px-4 sm:px-8">
+            <div className="w-full max-w-[min(94vw,720px)] flex flex-col gap-4 sm:gap-6 mb-6 sm:mb-8">
+              <div className="flex justify-between items-center gap-4">
+                <div className="bg-white p-3 sm:p-4 rounded-2xl sm:rounded-[2rem] shadow-xl border-2 border-[#f7941d] w-32 sm:w-48">
                   <img src={ASSETS.logo} className="w-full h-auto object-contain" alt="Logo" />
                 </div>
-                <div className="flex gap-4">
-                   <div className="bg-white/15 backdrop-blur-xl p-6 rounded-[2.5rem] flex items-center gap-4 text-white border border-white/30">
-                      <Timer className="w-10 h-10 text-[#f7941d]" />
-                      <span className="text-5xl font-black">{timeLeft}s</span>
+                <div className="flex gap-2 sm:gap-4">
+                   <div className="bg-white/15 backdrop-blur-xl px-4 py-2 sm:p-4 rounded-2xl sm:rounded-[2rem] flex items-center gap-2 sm:gap-3 text-white border border-white/30">
+                      <Timer className="w-5 h-5 sm:w-8 sm:h-8 text-[#f7941d]" />
+                      <span className="text-xl sm:text-4xl font-black">{timeLeft}s</span>
                    </div>
-                   <button onClick={() => setGameState('START')} className="p-8 bg-white/15 backdrop-blur-xl rounded-[2.5rem] text-white border border-white/30 shadow-2xl">
-                    <RotateCcw className="w-12 h-12" />
+                   <button onClick={() => setGameState('START')} className="p-3 sm:p-4 bg-white/15 backdrop-blur-xl rounded-2xl sm:rounded-[2rem] text-white border border-white/30 shadow-2xl">
+                    <RotateCcw className="w-5 h-5 sm:w-8 sm:h-8" />
                   </button>
                 </div>
               </div>
 
-              <div className="bg-white/95 backdrop-blur-xl p-10 rounded-[4rem] border-4 border-[#f7941d] shadow-2xl w-full">
-                <div className="grid grid-cols-2 gap-8 mb-6">
-                  <div className="flex flex-col items-center bg-[#0047ab]/5 p-6 rounded-3xl border-2 border-[#0047ab]/10">
-                    <span className="text-2xl font-bold text-slate-400 uppercase tracking-widest italic">PARES</span>
-                    <span className="text-6xl font-black text-[#0047ab]">{matches} / 5</span>
+              <div className="bg-white/95 backdrop-blur-xl p-4 sm:p-6 rounded-3xl sm:rounded-[3rem] border-2 sm:border-4 border-[#f7941d] shadow-2xl w-full">
+                <div className="grid grid-cols-2 gap-3 sm:gap-6 mb-3 sm:mb-4">
+                  <div className="flex flex-col items-center bg-[#0047ab]/5 p-2 sm:p-4 rounded-2xl border border-[#0047ab]/10">
+                    <span className="text-[10px] sm:text-sm font-bold text-slate-400 uppercase tracking-widest italic leading-tight">PARES</span>
+                    <span className="text-2xl sm:text-4xl font-black text-[#0047ab]">{matches} / 5</span>
                   </div>
-                  <div className="flex flex-col items-center bg-[#0047ab]/5 p-6 rounded-3xl border-2 border-[#0047ab]/10">
-                    <span className="text-2xl font-bold text-slate-400 uppercase tracking-widest italic">CHANCES</span>
-                    <span className="text-6xl font-black text-[#f7941d]">{session ? session.max_attempts - attemptsUsed : 0}</span>
+                  <div className="flex flex-col items-center bg-[#0047ab]/5 p-2 sm:p-4 rounded-2xl border border-[#0047ab]/10">
+                    <span className="text-[10px] sm:text-sm font-bold text-slate-400 uppercase tracking-widest italic leading-tight">CHANCES</span>
+                    <span className="text-2xl sm:text-4xl font-black text-[#f7941d]">{session ? session.max_attempts - attemptsUsed : 0}</span>
                   </div>
                 </div>
-                <div className="h-10 bg-slate-100 rounded-full overflow-hidden p-2 shadow-inner border-2 border-slate-200">
+                <div className="h-4 sm:h-6 bg-slate-100 rounded-full overflow-hidden p-0.5 sm:p-1 shadow-inner border border-slate-200">
                   <motion.div initial={{ width: 0 }} animate={{ width: `${(matches / 5) * 100}%` }} className="h-full bg-gradient-to-r from-[#f7941d] to-[#ffb85f] rounded-full shadow-lg" />
                 </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-8 w-full max-w-[90%] mx-auto flex-1 content-center">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-6 w-full max-w-[min(94vw,720px)] mx-auto flex-1 content-start sm:content-center overflow-y-auto pb-8">
               {cards.map((card) => (
-                <div key={card.instanceId} onClick={() => handleCardClick(card.instanceId)} className="relative h-[280px] w-full perspective-1000 cursor-pointer">
+                <div key={card.instanceId} onClick={() => handleCardClick(card.instanceId)} className="relative aspect-[3/4] w-full perspective-1000 cursor-pointer">
                   <motion.div animate={{ rotateY: card.isFlipped || card.isMatched ? 180 : 0, scale: card.isMatched ? 0.96 : 1 }} transition={{ type: "spring", stiffness: 180, damping: 22 }} className="w-full h-full preserve-3d relative">
-                    <div className="absolute inset-0 backface-hidden bg-[#0047ab] rounded-[2.5rem] shadow-xl border-[6px] border-white/40 flex flex-col items-center justify-center overflow-hidden">
+                    <div className="absolute inset-0 backface-hidden bg-[#0047ab] rounded-xl sm:rounded-[2rem] shadow-lg border-[3px] sm:border-[6px] border-white/40 flex flex-col items-center justify-center overflow-hidden">
                        <div className="absolute inset-0 bg-paw-pattern opacity-10"></div>
-                       <div className="w-24 h-24 bg-white/10 rounded-full flex items-center justify-center relative z-10 border-2 border-white/20">
-                          <img src={ASSETS.paw} className="w-14 h-14 brightness-0 invert opacity-60" alt="" />
+                       <div className="w-12 h-12 sm:w-20 sm:h-20 bg-white/10 rounded-full flex items-center justify-center relative z-10 border sm:border-2 border-white/20">
+                          <img src={ASSETS.paw} className="w-6 h-6 sm:w-12 sm:h-12 brightness-0 invert opacity-60" alt="" />
                        </div>
                     </div>
-                    <div className={`absolute inset-0 backface-hidden bg-white rounded-[2.5rem] shadow-xl border-[8px] flex flex-col items-center justify-between p-4 rotate-y-180 transition-all duration-300 overflow-visible ${card.isMatched ? 'border-[#f7941d] bg-orange-50' : 'border-white'}`} style={{ transform: 'rotateY(180deg)' }}>
+                    <div className={`absolute inset-0 backface-hidden bg-white rounded-xl sm:rounded-[2rem] shadow-lg border-[4px] sm:border-[6px] flex flex-col items-center justify-between p-2 sm:p-4 rotate-y-180 transition-all duration-300 overflow-visible ${card.isMatched ? 'border-[#f7941d] bg-orange-50' : 'border-white'}`} style={{ transform: 'rotateY(180deg)' }}>
+
                       {card.isMatched && <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute top-[10px] right-[10px] bg-[#f7941d] text-white p-1.5 rounded-full shadow-lg z-[2] border-2 border-white"><CheckCircle2 className="w-[18px] h-[18px]" /></motion.div>}
                       <div className="w-full h-[65%] flex items-center justify-center relative bg-slate-50 rounded-2xl p-2 overflow-hidden">
                         <img src={card.img} alt={card.name} className="max-w-full max-h-full object-contain drop-shadow-md" />
