@@ -253,6 +253,7 @@ class RobustUSCatchGame {
     this.syncCanvasToViewport();
     this.resetGame();
     this.state = "playing";
+    window.parent.postMessage({ type: "ROBUSTUS_CATCH_STATE_CHANGE", state: "playing" }, "*");
     showScreen("game-screen");
     this.lastTime = performance.now();
     requestAnimationFrame((time) => this.loop(time));
@@ -260,6 +261,7 @@ class RobustUSCatchGame {
 
   showStart() {
     this.state = "start";
+    window.parent.postMessage({ type: "ROBUSTUS_CATCH_STATE_CHANGE", state: "start" }, "*");
     this.syncCanvasToViewport();
     showScreen("start-screen");
     this.drawStaticPreview();
@@ -345,6 +347,7 @@ class RobustUSCatchGame {
 
   finish(result) {
     this.state = "finished";
+    window.parent.postMessage({ type: "ROBUSTUS_CATCH_STATE_CHANGE", state: "finished" }, "*");
     const elapsedSeconds = Math.round(this.elapsed);
 
     window.parent?.postMessage(
@@ -444,6 +447,11 @@ function showScreen(id) {
   ["start-screen", "game-screen", "result-screen"].forEach((screenId) => {
     document.getElementById(screenId).classList.toggle("hidden", screenId !== id);
   });
+  
+  // Sincronizar estado com o pai ao trocar de tela internamente
+  const gameState = id === 'game-screen' ? 'playing' : (id === 'result-screen' ? 'finished' : 'start');
+  window.parent.postMessage({ type: "ROBUSTUS_CATCH_STATE_CHANGE", state: gameState }, "*");
+
   document.querySelector(".totem-shell")?.classList.toggle("game-active", id === "game-screen");
   document.body.classList.toggle("game-active", id === "game-screen");
 }
