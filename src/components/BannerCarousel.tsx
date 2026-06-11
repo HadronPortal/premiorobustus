@@ -19,8 +19,8 @@ export const BannerCarousel = () => {
   }, []);
 
   return (
-    <div className="w-full px-4 mt-auto mb-1.5 sm:mb-6 flex justify-center">
-      <div className="relative w-[min(96vw,760px)] sm:w-[min(94vw,900px)] h-[clamp(190px,25vh,240px)] sm:h-[clamp(220px,24vh,280px)] rounded-[18px] overflow-hidden shadow-lg border-2 border-white/50 sm:border-[#f7941d]/30 group bg-gradient-to-b from-[#0057b8] to-[#003f95]">
+    <div className="w-full px-4 mt-[clamp(20px,3vh,36px)] mb-2 flex justify-center">
+      <div className="relative w-[min(94vw,760px)] sm:w-[min(94vw,900px)] h-[clamp(190px,25vh,240px)] sm:h-[clamp(220px,24vh,280px)] rounded-[18px] overflow-hidden shadow-lg border-2 border-white/50 sm:border-[#f7941d]/30 group bg-gradient-to-b from-[#0057b8] to-[#003f95]">
         <AnimatePresence mode="wait">
           <motion.img
             key={currentIndex}
