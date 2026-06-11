@@ -11,7 +11,9 @@ import {
   Clock as ClockIcon,
   Timer,
   Volume2,
-  VolumeX
+  VolumeX,
+  LayoutGrid,
+  ShoppingBasket
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -451,24 +453,30 @@ const GameContent = () => {
               </motion.div>
             </div>
 
-            <div className="w-full max-w-[min(90%,540px)] flex flex-col gap-4 sm:gap-6">
-              <motion.button 
-                whileTap={{ scale: 0.94 }} 
-                onClick={() => setGameState('AUTH')} 
-                className="w-full bg-[#f7941d] py-5 sm:py-8 rounded-3xl sm:rounded-[5rem] shadow-[0_20px_40px_-10px_rgba(0,0,0,0.6)] flex items-center justify-center gap-4 sm:gap-8 border-b-[8px] sm:border-b-[16px] border-[#d47a00] active:border-b-0 transition-all"
-              >
-                <Play className="w-8 h-8 sm:w-14 sm:h-14 text-white fill-current" />
-                <span className="text-2xl sm:text-5xl font-black text-white tracking-widest uppercase italic">JOGO DA MEMÓRIA</span>
-              </motion.button>
+            <div className="w-full max-w-[min(90%,600px)] flex flex-col gap-4 sm:gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                <motion.button 
+                  whileTap={{ scale: 0.96 }} 
+                  onClick={() => setGameState('AUTH')} 
+                  className="w-full bg-[#f7941d] py-5 sm:py-10 rounded-3xl shadow-[0_15px_30px_-5px_rgba(0,0,0,0.4)] flex flex-col items-center justify-center gap-3 sm:gap-4 border-b-[6px] sm:border-b-[10px] border-[#d47a00] active:border-b-0 transition-all group"
+                >
+                  <div className="bg-white/20 p-3 sm:p-5 rounded-2xl group-hover:scale-110 transition-transform">
+                    <LayoutGrid className="w-8 h-8 sm:w-14 sm:h-14 text-white" />
+                  </div>
+                  <span className="text-xl sm:text-2xl font-black text-white tracking-widest uppercase italic text-center px-4 leading-tight">JOGO DA<br/>MEMÓRIA</span>
+                </motion.button>
 
-              <motion.button 
-                whileTap={{ scale: 0.94 }} 
-                onClick={() => navigate('/jogo-cesta')} 
-                className="w-full bg-[#00348c] py-5 sm:py-8 rounded-3xl sm:rounded-[5rem] shadow-[0_20px_40px_-10px_rgba(0,0,0,0.6)] flex items-center justify-center gap-4 sm:gap-8 border-b-[8px] sm:border-b-[16px] border-[#001d4d] active:border-b-0 transition-all border border-white/20"
-              >
-                <Zap className="w-8 h-8 sm:w-14 sm:h-14 text-[#f7941d] fill-current" />
-                <span className="text-2xl sm:text-5xl font-black text-white tracking-widest uppercase italic">JOGO DA CESTA</span>
-              </motion.button>
+                <motion.button 
+                  whileTap={{ scale: 0.96 }} 
+                  onClick={() => navigate('/jogo-cesta')} 
+                  className="w-full bg-[#00348c] py-5 sm:py-10 rounded-3xl shadow-[0_15px_30px_-5px_rgba(0,0,0,0.4)] flex flex-col items-center justify-center gap-3 sm:gap-4 border-b-[6px] sm:border-b-[10px] border-[#001d4d] active:border-b-0 transition-all border border-white/10 group"
+                >
+                  <div className="bg-white/10 p-3 sm:p-5 rounded-2xl group-hover:scale-110 transition-transform">
+                    <ShoppingBasket className="w-8 h-8 sm:w-14 sm:h-14 text-[#f7941d]" />
+                  </div>
+                  <span className="text-xl sm:text-2xl font-black text-white tracking-widest uppercase italic text-center px-4 leading-tight">JOGO DA<br/>CESTA</span>
+                </motion.button>
+              </div>
             </div>
 
             <div className="flex flex-col items-center gap-4 mb-8">
