@@ -497,8 +497,6 @@ const GameContent = () => {
                 </div>
               </motion.button>
             </div>
-          </motion.div>
-        )}
 
             <AnimatePresence>
               {loadingLeaderboard || leaderboard.length > 0 ? (
