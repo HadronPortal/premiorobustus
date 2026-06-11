@@ -16,6 +16,13 @@
     @apply bg-slate-950 text-foreground antialiased;
     margin: 0;
     -webkit-tap-highlight-color: transparent;
+    background: #0054b8;
+    min-height: var(--app-height, 100dvh);
+  }
+
+  html {
+    background: #0054b8;
+    min-height: var(--app-height, 100dvh);
   }
 
   #root {
