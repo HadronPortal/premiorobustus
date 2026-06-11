@@ -31,6 +31,7 @@ type GameState = 'START' | 'CHOICE' | 'AUTH' | 'PLAYING' | 'VICTORY' | 'GAMEOVER
 type PetType = 'DOG' | 'CAT';
 
 export const BasketCatcherGame = () => {
+  const navigate = useNavigate();
   const [gameState, setGameState] = useState<GameState>('START');
   const [petChoice, setPetChoice] = useState<PetType | null>(null);
   const [score, setScore] = useState(0);
