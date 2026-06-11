@@ -42,7 +42,7 @@ class FallingProduct {
     this.width = this.special ? 112 : 92;
     this.height = this.special ? 180 : 148;
     this.x = 34 + Math.random() * (game.width - this.width - 68);
-    this.y = -this.height - Math.random() * 80;
+    this.y = -this.height - 300 - Math.random() * 200;
     this.speed = (this.special ? 5.9 : 4.9) + game.speedBoost + Math.random() * 1.45;
     this.rotation = (Math.random() - 0.5) * 0.18;
     this.trailLength = game.lowPowerMode ? 0 : this.special ? 196 : 158;
@@ -416,9 +416,9 @@ class RobustUSCatchGame {
     const ctx = this.ctx;
 
     ctx.save();
-    drawScoreBadge(ctx, 22, 26, this.score);
-    drawRobustusLogo(ctx, this.logo.image, this.width / 2, 36);
-    drawTimerBadge(ctx, this.width - 252, 38, Math.ceil(this.remaining));
+    drawScoreBadge(ctx, 30, 36, this.score);
+    drawRobustusLogo(ctx, this.logo.image, this.width / 2, 46);
+    drawTimerBadge(ctx, this.width - 272, 48, Math.ceil(this.remaining));
     ctx.restore();
   }
 }
@@ -733,8 +733,8 @@ function drawTimerBadge(ctx, x, y, seconds) {
 }
 
 function drawRobustusLogo(ctx, image, centerX, y) {
-  const width = 230;
-  const height = 64;
+  const width = 190;
+  const height = 54;
   const x = centerX - width / 2;
 
   ctx.save();

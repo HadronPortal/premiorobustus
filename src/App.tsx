@@ -124,6 +124,7 @@ const GameContent = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [gameState, setGameState] = useState<GameState>('START');
+  const [selectedGame, setSelectedGame] = useState<'memoria' | 'cesta' | null>(null);
   const { isMuted, toggleMute, playSound, startBackgroundMusic, stopBackgroundMusic, initAudio } = useAudioManager();
   const [cards, setCards] = useState<Card[]>([]);
   const [flippedCards, setFlippedCards] = useState<number[]>([]);
@@ -180,6 +181,10 @@ const GameContent = () => {
   }, [location.pathname]);
 
   const initializeGame = (sessionData: any) => {
+    if (selectedGame === 'cesta') {
+      navigate('/jogo-cesta', { state: { session: sessionData } });
+      return;
+    }
     const playSession: PlaySession = {
       play_id: sessionData.play_id,
       play_token: sessionData.play_token,
@@ -452,7 +457,10 @@ const GameContent = () => {
               <motion.button 
                 whileHover={{ scale: 1.05, y: -8 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => setGameState('AUTH')}
+                onClick={() => {
+                  setSelectedGame('memoria');
+                  setGameState('AUTH');
+                }}
                 className="group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-all border-4 border-transparent hover:border-[#f7941d] aspect-[3/4]"
               >
                 <div className="flex-1 w-full overflow-hidden relative bg-white">
@@ -467,7 +475,10 @@ const GameContent = () => {
               <motion.button 
                 whileHover={{ scale: 1.05, y: -8 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => navigate('/jogo-cesta')}
+                onClick={() => {
+                  setSelectedGame('cesta');
+                  setGameState('AUTH');
+                }}
                 className="group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-all border-4 border-transparent hover:border-[#0047ab] aspect-[3/4]"
               >
                 <div className="flex-1 w-full overflow-hidden relative bg-white">

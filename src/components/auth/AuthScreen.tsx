@@ -107,9 +107,9 @@ export const AuthScreen: React.FC<Props> = ({ onStart, onClose }) => {
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="registration-screen flex-1 w-full flex flex-col items-center justify-center p-4 sm:p-8 z-10"
+      className="registration-screen flex-1 w-full flex flex-col items-center justify-center p-2 sm:p-4 z-10"
     >
-      <div className="registration-card w-full max-w-[min(92vw,460px)] bg-white/95 backdrop-blur-3xl p-6 sm:p-10 rounded-[2rem] sm:rounded-[3rem] shadow-[0_25px_50px_rgba(0,0,0,0.4)] border-t-[10px] sm:border-t-[15px] border-[#f7941d] flex flex-col gap-6 sm:gap-8 relative">
+      <div className="registration-card w-full max-w-[min(92vw,440px)] bg-white/95 backdrop-blur-3xl p-5 sm:p-8 rounded-[1.5rem] sm:rounded-[2rem] shadow-[0_25px_50px_rgba(0,0,0,0.4)] border-t-[8px] sm:border-t-[12px] border-[#f7941d] flex flex-col gap-4 sm:gap-6 relative">
         {onClose && (
           <button 
             onClick={onClose}
@@ -122,14 +122,14 @@ export const AuthScreen: React.FC<Props> = ({ onStart, onClose }) => {
         )}
 
         
-        <div className="text-center space-y-2">
-          <h2 className="text-4xl sm:text-5xl font-black text-[#0047ab] uppercase italic tracking-tighter">CADASTRO</h2>
-          <p className="text-lg sm:text-xl font-bold text-slate-500 uppercase tracking-widest leading-tight">Preencha para começar!</p>
+        <div className="text-center space-y-1">
+          <h2 className="text-3xl sm:text-4xl font-black text-[#0047ab] uppercase italic tracking-tighter">CADASTRO</h2>
+          <p className="text-base sm:text-lg font-bold text-slate-500 uppercase tracking-widest leading-tight">Preencha para começar!</p>
         </div>
 
-        <form className="flex flex-col gap-6 w-full" onSubmit={handleStartGame}>
+        <form className="flex flex-col gap-4 w-full" onSubmit={handleStartGame}>
           
-          <div className="flex flex-col gap-4 sm:gap-6">
+          <div className="flex flex-col gap-3 sm:gap-4">
             <div className="relative">
               <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#0047ab]">
                 <User className="w-6 h-6 sm:w-8 sm:h-8" />
@@ -146,7 +146,7 @@ export const AuthScreen: React.FC<Props> = ({ onStart, onClose }) => {
                     e.target.scrollIntoView({ behavior: "smooth", block: "center" });
                   }, 250);
                 }}
-                className="w-full bg-slate-100 p-4 sm:p-6 pl-12 sm:pl-16 rounded-2xl text-xl sm:text-2xl font-bold text-[#003380] border-2 border-transparent focus:border-[#f7941d] outline-none transition-all placeholder:text-slate-400 uppercase"
+                className="w-full bg-slate-100 p-3 sm:p-4 pl-12 sm:pl-16 rounded-xl text-lg sm:text-xl font-bold text-[#003380] border-2 border-transparent focus:border-[#f7941d] outline-none transition-all placeholder:text-slate-400 uppercase"
               />
 
             </div>
@@ -168,13 +168,13 @@ export const AuthScreen: React.FC<Props> = ({ onStart, onClose }) => {
                     e.target.scrollIntoView({ behavior: "smooth", block: "center" });
                   }, 250);
                 }}
-                className="w-full bg-slate-100 p-4 sm:p-6 pl-12 sm:pl-16 rounded-2xl text-xl sm:text-2xl font-bold text-[#003380] border-2 border-transparent focus:border-[#f7941d] outline-none transition-all placeholder:text-slate-400"
+                className="w-full bg-slate-100 p-3 sm:p-4 pl-12 sm:pl-16 rounded-xl text-lg sm:text-xl font-bold text-[#003380] border-2 border-transparent focus:border-[#f7941d] outline-none transition-all placeholder:text-slate-400"
               />
 
             </div>
           </div>
 
-          <div className="bg-slate-50 p-4 sm:p-6 rounded-2xl border border-slate-100">
+          <div className="bg-slate-50 p-3 sm:p-4 rounded-xl border border-slate-100">
             <label className="flex items-start gap-3 sm:gap-4 cursor-pointer group">
               <div className="relative mt-1 flex-shrink-0">
                 <input 
@@ -206,14 +206,14 @@ export const AuthScreen: React.FC<Props> = ({ onStart, onClose }) => {
             whileTap={isFormValid ? { scale: 0.98 } : {}}
             type="submit"
             disabled={isStarting || !isFormValid}
-            className={`w-full py-4 sm:py-6 rounded-2xl sm:rounded-3xl shadow-xl flex items-center justify-center gap-3 border-b-[6px] sm:border-b-[10px] transition-all mt-2
+            className={`w-full py-3 sm:py-4 rounded-xl sm:rounded-2xl shadow-xl flex items-center justify-center gap-3 border-b-[4px] sm:border-b-[6px] transition-all mt-1
               ${isFormValid 
                 ? 'bg-[#f7941d] border-[#d47a00] active:border-b-0' 
                 : 'bg-slate-300 border-slate-400 cursor-not-allowed opacity-60'}
               ${isStarting ? 'opacity-70 grayscale' : ''}
             `}
           >
-            <span className="text-xl sm:text-2xl font-black text-white tracking-widest uppercase italic">
+            <span className="text-lg sm:text-xl font-black text-white tracking-widest uppercase italic">
               {isStarting ? 'INICIANDO...' : 'COMEÇAR O DESAFIO'}
             </span>
             {!isStarting && <ChevronRight className="w-8 h-8 sm:w-10 sm:h-10 text-white" />}
