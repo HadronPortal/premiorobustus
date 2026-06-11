@@ -122,12 +122,11 @@ export const BasketCatcherGame = () => {
           scoreRef.current = Math.max(0, Math.min(MAX_SCORE, scoreRef.current + finalPoints));
           setScore(scoreRef.current);
           
-          setFeedbacks(f => [...f, { id: Date.now(), x: i.x, y: i.y, points: finalPoints }]);
-          
-          return false;
-        }
-        return i.y < 105;
-      }));
+          const fid = Date.now();
+          setFeedbacks(f => [...f, { id: fid, x: i.x, y: i.y, points: finalPoints }]);
+          setTimeout(() => {
+            setFeedbacks(f => f.filter(fb => fb.id !== fid));
+          }, 1000);
       animId = requestAnimationFrame(update);
     };
     animId = requestAnimationFrame(update);
