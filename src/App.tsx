@@ -454,21 +454,11 @@ const GameContent = () => {
                 onClick={() => setGameState('AUTH')}
                 className="group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-all border-4 border-transparent hover:border-[#f7941d] aspect-[3/4]"
               >
-                <div className="flex-1 w-full overflow-hidden relative bg-slate-100">
-                  {/* Screenshot Realístico do Jogo da Memória */}
-                  <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${ASSETS.bgHero})` }}>
-                    <div className="absolute inset-0 bg-[#0047ab]/30 backdrop-blur-[1px]"></div>
-                    <div className="grid grid-cols-3 gap-1.5 p-3 sm:p-5 h-full items-center justify-center">
-                      {[1,2,3,4,5,6,7,8,9].map(i => (
-                        <div key={i} className="aspect-square bg-white rounded-lg shadow-md flex items-center justify-center transform rotate-2">
-                           <img src={PRODUCTS[i%5].img} className="w-[70%] h-auto opacity-80" alt="" />
-                        </div>
-                      ))}
-                    </div>
+                <div className="flex-1 w-full overflow-hidden relative bg-white">
+                  {/* Foto inteira enviada pelo usuário para o Jogo da Memória */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center p-0">
+                     <img src="/memoria-final.png" alt="Jogo da Memória" className="w-full h-full object-contain" />
                   </div>
-                </div>
-                <div className="bg-[#f7941d] py-4 sm:py-7 w-full flex items-center justify-center">
-                  <span className="text-[12px] sm:text-3xl font-black text-white tracking-widest uppercase italic">JOGO DA MEMÓRIA</span>
                 </div>
               </motion.button>
 
