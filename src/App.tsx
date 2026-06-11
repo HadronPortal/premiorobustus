@@ -479,6 +479,8 @@ const GameContent = () => {
               </motion.button>
             </div>
 
+            <BannerCarousel />
+
             <AnimatePresence>
               {loadingLeaderboard || leaderboard.length > 0 ? (
                 <motion.div 
