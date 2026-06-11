@@ -446,51 +446,50 @@ const GameContent = () => {
               </motion.h1>
             </div>
 
-            <div className="w-full max-w-[min(92vw,800px)] grid grid-cols-2 gap-4 sm:gap-8 mb-8">
+            <div className="w-full max-w-[min(94vw,900px)] grid grid-cols-2 gap-4 sm:gap-10 mb-8">
               {/* Card Jogo da Memória */}
               <motion.button 
-                whileHover={{ scale: 1.03, y: -5 }}
-                whileTap={{ scale: 0.97 }}
+                whileHover={{ scale: 1.05, y: -8 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => setGameState('AUTH')}
-                className="group relative flex flex-col overflow-hidden rounded-[2rem] bg-white shadow-2xl transition-all border-b-[6px] border-[#d47a00] aspect-[3/4]"
+                className="group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-all border-4 border-transparent hover:border-[#f7941d] aspect-[3/4]"
               >
-                <div className="flex-1 w-full overflow-hidden bg-[#0047ab]/5 relative">
-                  {/* Preview Visual Jogo da Memória */}
-                  <div className="absolute inset-0 flex items-center justify-center p-4">
-                    <div className="grid grid-cols-2 gap-2 opacity-80 group-hover:scale-105 transition-transform duration-500">
-                      {[1,2,3,4].map(i => (
-                        <div key={i} className="w-12 h-12 sm:w-20 sm:h-20 bg-[#0047ab] rounded-xl shadow-inner flex items-center justify-center">
-                           <PawPrint className="w-6 h-6 sm:w-10 sm:h-10 text-white/30" />
+                <div className="flex-1 w-full overflow-hidden relative bg-slate-100">
+                  {/* Screenshot Realístico do Jogo da Memória */}
+                  <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${ASSETS.bgHero})` }}>
+                    <div className="absolute inset-0 bg-[#0047ab]/30 backdrop-blur-[1px]"></div>
+                    <div className="grid grid-cols-3 gap-1.5 p-3 sm:p-5 h-full items-center justify-center">
+                      {[1,2,3,4,5,6,7,8,9].map(i => (
+                        <div key={i} className="aspect-square bg-white rounded-lg shadow-md flex items-center justify-center transform rotate-2">
+                           <img src={PRODUCTS[i%5].img} className="w-[70%] h-auto opacity-80" alt="" />
                         </div>
                       ))}
                     </div>
                   </div>
                 </div>
-                <div className="bg-[#f7941d] py-3 sm:py-5 w-full flex items-center justify-center">
-                  <span className="text-[10px] sm:text-2xl font-black text-white tracking-wider uppercase italic">JOGO DA MEMÓRIA</span>
+                <div className="bg-[#f7941d] py-4 sm:py-7 w-full flex items-center justify-center">
+                  <span className="text-[12px] sm:text-3xl font-black text-white tracking-widest uppercase italic">JOGO DA MEMÓRIA</span>
                 </div>
               </motion.button>
 
               {/* Card Jogo da Cesta */}
               <motion.button 
-                whileHover={{ scale: 1.03, y: -5 }}
-                whileTap={{ scale: 0.97 }}
+                whileHover={{ scale: 1.05, y: -8 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => navigate('/jogo-cesta')}
-                className="group relative flex flex-col overflow-hidden rounded-[2rem] bg-white shadow-2xl transition-all border-b-[6px] border-[#001d4d] aspect-[3/4]"
+                className="group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-all border-4 border-transparent hover:border-[#0047ab] aspect-[3/4]"
               >
-                <div className="flex-1 w-full overflow-hidden bg-[#0047ab]/5 relative">
-                  {/* Preview Visual Jogo da Cesta */}
-                  <div className="absolute inset-0 flex items-center justify-center overflow-hidden p-4">
-                    <div className="relative w-full h-full flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
-                      <img src="https://robustus.com.br/wp-content/uploads/2025/10/cao-mini-768x633.png" alt="" className="w-28 sm:w-44 object-contain drop-shadow-xl" />
-                      <div className="absolute bottom-4 sm:bottom-8 right-2 sm:right-4 transform rotate-12">
-                         <ShoppingBasket className="w-10 h-10 sm:w-16 sm:h-16 text-[#0047ab]/20" />
-                      </div>
-                    </div>
+                <div className="flex-1 w-full overflow-hidden relative bg-[#004fb6]">
+                  {/* Screenshot Realístico do Jogo da Cesta */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center p-2 sm:p-4">
+                     <img src="https://robustus.com.br/wp-content/uploads/2025/10/cao-mini-768x633.png" alt="" className="w-[85%] sm:w-[90%] object-contain drop-shadow-2xl z-10" />
+                     <div className="absolute bottom-4 sm:bottom-10 left-0 w-full flex justify-center opacity-20 group-hover:opacity-40 transition-opacity">
+                        <ShoppingBasket className="w-16 h-16 sm:w-28 sm:h-28 text-white" />
+                     </div>
                   </div>
                 </div>
-                <div className="bg-[#0047ab] py-3 sm:py-5 w-full flex items-center justify-center">
-                  <span className="text-[10px] sm:text-2xl font-black text-white tracking-wider uppercase italic">JOGO DA CESTA</span>
+                <div className="bg-[#0047ab] py-4 sm:py-7 w-full flex items-center justify-center">
+                  <span className="text-[12px] sm:text-3xl font-black text-white tracking-widest uppercase italic">JOGO DA CESTA</span>
                 </div>
               </motion.button>
             </div>
