@@ -19,8 +19,8 @@ export const BannerCarousel = () => {
   }, []);
 
   return (
-    <div className="w-full px-4 mt-auto mb-3 sm:mb-6">
-      <div className="relative w-full h-[clamp(150px,19vh,180px)] sm:h-[clamp(170px,18vh,220px)] rounded-2xl overflow-hidden shadow-lg border-2 border-white/50 sm:border-[#f7941d]/30 group">
+    <div className="w-full px-4 mt-auto mb-3 sm:mb-6 flex justify-center">
+      <div className="relative w-[min(96vw,760px)] sm:w-[min(94vw,900px)] h-[clamp(190px,25vh,240px)] sm:h-[clamp(220px,24vh,280px)] rounded-[18px] overflow-hidden shadow-lg border-2 border-white/50 sm:border-[#f7941d]/30 group bg-gradient-to-b from-[#0057b8] to-[#003f95]">
         <AnimatePresence mode="wait">
           <motion.img
             key={currentIndex}
@@ -30,7 +30,7 @@ export const BannerCarousel = () => {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.5 }}
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full object-contain object-center"
           />
         </AnimatePresence>
         
