@@ -509,12 +509,17 @@ const GameContent = () => {
               ) : null}
             </AnimatePresence>
 
-            {/* Banner de rodapé com as linhas de produtos */}
-            <div className="w-full max-w-4xl mt-auto pt-2 flex justify-center items-end">
+            {/* Banner de rodapé com as novas imagens de ração */}
+            <div className="w-full max-w-4xl mt-auto pt-2 flex justify-center items-end gap-4 sm:gap-8">
               <img 
-                src="/footer-banners.png" 
-                alt="Linhas RobustUS" 
-                className="w-full h-auto object-contain max-h-[100px] sm:max-h-[160px]" 
+                src="/racao-cao.png" 
+                alt="Ração Cão RobustUS" 
+                className="h-[100px] sm:h-[180px] w-auto object-contain" 
+              />
+              <img 
+                src="/racao-gato.png" 
+                alt="Ração Gato RobustUS" 
+                className="h-[100px] sm:h-[180px] w-auto object-contain" 
               />
             </div>
           </motion.div>
