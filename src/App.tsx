@@ -433,67 +433,64 @@ const GameContent = () => {
 
       <AnimatePresence mode="wait">
         {gameState === 'START' && (
-          <motion.div key="start" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 w-full flex flex-col items-center justify-start py-8 px-6 sm:py-16 sm:px-12 z-10 overflow-y-auto">
-            <motion.div initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="w-full flex justify-center mb-8 sm:mb-12">
-              <div className="bg-white p-4 sm:p-6 rounded-[2rem] shadow-2xl border-4 border-[#f7941d] w-32 h-32 sm:w-48 sm:h-48 flex items-center justify-center">
+          <motion.div key="start" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 w-full flex flex-col items-center justify-center py-6 px-4 sm:py-12 sm:px-12 z-10 overflow-hidden">
+            <motion.div initial={{ y: -30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="w-full flex justify-center mb-6 sm:mb-10">
+              <div className="bg-white p-3 sm:p-5 rounded-3xl shadow-xl border-2 border-[#f7941d] w-24 h-24 sm:w-36 sm:h-36 flex items-center justify-center">
                 <img src={ASSETS.logo} alt="Logo" className="w-full h-auto object-contain" />
               </div>
             </motion.div>
 
-            <div className="flex flex-col items-center text-center gap-4 sm:gap-8 mb-8">
-              <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.2 }} className="space-y-2">
-                <h1 className="text-4xl sm:text-7xl font-black text-white italic tracking-tighter drop-shadow-lg leading-none uppercase">
-                  DESAFIO <span className="text-[#f7941d]">RobustUS</span>
-                </h1>
-              </motion.div>
+            <div className="flex flex-col items-center text-center gap-2 sm:gap-4 mb-8">
+              <motion.h1 initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.2 }} className="text-4xl sm:text-6xl font-black text-white italic tracking-tighter drop-shadow-lg leading-none uppercase">
+                DESAFIO <span className="text-[#f7941d]">RobustUS</span>
+              </motion.h1>
             </div>
 
-            <div className="w-full max-w-4xl grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-10 mb-12">
+            <div className="w-full max-w-[min(92vw,800px)] grid grid-cols-2 gap-4 sm:gap-8 mb-8">
               {/* Card Jogo da Memória */}
               <motion.button 
-                whileHover={{ scale: 1.02, y: -5 }}
-                whileTap={{ scale: 0.98 }}
+                whileHover={{ scale: 1.03, y: -5 }}
+                whileTap={{ scale: 0.97 }}
                 onClick={() => setGameState('AUTH')}
-                className="group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-all border-b-[8px] border-[#d47a00]"
+                className="group relative flex flex-col overflow-hidden rounded-[2rem] bg-white shadow-2xl transition-all border-b-[6px] border-[#d47a00] aspect-[3/4]"
               >
-                <div className="aspect-[16/10] w-full overflow-hidden bg-[#0047ab]/10 relative">
+                <div className="flex-1 w-full overflow-hidden bg-[#0047ab]/5 relative">
                   {/* Preview Visual Jogo da Memória */}
                   <div className="absolute inset-0 flex items-center justify-center p-4">
-                    <div className="grid grid-cols-3 gap-2 opacity-40 group-hover:opacity-60 transition-opacity">
-                      {[1,2,3,4,5,6].map(i => (
-                        <div key={i} className="w-10 h-10 sm:w-16 sm:h-16 bg-[#0047ab] rounded-xl"></div>
+                    <div className="grid grid-cols-2 gap-2 opacity-80 group-hover:scale-105 transition-transform duration-500">
+                      {[1,2,3,4].map(i => (
+                        <div key={i} className="w-12 h-12 sm:w-20 sm:h-20 bg-[#0047ab] rounded-xl shadow-inner flex items-center justify-center">
+                           <PawPrint className="w-6 h-6 sm:w-10 sm:h-10 text-white/30" />
+                        </div>
                       ))}
                     </div>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <LayoutGrid className="w-16 h-16 sm:w-24 sm:h-24 text-[#0047ab]/20" />
-                    </div>
                   </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                 </div>
-                <div className="bg-[#f7941d] py-4 sm:py-6 w-full">
-                  <span className="text-xl sm:text-3xl font-black text-white tracking-widest uppercase italic">JOGO DA MEMÓRIA</span>
+                <div className="bg-[#f7941d] py-3 sm:py-5 w-full flex items-center justify-center">
+                  <span className="text-[10px] sm:text-2xl font-black text-white tracking-wider uppercase italic">JOGO DA MEMÓRIA</span>
                 </div>
               </motion.button>
 
               {/* Card Jogo da Cesta */}
               <motion.button 
-                whileHover={{ scale: 1.02, y: -5 }}
-                whileTap={{ scale: 0.98 }}
+                whileHover={{ scale: 1.03, y: -5 }}
+                whileTap={{ scale: 0.97 }}
                 onClick={() => navigate('/jogo-cesta')}
-                className="group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-all border-b-[8px] border-[#001d4d]"
+                className="group relative flex flex-col overflow-hidden rounded-[2rem] bg-white shadow-2xl transition-all border-b-[6px] border-[#001d4d] aspect-[3/4]"
               >
-                <div className="aspect-[16/10] w-full overflow-hidden bg-[#0047ab]/10 relative">
+                <div className="flex-1 w-full overflow-hidden bg-[#0047ab]/5 relative">
                   {/* Preview Visual Jogo da Cesta */}
-                  <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
-                    <div className="relative w-full h-full flex items-center justify-center opacity-40 group-hover:opacity-60 transition-opacity">
-                      <img src="https://robustus.com.br/wp-content/uploads/2025/10/cao-mini-768x633.png" alt="" className="w-24 sm:w-40 absolute -bottom-4 animate-bounce" />
-                      <ShoppingBasket className="w-16 h-16 sm:w-24 sm:h-24 text-[#0047ab]/20" />
+                  <div className="absolute inset-0 flex items-center justify-center overflow-hidden p-4">
+                    <div className="relative w-full h-full flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
+                      <img src="https://robustus.com.br/wp-content/uploads/2025/10/cao-mini-768x633.png" alt="" className="w-28 sm:w-44 object-contain drop-shadow-xl" />
+                      <div className="absolute bottom-4 sm:bottom-8 right-2 sm:right-4 transform rotate-12">
+                         <ShoppingBasket className="w-10 h-10 sm:w-16 sm:h-16 text-[#0047ab]/20" />
+                      </div>
                     </div>
                   </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                 </div>
-                <div className="bg-[#0047ab] py-4 sm:py-6 w-full">
-                  <span className="text-xl sm:text-3xl font-black text-white tracking-widest uppercase italic">JOGO DA CESTA</span>
+                <div className="bg-[#0047ab] py-3 sm:py-5 w-full flex items-center justify-center">
+                  <span className="text-[10px] sm:text-2xl font-black text-white tracking-wider uppercase italic">JOGO DA CESTA</span>
                 </div>
               </motion.button>
             </div>
