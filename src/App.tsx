@@ -482,11 +482,11 @@ const GameContent = () => {
                 <div className="flex-1 w-full overflow-hidden relative bg-white">
                   {/* Foto enviada pelo usuário para o Jogo da Cesta */}
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
-                     <img src="/cesta-final.png" alt="Jogo da Cesta" className="w-full h-full object-cover" />
+                     <img src="/cesta-final.png" alt="Jogo da Cesta" className="w-full h-full object-cover translate-y-4" />
                   </div>
                 </div>
                 <div className="bg-[#0047ab] py-4 sm:py-7 w-full flex items-center justify-center">
-                  <span className="text-[12px] sm:text-3xl font-black text-white tracking-widest uppercase italic">JOGO DA CESTA</span>
+                  <span className="text-[12px] sm:text-3xl font-black text-white tracking-widest uppercase italic">&nbsp;</span>
                 </div>
               </motion.button>
             </div>
