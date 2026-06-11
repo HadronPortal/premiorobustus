@@ -436,13 +436,13 @@ const GameContent = () => {
         {gameState === 'START' && (
           <motion.div key="start" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 w-full flex flex-col items-center justify-start pt-1 pb-1 px-4 sm:pt-4 sm:px-12 z-10 overflow-hidden">
             <motion.div initial={{ y: -30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="w-full flex justify-center mb-0.5 sm:mb-2">
-              <div className="bg-white p-1 sm:p-3 rounded-3xl shadow-xl border-2 border-[#f7941d] w-14 h-14 sm:w-24 sm:h-24 flex items-center justify-center">
+              <div className="bg-white p-1 sm:p-3 rounded-2xl sm:rounded-3xl shadow-xl border-2 border-[#f7941d] w-12 h-12 sm:w-24 sm:h-24 flex items-center justify-center">
                 <img src={ASSETS.logo} alt="Logo" className="w-full h-auto object-contain" />
               </div>
             </motion.div>
 
             <div className="flex flex-col items-center text-center gap-0 sm:gap-1 mb-1 sm:mb-2">
-              <motion.h1 initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.2 }} className="text-xl sm:text-3xl font-black text-white italic tracking-tighter drop-shadow-lg leading-none uppercase">
+              <motion.h1 initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.2 }} className="text-lg sm:text-3xl font-black text-white italic tracking-tighter drop-shadow-lg leading-none uppercase">
                 DESAFIO <span className="text-[#f7941d]">RobustUS</span>
               </motion.h1>
             </div>
