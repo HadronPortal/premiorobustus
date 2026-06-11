@@ -342,6 +342,11 @@ class RobustUSCatchGame {
       product.update(delta);
       if (intersects(basket, product.bounds)) {
         this.score = clamp(this.score + product.value, 0, CONFIG.maxScore);
+        if (product.value > 0) {
+          this.playSound('match');
+        } else {
+          this.playSound('error');
+        }
         this.fx.push({
           text: product.value > 0 ? `+${product.value}` : String(product.value),
           x: product.x + product.width / 2,
