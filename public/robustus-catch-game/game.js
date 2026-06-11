@@ -215,7 +215,7 @@ class RobustUSCatchGame {
     });
     document.getElementById("restart-button").addEventListener("click", () => {
       this.playSound('flip');
-      this.showStart();
+      window.parent.postMessage({ type: "ROBUSTUS_CATCH_NAVIGATE_HOME" }, "*");
     });
     document.getElementById("choose-dog-button").addEventListener("click", () => {
       this.playSound('flip');

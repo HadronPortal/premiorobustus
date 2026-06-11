@@ -34,6 +34,8 @@ export default function JogoCesta() {
         }
       } else if (event.data.type === 'ROBUSTUS_CATCH_PLAY_SOUND') {
         playSound(event.data.soundType);
+      } else if (event.data.type === 'ROBUSTUS_CATCH_NAVIGATE_HOME') {
+        navigate('/');
       }
     };
 
