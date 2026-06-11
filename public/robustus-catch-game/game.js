@@ -171,30 +171,23 @@ class RobustUSCatchGame {
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
     
-    // Fallback para garantir valores válidos
-    const width = Math.max(320, viewportWidth);
-    const height = Math.max(480, viewportHeight);
+    this.width = Math.max(320, viewportWidth);
+    this.height = Math.max(480, viewportHeight);
 
-    // No tablet, queremos ocupar a tela inteira. 
-    // O aspecto do jogo original era baseado em CONFIG.canvasHeight (1280)
-    // Mas para preencher a tela, vamos usar a altura real da janela.
-    this.width = width;
-    this.height = height;
+    this.canvas.style.width = `${this.width}px`;
+    this.canvas.style.height = `${this.height}px`;
     
-    // Ajustar o estilo do canvas para preencher o viewport
-    this.canvas.style.width = `${width}px`;
-    this.canvas.style.height = `${height}px`;
-    
-    // Resolução real para o desenho (Retina/High DPI)
     const dpr = window.devicePixelRatio || 1;
-    this.canvas.width = width * dpr;
-    this.canvas.height = height * dpr;
+    this.canvas.width = this.width * dpr;
+    this.canvas.height = this.height * dpr;
     this.ctx.scale(dpr, dpr);
 
     this.backgroundCanvas.width = this.width * dpr;
     this.backgroundCanvas.height = this.height * dpr;
     const bgCtx = this.backgroundCanvas.getContext("2d");
     bgCtx.scale(dpr, dpr);
+    
+    // Recriar o fundo com as novas dimensões
     drawCartoonParkBackground(bgCtx, this.width, this.height);
     
     this.backgroundReady = true;
@@ -208,15 +201,27 @@ class RobustUSCatchGame {
     this.speedBoost = 0;
     this.productsFalling = [];
     this.fx = [];
+    
     const catMode = this.selectedSpecies === "cat";
+    const H = this.height;
+    
+    // Altura do chão dinâmica (16% da tela ou mínimo de 90px)
+    const groundHeight = Math.max(90, H * 0.16);
+    const groundY = H - groundHeight;
+    
+    // Altura do pet proporcional (32% da tela ou máximo de 230px)
+    const petHeight = Math.min(H * 0.32, 230);
+    const spriteWidth = catMode ? petHeight * (258/438) : petHeight * (292/369);
+    
     this.player = {
       x: this.width / 2,
-      y: this.height - (catMode ? 520 : 420),
-      spriteWidth: catMode ? 258 : 292,
-      spriteHeight: catMode ? 438 : 369,
-      basketWidth: catMode ? 202 : 194,
-      basketHeight: catMode ? 58 : 54,
-      basketOffsetY: catMode ? 270 : 263,
+      // O pet deve ficar apoiado no chão
+      y: groundY - petHeight + (catMode ? 10 : 15),
+      spriteWidth: spriteWidth,
+      spriteHeight: petHeight,
+      basketWidth: catMode ? spriteWidth * 0.78 : spriteWidth * 0.66,
+      basketHeight: catMode ? petHeight * 0.13 : petHeight * 0.14,
+      basketOffsetY: catMode ? petHeight * 0.61 : petHeight * 0.71,
       speed: catMode ? 8.1 : 8.4
     };
   }
@@ -552,6 +557,7 @@ function drawBlob(ctx, x, y, width, height, color) {
 }
 
 function drawCartoonParkBackground(ctx, width, height) {
+  // 1. Céu (ocupa a tela toda)
   const sky = ctx.createLinearGradient(0, 0, 0, height);
   sky.addColorStop(0, "#0798ee");
   sky.addColorStop(0.44, "#31c7ff");
@@ -560,39 +566,49 @@ function drawCartoonParkBackground(ctx, width, height) {
   ctx.fillStyle = sky;
   ctx.fillRect(0, 0, width, height);
 
-  drawCloud(ctx, 78, 260, 88, 0.78);
-  drawCloud(ctx, width - 76, 230, 118, 0.78);
-  drawCloud(ctx, 442, 640, 82, 0.55);
-  drawCloud(ctx, 214, 720, 92, 0.5);
+  // 2. Nuvens em posições proporcionais
+  drawCloud(ctx, width * 0.1, height * 0.2, 88, 0.78);
+  drawCloud(ctx, width * 0.85, height * 0.18, 118, 0.78);
+  drawCloud(ctx, width * 0.6, height * 0.5, 82, 0.55);
+  drawCloud(ctx, width * 0.3, height * 0.55, 92, 0.5);
 
+  const groundHeight = Math.max(90, height * 0.16);
+  const groundY = height - groundHeight;
+
+  // 3. Montanhas/Colinas ao fundo
   ctx.fillStyle = "rgba(28, 123, 154, 0.18)";
   ctx.beginPath();
-  ctx.moveTo(0, height - 410);
-  ctx.quadraticCurveTo(150, height - 520, 310, height - 395);
-  ctx.quadraticCurveTo(445, height - 505, width, height - 370);
+  ctx.moveTo(0, groundY - 120);
+  ctx.quadraticCurveTo(width * 0.2, groundY - 230, width * 0.43, groundY - 105);
+  ctx.quadraticCurveTo(width * 0.6, groundY - 215, width, groundY - 80);
   ctx.lineTo(width, height);
   ctx.lineTo(0, height);
   ctx.closePath();
   ctx.fill();
 
-  drawTree(ctx, 46, height - 334, 1.02, "left");
-  drawTree(ctx, width - 34, height - 342, 1.04, "right");
-  drawFence(ctx, 0, height - 320, width);
+  // 4. Árvores alinhadas ao groundY
+  drawTree(ctx, width * 0.08, groundY - 14, 1.02, "left");
+  drawTree(ctx, width - (width * 0.06), groundY - 22, 1.04, "right");
+  
+  // 5. Cerca alinhada ao groundY
+  drawFence(ctx, 0, groundY - 32, width);
 
-  const ground = ctx.createLinearGradient(0, height - 300, 0, height);
+  // 6. Chão (Grama) colado no rodapé
+  const ground = ctx.createLinearGradient(0, groundY, 0, height);
   ground.addColorStop(0, "#a7ef39");
   ground.addColorStop(0.58, "#61c947");
   ground.addColorStop(1, "#22964b");
   ctx.fillStyle = ground;
-  ctx.fillRect(0, height - 288, width, 288);
+  ctx.fillRect(0, groundY, width, groundHeight);
 
+  // 7. Detalhes de sombra no chão
   ctx.fillStyle = "rgba(53, 159, 54, 0.35)";
   ctx.beginPath();
   ctx.ellipse(width * 0.26, height - 70, width * 0.44, 68, -0.08, 0, Math.PI * 2);
   ctx.ellipse(width * 0.78, height - 92, width * 0.34, 56, 0.08, 0, Math.PI * 2);
   ctx.fill();
 
-  drawGrassAndFlowers(ctx, width, height);
+  drawGrassAndFlowers(ctx, width, height, groundY);
 }
 
 function drawCloud(ctx, x, y, size, alpha) {
@@ -663,13 +679,13 @@ function drawFence(ctx, x, y, width) {
   ctx.restore();
 }
 
-function drawGrassAndFlowers(ctx, width, height) {
+function drawGrassAndFlowers(ctx, width, height, groundY) {
   ctx.save();
   ctx.strokeStyle = "rgba(37, 137, 54, 0.44)";
   ctx.lineWidth = 3;
   for (let i = 0; i < 56; i += 1) {
     const x = (i * 61) % width;
-    const y = height - 38 - ((i * 29) % 150);
+    const y = groundY + ((i * 29) % (height - groundY - 20));
     ctx.beginPath();
     ctx.moveTo(x, y + 20);
     ctx.quadraticCurveTo(x + 8, y + 6, x + 18, y);
