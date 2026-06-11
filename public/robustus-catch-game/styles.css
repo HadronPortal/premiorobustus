@@ -35,8 +35,8 @@ body {
 
 .totem-shell {
   position: relative;
-  width: min(100vw, calc(var(--app-height) * 9 / 16));
-  height: min(var(--app-height), calc(100vw * 16 / 9));
+  width: 100vw;
+  height: var(--app-height);
   max-width: 1080px;
   max-height: 1920px;
   overflow: hidden;
@@ -44,6 +44,14 @@ body {
     radial-gradient(circle at 25% 20%, rgba(255, 255, 255, 0.2), transparent 25%),
     linear-gradient(180deg, #0b69ce 0%, #004fb6 48%, #003987 100%);
   box-shadow: 0 30px 90px rgba(0, 0, 0, 0.35);
+  margin: 0 auto;
+}
+
+@media (min-width: 1201px) {
+  .totem-shell {
+    width: min(100vw, calc(var(--app-height) * 9 / 16));
+    height: min(var(--app-height), calc(100vw * 16 / 9));
+  }
 }
 
 .totem-shell::before {
@@ -73,7 +81,7 @@ body:has(.totem-shell.game-active) {
   background: #31c7ff;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1200px) {
   .totem-shell {
     width: 100vw;
     height: var(--app-height);
@@ -627,7 +635,7 @@ h2 {
   text-align: center;
 }
 
-@media (max-height: 740px) {
+@media (max-height: 600px) {
   .credit {
     display: none;
   }

@@ -61,7 +61,7 @@ export default function JogoCesta() {
   const scoreProgress = (score / 250) * 100;
 
   return (
-    <main style={{ width: "100vw", height: "100dvh", overflow: "hidden", background: "#004fb6", position: "relative" }}>
+    <main className="catch-game-screen" style={{ width: "100vw", height: "100dvh", overflow: "hidden", background: "#004fb6", position: "relative" }}>
       {gameState === 'playing' && (
         <div className="catch-game-hud" style={{
           position: 'fixed',
