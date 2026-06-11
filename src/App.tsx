@@ -20,7 +20,7 @@ import { AuthScreen } from './components/auth/AuthScreen';
 import { AdminScreen } from './components/admin/AdminScreen';
 import { DogFoodGame } from './components/DogFoodGame';
 import { BasketCatcherGame } from './components/BasketCatcherGame';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import { useAudioManager } from './hooks/useAudioManager';
 
