@@ -416,9 +416,13 @@ class RobustUSCatchGame {
     const ctx = this.ctx;
 
     ctx.save();
-    drawScoreBadge(ctx, 30, 36, this.score);
+    // Reorganizando HUD para Layout de 3 áreas: esquerda, centro, direita
+    // Esquerda: Placar (o botão voltar está no React fora do iframe)
+    drawScoreBadge(ctx, 110, 36, this.score);
+    // Centro: Logo RobustUS
     drawRobustusLogo(ctx, this.logo.image, this.width / 2, 46);
-    drawTimerBadge(ctx, this.width - 272, 48, Math.ceil(this.remaining));
+    // Direita: Tempo
+    drawTimerBadge(ctx, this.width - 250, 48, Math.ceil(this.remaining));
     ctx.restore();
   }
 }
@@ -637,8 +641,11 @@ function drawFlower(ctx, x, y, size) {
 
 function drawScoreBadge(ctx, x, y, score) {
   ctx.save();
+  const scale = this?.width < 700 ? 0.8 : 1;
+  ctx.scale(scale, scale);
+  x = x / scale;
+  y = y / scale;
   ctx.shadowColor = "rgba(67, 34, 8, 0.35)";
-  ctx.shadowBlur = 12;
   ctx.shadowOffsetY = 7;
 
   const wood = ctx.createLinearGradient(x, y, x, y + 106);
@@ -681,8 +688,11 @@ function drawScoreBadge(ctx, x, y, score) {
 
 function drawTimerBadge(ctx, x, y, seconds) {
   ctx.save();
+  const scale = this?.width < 700 ? 0.8 : 1;
+  ctx.scale(scale, scale);
+  x = x / scale;
+  y = y / scale;
   ctx.shadowColor = "rgba(0, 32, 80, 0.3)";
-  ctx.shadowBlur = 12;
   ctx.shadowOffsetY = 7;
 
   const panel = ctx.createLinearGradient(x + 56, y, x + 228, y + 82);
