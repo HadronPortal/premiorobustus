@@ -441,8 +441,8 @@ const GameContent = () => {
         {gameState === 'START' && (
           <motion.div key="start" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 w-full flex flex-col items-center justify-center pt-8 pb-6 px-4 sm:pt-12 sm:px-12 z-10 overflow-hidden gap-[clamp(14px,2vh,24px)]">
             <motion.div initial={{ y: -30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="w-full flex justify-center">
-              <div className="bg-white p-2 sm:p-3 rounded-2xl sm:rounded-3xl shadow-xl border-2 border-[#f7941d] w-16 h-16 sm:w-24 sm:h-24 flex items-center justify-center">
-                <img src={ASSETS.logo} alt="Logo" className="w-full h-auto object-contain" />
+              <div className="bg-white p-3 sm:p-4 rounded-3xl shadow-xl border-3 border-[#f7941d] w-32 h-14 sm:w-48 sm:h-20 flex items-center justify-center">
+                <img src={ASSETS.logo} alt="Logo" className="w-full h-full object-contain" />
               </div>
             </motion.div>
 
