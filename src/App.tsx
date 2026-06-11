@@ -496,7 +496,16 @@ const GameContent = () => {
                       <button onClick={() => { setLeaderboard([]); setLoadingLeaderboard(false); }} className="p-2 text-slate-400 hover:text-slate-600">
                         <RotateCcw className="w-6 h-6" />
                       </button>
-                    </div>
+            </div>
+
+            {/* Banner de rodapé com as linhas de produtos */}
+            <div className="w-full max-w-5xl mt-auto pt-4 flex justify-center items-end opacity-90">
+              <img 
+                src="/footer-banners.png" 
+                alt="Linhas RobustUS" 
+                className="w-full h-auto object-contain max-h-[120px] sm:max-h-[220px]" 
+              />
+            </div>
                     <Leaderboard entries={leaderboard} loading={loadingLeaderboard} />
                     <button 
                       onClick={() => { setLeaderboard([]); setLoadingLeaderboard(false); }}
