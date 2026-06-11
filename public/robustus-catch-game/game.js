@@ -168,23 +168,35 @@ class RobustUSCatchGame {
   }
 
   syncCanvasToViewport() {
-    const viewportWidth = Math.max(1, window.innerWidth || CONFIG.canvasWidth);
-    const viewportHeight = Math.max(1, window.innerHeight || CONFIG.canvasHeight);
-    const aspect = viewportWidth / viewportHeight;
-    const nextHeight = CONFIG.canvasHeight;
-    const nextWidth = Math.max(640, Math.round(nextHeight * aspect));
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    
+    // Fallback para garantir valores válidos
+    const width = Math.max(320, viewportWidth);
+    const height = Math.max(480, viewportHeight);
 
-    if (this.backgroundReady && this.width === nextWidth && this.height === nextHeight && this.canvas.width === nextWidth) {
-      return false;
-    }
+    // No tablet, queremos ocupar a tela inteira. 
+    // O aspecto do jogo original era baseado em CONFIG.canvasHeight (1280)
+    // Mas para preencher a tela, vamos usar a altura real da janela.
+    this.width = width;
+    this.height = height;
+    
+    // Ajustar o estilo do canvas para preencher o viewport
+    this.canvas.style.width = `${width}px`;
+    this.canvas.style.height = `${height}px`;
+    
+    // Resolução real para o desenho (Retina/High DPI)
+    const dpr = window.devicePixelRatio || 1;
+    this.canvas.width = width * dpr;
+    this.canvas.height = height * dpr;
+    this.ctx.scale(dpr, dpr);
 
-    this.width = nextWidth;
-    this.height = nextHeight;
-    this.canvas.width = this.width;
-    this.canvas.height = this.height;
-    this.backgroundCanvas.width = this.width;
-    this.backgroundCanvas.height = this.height;
-    drawCartoonParkBackground(this.backgroundCanvas.getContext("2d"), this.width, this.height);
+    this.backgroundCanvas.width = this.width * dpr;
+    this.backgroundCanvas.height = this.height * dpr;
+    const bgCtx = this.backgroundCanvas.getContext("2d");
+    bgCtx.scale(dpr, dpr);
+    drawCartoonParkBackground(bgCtx, this.width, this.height);
+    
     this.backgroundReady = true;
     return true;
   }
@@ -242,11 +254,20 @@ class RobustUSCatchGame {
     });
 
     window.addEventListener("resize", () => {
-      if (this.state === "playing") return;
       if (this.syncCanvasToViewport()) {
-        this.resetGame();
-        this.drawStaticPreview();
+        if (this.state !== "playing") {
+          this.resetGame();
+          this.drawStaticPreview();
+        }
       }
+    });
+    window.addEventListener("orientationchange", () => {
+      setTimeout(() => {
+        if (this.syncCanvasToViewport()) {
+          this.resetGame();
+          this.drawStaticPreview();
+        }
+      }, 200);
     });
   }
 
