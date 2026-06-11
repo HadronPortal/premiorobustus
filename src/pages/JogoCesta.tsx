@@ -7,12 +7,15 @@ export default function JogoCesta() {
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(30);
   const [isMuted, setIsMuted] = useState(false);
+  const [gameState, setGameState] = useState('START');
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       if (event.data.type === 'ROBUSTUS_CATCH_UPDATE') {
         setScore(event.data.score || 0);
         setTimeLeft(Math.ceil(event.data.remaining || 0));
+      } else if (event.data.type === 'ROBUSTUS_CATCH_STATE_CHANGE') {
+        setGameState(event.data.state);
       }
     };
 
@@ -39,7 +42,8 @@ export default function JogoCesta() {
 
   return (
     <main style={{ width: "100vw", height: "100dvh", overflow: "hidden", background: "#004fb6", position: "relative" }}>
-      <div className="catch-game-hud" style={{
+      {gameState === 'playing' && (
+        <div className="catch-game-hud" style={{
         position: 'fixed',
         top: 'max(8px, env(safe-area-inset-top))',
         left: '12px',
@@ -110,7 +114,8 @@ export default function JogoCesta() {
           }}>
             <span>PONTOS: {score} / 250</span>
             <span>RESTANTE: {timeLeft}s</span>
-          </div>
+        </div>
+      )}
           <div className="catch-progress" style={{
             marginTop: '6px',
             height: '5px',
