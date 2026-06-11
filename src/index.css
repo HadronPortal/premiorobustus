@@ -43,6 +43,7 @@
   .totem-container {
     width: 100%;
     max-width: 1080px;
+    height: 100dvh;
     min-height: 100dvh;
     position: relative;
     background: white;
@@ -50,6 +51,7 @@
     display: flex;
     flex-direction: column;
     margin: 0 auto;
+    overflow: hidden;
   }
 
   .bg-paw-pattern {
