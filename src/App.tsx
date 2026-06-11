@@ -434,20 +434,20 @@ const GameContent = () => {
 
       <AnimatePresence mode="wait">
         {gameState === 'START' && (
-          <motion.div key="start" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 w-full flex flex-col items-center justify-center py-6 px-4 sm:py-12 sm:px-12 z-10 overflow-hidden">
-            <motion.div initial={{ y: -30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="w-full flex justify-center mb-6 sm:mb-10">
-              <div className="bg-white p-3 sm:p-5 rounded-3xl shadow-xl border-2 border-[#f7941d] w-24 h-24 sm:w-36 sm:h-36 flex items-center justify-center">
+          <motion.div key="start" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 w-full flex flex-col items-center justify-start pt-8 pb-4 px-4 sm:pt-16 sm:px-12 z-10 overflow-hidden">
+            <motion.div initial={{ y: -30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="w-full flex justify-center mb-4 sm:mb-8">
+              <div className="bg-white p-2.5 sm:p-4 rounded-3xl shadow-xl border-2 border-[#f7941d] w-20 h-20 sm:w-32 sm:h-32 flex items-center justify-center">
                 <img src={ASSETS.logo} alt="Logo" className="w-full h-auto object-contain" />
               </div>
             </motion.div>
 
-            <div className="flex flex-col items-center text-center gap-2 sm:gap-4 mb-8">
-              <motion.h1 initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.2 }} className="text-4xl sm:text-6xl font-black text-white italic tracking-tighter drop-shadow-lg leading-none uppercase">
+            <div className="flex flex-col items-center text-center gap-1 sm:gap-3 mb-6 sm:mb-8">
+              <motion.h1 initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.2 }} className="text-3xl sm:text-5xl font-black text-white italic tracking-tighter drop-shadow-lg leading-none uppercase">
                 DESAFIO <span className="text-[#f7941d]">RobustUS</span>
               </motion.h1>
             </div>
 
-            <div className="w-full max-w-[min(94vw,900px)] grid grid-cols-2 gap-4 sm:gap-10 mb-8">
+            <div className="w-full max-w-[min(94vw,800px)] grid grid-cols-2 gap-4 sm:gap-10 mb-6 sm:mb-10">
               {/* Card Jogo da Memória */}
               <motion.button 
                 whileHover={{ scale: 1.05, y: -8 }}
