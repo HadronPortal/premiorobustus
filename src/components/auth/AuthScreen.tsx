@@ -107,9 +107,9 @@ export const AuthScreen: React.FC<Props> = ({ onStart, onClose }) => {
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="registration-screen flex-1 w-full flex flex-col items-center justify-center p-2 sm:p-4 z-10"
+      className="registration-screen flex-1 w-full flex flex-col items-center justify-start sm:justify-center p-2 sm:p-4 z-10 pt-16 sm:pt-0"
     >
-      <div className="registration-card w-full max-w-[min(92vw,440px)] bg-white/95 backdrop-blur-3xl p-5 sm:p-8 rounded-[1.5rem] sm:rounded-[2rem] shadow-[0_25px_50px_rgba(0,0,0,0.4)] border-t-[8px] sm:border-t-[12px] border-[#f7941d] flex flex-col gap-4 sm:gap-6 relative">
+      <div className="registration-card w-full max-w-[min(92vw,440px)] bg-white/95 backdrop-blur-3xl p-5 sm:p-8 rounded-[1.5rem] sm:rounded-[2rem] shadow-[0_25px_50px_rgba(0,0,0,0.4)] border-t-[8px] sm:border-t-[12px] border-[#f7941d] flex flex-col gap-4 sm:gap-6 relative mt-4 sm:mt-0">
         {onClose && (
           <button 
             onClick={onClose}
