@@ -518,6 +518,7 @@ const GameContent = () => {
               />
             </div>
           </motion.div>
+        )}
 
         {gameState === 'AUTH' && <AuthScreen key="auth" onStart={initializeGame} onClose={() => setGameState('START')} />}
 
