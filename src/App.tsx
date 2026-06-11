@@ -705,9 +705,9 @@ const GameContent = () => {
         )}
       </AnimatePresence>
 
-      <div className="absolute bottom-4 sm:bottom-8 z-10 opacity-40 flex items-center gap-2 sm:gap-4 text-[#0047ab]">
-        <PawPrint className="w-4 h-4 sm:w-6 sm:h-6" />
-        <span className="text-xs sm:text-xl font-black tracking-widest uppercase italic whitespace-nowrap">RobustUS Nutrição Animal</span>
+      <div className="absolute bottom-2 sm:bottom-4 z-10 opacity-30 flex items-center gap-1.5 sm:gap-3 text-[#0047ab]">
+        <PawPrint className="w-3 h-3 sm:w-5 sm:h-5" />
+        <span className="text-[10px] sm:text-base font-black tracking-widest uppercase italic whitespace-nowrap">RobustUS Nutrição Animal</span>
       </div>
       </div>
     </div>
