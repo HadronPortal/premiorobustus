@@ -420,7 +420,7 @@ const GameContent = () => {
       {/* Background Container */}
       <div className="absolute inset-0 z-0">
         {(gameState === 'START' || gameState === 'AUTH') ? (
-          <div className="w-full h-full relative overflow-hidden">
+          <div className="absolute inset-0 w-full h-full overflow-hidden">
             <img src={ASSETS.bgHero} alt="Hero" className="absolute inset-0 w-full h-full object-cover object-[center_30%]" />
             <div className="absolute inset-0 bg-[#0047ab]/40"></div>
             <div className="absolute inset-0 bg-gradient-to-b from-[#00348c]/35 via-transparent to-[#00348c]/90"></div>
