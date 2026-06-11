@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Volume2, VolumeX } from 'lucide-react';
+import { ArrowLeft, Volume2, VolumeX, RotateCcw } from 'lucide-react';
 import { useAudioManager } from '../hooks/useAudioManager';
 
 export default function JogoCesta() {
@@ -11,21 +11,6 @@ export default function JogoCesta() {
   const [gameState, setGameState] = useState('start');
 
   useEffect(() => {
-    const setAppHeight = () => {
-      document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
-    };
-
-    setAppHeight();
-    window.addEventListener('resize', setAppHeight);
-    window.addEventListener('orientationchange', setAppHeight);
-
-    return () => {
-      window.removeEventListener('resize', setAppHeight);
-      window.removeEventListener('orientationchange', setAppHeight);
-    };
-  }, []);
-
-  useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       if (event.data.type === 'ROBUSTUS_CATCH_UPDATE') {
         setScore(event.data.score || 0);
@@ -33,6 +18,7 @@ export default function JogoCesta() {
       } else if (event.data.type === 'ROBUSTUS_CATCH_STATE_CHANGE') {
         setGameState(event.data.state);
         
+        // Gerenciamento de áudio baseado no estado do jogo
         if (event.data.state === 'playing') {
           startBackgroundMusic();
         } else if (event.data.state === 'finished' || event.data.state === 'start') {
@@ -58,9 +44,10 @@ export default function JogoCesta() {
       window.removeEventListener('message', handleMessage);
       stopBackgroundMusic();
     };
-  }, [navigate, playSound, startBackgroundMusic, stopBackgroundMusic]);
+  }, [playSound, startBackgroundMusic, stopBackgroundMusic]);
 
   useEffect(() => {
+    // Sincronizar mute com o iframe quando o estado mudar
     const iframe = document.querySelector('iframe');
     if (iframe && iframe.contentWindow) {
       iframe.contentWindow.postMessage({ type: 'ROBUSTUS_CATCH_MUTE', muted: audioMuted }, '*');
@@ -74,20 +61,7 @@ export default function JogoCesta() {
   const scoreProgress = (score / 250) * 100;
 
   return (
-    <main 
-      className="catch-game-screen" 
-      style={{ 
-        position: 'fixed',
-        inset: 0,
-        width: "100vw", 
-        height: "var(--app-height, 100vh)", 
-        minHeight: "var(--app-height, 100vh)",
-        overflow: "hidden", 
-        background: "#004fb6",
-        display: 'flex',
-        flexDirection: 'column'
-      }}
-    >
+    <main className="catch-game-screen" style={{ width: "100vw", height: "100dvh", overflow: "hidden", background: "#004fb6", position: "relative" }}>
       {gameState === 'playing' && (
         <div className="catch-game-hud" style={{
           position: 'fixed',
@@ -189,14 +163,7 @@ export default function JogoCesta() {
       <iframe
         title="Desafio Pet RobustUS"
         src="/robustus-catch-game/index.html?v=20260611-score-rules"
-        className="catch-game-iframe"
-        style={{ 
-          width: "100vw", 
-          height: "var(--app-height, 100vh)", 
-          border: 0, 
-          display: "block",
-          flex: 1
-        }}
+        style={{ width: "100%", height: "100%", border: 0, display: "block" }}
         allow="fullscreen"
       />
     </main>
