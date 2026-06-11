@@ -105,11 +105,11 @@ export const AuthScreen: React.FC<Props> = ({ onStart, onClose }) => {
 
   return (
     <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="registration-screen min-h-[100dvh] w-full flex flex-col items-center justify-center p-4 sm:p-8 z-10 pt-[max(28px,env(safe-area-inset-top))] pb-[max(28px,env(safe-area-inset-bottom))]"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="registration-overlay fixed inset-0 min-h-[100dvh] w-full flex flex-col items-center justify-center p-4 z-[100] bg-black/20 backdrop-blur-sm pt-[max(24px,env(safe-area-inset-top))] pb-[max(24px,env(safe-area-inset-bottom))]"
     >
-      <div className="registration-card w-full max-w-[min(92vw,440px)] bg-white/95 backdrop-blur-3xl p-5 sm:p-8 rounded-[1.5rem] sm:rounded-[2rem] shadow-[0_25px_50px_rgba(0,0,0,0.4)] border-t-[8px] sm:border-t-[12px] border-[#f7941d] flex flex-col gap-4 sm:gap-6 relative max-h-[calc(100dvh-56px)] overflow-y-auto transform-none">
+      <div className="registration-modal w-full max-w-[min(92vw,380px)] bg-white/95 backdrop-blur-3xl p-5 sm:p-8 rounded-[1.5rem] sm:rounded-[2rem] shadow-[0_25px_50px_rgba(0,0,0,0.4)] border-t-[8px] sm:border-t-[12px] border-[#f7941d] flex flex-col gap-4 sm:gap-6 relative max-h-[calc(100dvh-64px)] overflow-y-auto transform translateY-[4vh]">
         {onClose && (
           <button 
             onClick={onClose}
