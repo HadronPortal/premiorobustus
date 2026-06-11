@@ -433,55 +433,69 @@ const GameContent = () => {
 
       <AnimatePresence mode="wait">
         {gameState === 'START' && (
-          <motion.div key="start" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 w-full flex flex-col items-center justify-between py-12 px-6 sm:py-24 sm:px-12 z-10">
-            <motion.div initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="w-full flex justify-center mt-4 sm:mt-12">
-              <div className="bg-white p-4 sm:p-8 rounded-[2rem] sm:rounded-[3.5rem] shadow-2xl border-4 border-[#f7941d] w-48 h-48 sm:w-80 sm:h-80 flex items-center justify-center">
+          <motion.div key="start" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 w-full flex flex-col items-center justify-start py-8 px-6 sm:py-16 sm:px-12 z-10 overflow-y-auto">
+            <motion.div initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="w-full flex justify-center mb-8 sm:mb-12">
+              <div className="bg-white p-4 sm:p-6 rounded-[2rem] shadow-2xl border-4 border-[#f7941d] w-32 h-32 sm:w-48 sm:h-48 flex items-center justify-center">
                 <img src={ASSETS.logo} alt="Logo" className="w-full h-auto object-contain" />
               </div>
             </motion.div>
 
-            <div className="flex flex-col items-center text-center gap-6 sm:gap-12 mb-6">
+            <div className="flex flex-col items-center text-center gap-4 sm:gap-8 mb-8">
               <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.2 }} className="space-y-2">
-                <h1 className="text-5xl sm:text-[10rem] font-black text-white italic tracking-tighter drop-shadow-[0_25px_50px_rgba(0,0,0,0.6)] leading-[1] sm:leading-[0.8] uppercase">
-                  DESAFIO DA<br /><span className="text-[#f7941d]">MEMÓRIA</span>
+                <h1 className="text-4xl sm:text-7xl font-black text-white italic tracking-tighter drop-shadow-lg leading-none uppercase">
+                  DESAFIO <span className="text-[#f7941d]">RobustUS</span>
                 </h1>
               </motion.div>
-              <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.4 }} className="bg-white/15 backdrop-blur-xl px-8 py-4 sm:px-16 sm:py-10 rounded-3xl sm:rounded-[4rem] border-2 border-white/30 shadow-2xl">
-                <p className="text-xl sm:text-5xl font-black text-white uppercase tracking-wider leading-tight">
-                  ENCONTRE OS 5 PARES<br /><span className="text-[#f7941d] text-2xl sm:text-6xl drop-shadow-md">E GANHE UM BRINDE!</span>
-                </p>
-              </motion.div>
             </div>
 
-            <div className="w-full max-w-[min(95%,500px)] flex flex-col gap-3 sm:gap-4">
+            <div className="w-full max-w-4xl grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-10 mb-12">
+              {/* Card Jogo da Memória */}
               <motion.button 
-                whileTap={{ scale: 0.98 }} 
-                onClick={() => setGameState('AUTH')} 
-                className="w-full bg-[#f7941d] py-3 sm:py-4 rounded-2xl shadow-lg flex items-center justify-center gap-3 border-b-[4px] border-[#d47a00] active:border-b-0 transition-all group"
+                whileHover={{ scale: 1.02, y: -5 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => setGameState('AUTH')}
+                className="group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-all border-b-[8px] border-[#d47a00]"
               >
-                <LayoutGrid className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                <span className="text-lg sm:text-xl font-black text-white tracking-wider uppercase italic">JOGO DA MEMÓRIA</span>
+                <div className="aspect-[16/10] w-full overflow-hidden bg-[#0047ab]/10 relative">
+                  {/* Preview Visual Jogo da Memória */}
+                  <div className="absolute inset-0 flex items-center justify-center p-4">
+                    <div className="grid grid-cols-3 gap-2 opacity-40 group-hover:opacity-60 transition-opacity">
+                      {[1,2,3,4,5,6].map(i => (
+                        <div key={i} className="w-10 h-10 sm:w-16 sm:h-16 bg-[#0047ab] rounded-xl"></div>
+                      ))}
+                    </div>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <LayoutGrid className="w-16 h-16 sm:w-24 sm:h-24 text-[#0047ab]/20" />
+                    </div>
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                </div>
+                <div className="bg-[#f7941d] py-4 sm:py-6 w-full">
+                  <span className="text-xl sm:text-3xl font-black text-white tracking-widest uppercase italic">JOGO DA MEMÓRIA</span>
+                </div>
               </motion.button>
 
+              {/* Card Jogo da Cesta */}
               <motion.button 
-                whileTap={{ scale: 0.98 }} 
-                onClick={() => navigate('/jogo-cesta')} 
-                className="w-full bg-[#00348c] py-3 sm:py-4 rounded-2xl shadow-lg flex items-center justify-center gap-3 border-b-[4px] border-[#001d4d] active:border-b-0 transition-all border border-white/10 group"
+                whileHover={{ scale: 1.02, y: -5 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => navigate('/jogo-cesta')}
+                className="group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-all border-b-[8px] border-[#001d4d]"
               >
-                <ShoppingBasket className="w-5 h-5 sm:w-6 sm:h-6 text-[#f7941d]" />
-                <span className="text-lg sm:text-xl font-black text-white tracking-wider uppercase italic">JOGO DA CESTA</span>
+                <div className="aspect-[16/10] w-full overflow-hidden bg-[#0047ab]/10 relative">
+                  {/* Preview Visual Jogo da Cesta */}
+                  <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
+                    <div className="relative w-full h-full flex items-center justify-center opacity-40 group-hover:opacity-60 transition-opacity">
+                      <img src="https://robustus.com.br/wp-content/uploads/2025/10/cao-mini-768x633.png" alt="" className="w-24 sm:w-40 absolute -bottom-4 animate-bounce" />
+                      <ShoppingBasket className="w-16 h-16 sm:w-24 sm:h-24 text-[#0047ab]/20" />
+                    </div>
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                </div>
+                <div className="bg-[#0047ab] py-4 sm:py-6 w-full">
+                  <span className="text-xl sm:text-3xl font-black text-white tracking-widest uppercase italic">JOGO DA CESTA</span>
+                </div>
               </motion.button>
-            </div>
-
-            <div className="flex flex-col items-center gap-4 mb-8">
-              <button 
-                onClick={fetchLeaderboard}
-                className="bg-white/10 hover:bg-white/20 backdrop-blur-md px-6 py-2 rounded-full text-white font-black uppercase italic tracking-wider border border-white/20 transition-all flex items-center gap-2"
-              >
-                <Trophy className="w-4 h-4 text-[#f7941d]" />
-                Ver Placar
-              </button>
-
             </div>
 
             <AnimatePresence>
