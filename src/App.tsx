@@ -479,13 +479,10 @@ const GameContent = () => {
                 onClick={() => navigate('/jogo-cesta')}
                 className="group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-all border-4 border-transparent hover:border-[#0047ab] aspect-[3/4]"
               >
-                <div className="flex-1 w-full overflow-hidden relative bg-[#004fb6]">
+                <div className="flex-1 w-full overflow-hidden relative bg-white">
                   {/* Screenshot Realístico do Jogo da Cesta */}
-                  <div className="absolute inset-0 flex flex-col items-center justify-center p-2 sm:p-4">
-                     <img src="https://robustus.com.br/wp-content/uploads/2025/10/cao-mini-768x633.png" alt="" className="w-[85%] sm:w-[90%] object-contain drop-shadow-2xl z-10" />
-                     <div className="absolute bottom-4 sm:bottom-10 left-0 w-full flex justify-center opacity-20 group-hover:opacity-40 transition-opacity">
-                        <ShoppingBasket className="w-16 h-16 sm:w-28 sm:h-28 text-white" />
-                     </div>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                     <img src="/cesta-preview.png" alt="Jogo da Cesta" className="w-full h-full object-cover" />
                   </div>
                 </div>
                 <div className="bg-[#0047ab] py-4 sm:py-7 w-full flex items-center justify-center">
