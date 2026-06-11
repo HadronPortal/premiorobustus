@@ -127,6 +127,10 @@ export const BasketCatcherGame = () => {
           setTimeout(() => {
             setFeedbacks(f => f.filter(fb => fb.id !== fid));
           }, 1000);
+          return false;
+        }
+        return i.y < 105;
+      }));
       animId = requestAnimationFrame(update);
     };
     animId = requestAnimationFrame(update);
