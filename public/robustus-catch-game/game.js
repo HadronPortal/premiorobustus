@@ -156,10 +156,14 @@ class RobustUSCatchGame {
       if (event.data.type === "ROBUSTUS_CATCH_RESTART") {
         this.showStart();
       } else if (event.data.type === "ROBUSTUS_CATCH_MUTE") {
-        // Lógica de mute se o jogo tiver som
         this.isMuted = event.data.muted;
       }
     });
+  }
+
+  playSound(type) {
+    if (this.isMuted) return;
+    window.parent.postMessage({ type: "ROBUSTUS_CATCH_PLAY_SOUND", soundType: type }, "*");
   }
 
   syncCanvasToViewport() {
@@ -205,10 +209,19 @@ class RobustUSCatchGame {
   }
 
   bindEvents() {
-    document.getElementById("start-button").addEventListener("click", () => this.start());
+    document.getElementById("start-button").addEventListener("click", () => {
+      this.playSound('flip');
+      this.start();
+    });
     document.getElementById("restart-button").addEventListener("click", () => this.showStart());
-    document.getElementById("choose-dog-button").addEventListener("click", () => this.setSelectedPet("dog"));
-    document.getElementById("choose-cat-button").addEventListener("click", () => this.setSelectedPet("cat"));
+    document.getElementById("choose-dog-button").addEventListener("click", () => {
+      this.playSound('flip');
+      this.setSelectedPet("dog");
+    });
+    document.getElementById("choose-cat-button").addEventListener("click", () => {
+      this.playSound('flip');
+      this.setSelectedPet("cat");
+    });
 
     window.addEventListener("keydown", (event) => this.keys.add(event.key));
     window.addEventListener("keyup", (event) => this.keys.delete(event.key));
