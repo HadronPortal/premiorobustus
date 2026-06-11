@@ -118,6 +118,7 @@ const Leaderboard = ({ entries, loading }: { entries: LeaderboardEntry[], loadin
 
 const GameContent = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [gameState, setGameState] = useState<GameState>('START');
   const { isMuted, toggleMute, playSound, startBackgroundMusic, stopBackgroundMusic, initAudio } = useAudioManager();
   const [cards, setCards] = useState<Card[]>([]);
