@@ -26,6 +26,7 @@ import { BrowserRouter, Routes, Route, useLocation, useNavigate } from 'react-ro
 import JogoCesta from './pages/JogoCesta';
 import { Toaster } from 'sonner';
 import { useAudioManager } from './hooks/useAudioManager';
+import { BannerCarousel } from './components/BannerCarousel';
 
 // Configuração da Marca RobustUS
 const BRAND = {
