@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Volume2, VolumeX, RotateCcw } from 'lucide-react';
+import { useAudioManager } from '../hooks/useAudioManager';
 
 export default function JogoCesta() {
   const navigate = useNavigate();
   const { playSound, startBackgroundMusic, stopBackgroundMusic, isMuted: audioMuted, toggleMute: toggleAudioMute } = useAudioManager();
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(30);
-  const [isMuted, setIsMuted] = useState(false);
   const [gameState, setGameState] = useState('start');
-
-  const { playSound, startBackgroundMusic, stopBackgroundMusic, isMuted: audioMuted } = useAudioManager();
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
@@ -26,9 +24,8 @@ export default function JogoCesta() {
         } else if (event.data.state === 'finished' || event.data.state === 'start') {
           stopBackgroundMusic();
           if (event.data.state === 'finished') {
-            // Som de vitória ou derrota enviado pelo jogo ou processado aqui
-            const score = event.data.score || 0;
-            if (score >= 200) {
+            const finalScore = event.data.score || 0;
+            if (finalScore >= 200) {
               playSound('victory-applause');
             } else {
               playSound('lost');
@@ -45,7 +42,7 @@ export default function JogoCesta() {
       window.removeEventListener('message', handleMessage);
       stopBackgroundMusic();
     };
-  }, []);
+  }, [playSound, startBackgroundMusic, stopBackgroundMusic]);
 
   useEffect(() => {
     // Sincronizar mute com o iframe quando o estado mudar
@@ -53,19 +50,10 @@ export default function JogoCesta() {
     if (iframe && iframe.contentWindow) {
       iframe.contentWindow.postMessage({ type: 'ROBUSTUS_CATCH_MUTE', muted: audioMuted }, '*');
     }
-    setIsMuted(audioMuted);
   }, [audioMuted]);
 
-  const handleRestart = () => {
-    const iframe = document.querySelector('iframe');
-    if (iframe && iframe.contentWindow) {
-      iframe.contentWindow.postMessage({ type: 'ROBUSTUS_CATCH_RESTART' }, '*');
-    }
-  };
-
-  const toggleMuteHandler = () => {
-    const { toggleMute: toggleAudioMute } = useAudioManager(); // Note: This usage is slightly wrong in terms of hook rules, but we need to call it.
-    // However, we already have access to toggleMute from the hook in the component scope if we destructure it.
+  const handleToggleMute = () => {
+    toggleAudioMute();
   };
 
   const scoreProgress = (score / 250) * 100;
@@ -110,11 +98,11 @@ export default function JogoCesta() {
             </div>
 
             <div className="catch-actions" style={{ justifySelf: 'end', display: 'flex', gap: '6px', pointerEvents: 'auto' }}>
-            <button 
-              onClick={handleToggleMute}
+              <button 
+                onClick={handleToggleMute}
                 className="bg-white/20 hover:bg-white/30 backdrop-blur-md p-2 rounded-full text-white border-2 border-white/30 shadow-sm transition-all active:scale-95"
               >
-                {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
+                {audioMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
               </button>
               <button 
                 onClick={() => navigate('/')}
