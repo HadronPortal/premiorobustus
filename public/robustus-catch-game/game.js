@@ -213,7 +213,10 @@ class RobustUSCatchGame {
       this.playSound('flip');
       this.start();
     });
-    document.getElementById("restart-button").addEventListener("click", () => this.showStart());
+    document.getElementById("restart-button").addEventListener("click", () => {
+      this.playSound('flip');
+      this.showStart();
+    });
     document.getElementById("choose-dog-button").addEventListener("click", () => {
       this.playSound('flip');
       this.setSelectedPet("dog");
