@@ -7,7 +7,7 @@ export default function JogoCesta() {
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(30);
   const [isMuted, setIsMuted] = useState(false);
-  const [gameState, setGameState] = useState('START');
+  const [gameState, setGameState] = useState('start');
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
