@@ -641,7 +641,7 @@ function drawFlower(ctx, x, y, size) {
 
 function drawScoreBadge(ctx, x, y, score) {
   ctx.save();
-  const scale = this?.width < 700 ? 0.8 : 1;
+  const scale = ctx.canvas.width < 700 ? 0.8 : 1;
   ctx.scale(scale, scale);
   x = x / scale;
   y = y / scale;
@@ -688,7 +688,7 @@ function drawScoreBadge(ctx, x, y, score) {
 
 function drawTimerBadge(ctx, x, y, seconds) {
   ctx.save();
-  const scale = this?.width < 700 ? 0.8 : 1;
+  const scale = ctx.canvas.width < 700 ? 0.8 : 1;
   ctx.scale(scale, scale);
   x = x / scale;
   y = y / scale;
@@ -743,8 +743,9 @@ function drawTimerBadge(ctx, x, y, seconds) {
 }
 
 function drawRobustusLogo(ctx, image, centerX, y) {
-  const width = 190;
-  const height = 54;
+  const scale = ctx.canvas.width < 700 ? 0.8 : 1;
+  const width = 190 * scale;
+  const height = 54 * scale;
   const x = centerX - width / 2;
 
   ctx.save();
