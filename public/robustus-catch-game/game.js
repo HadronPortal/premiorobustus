@@ -147,7 +147,19 @@ class RobustUSCatchGame {
     this.syncCanvasToViewport();
     this.resetGame();
     this.bindEvents();
+    this.bindMessageEvents();
     this.drawStaticPreview();
+  }
+
+  bindMessageEvents() {
+    window.addEventListener("message", (event) => {
+      if (event.data.type === "ROBUSTUS_CATCH_RESTART") {
+        this.showStart();
+      } else if (event.data.type === "ROBUSTUS_CATCH_MUTE") {
+        // Lógica de mute se o jogo tiver som
+        this.isMuted = event.data.muted;
+      }
+    });
   }
 
   syncCanvasToViewport() {
@@ -267,6 +279,16 @@ class RobustUSCatchGame {
     this.lastTime = time;
 
     this.update(delta);
+    
+    // Envia atualização para o componente React pai
+    if (this.state === "playing") {
+      window.parent.postMessage({
+        type: "ROBUSTUS_CATCH_UPDATE",
+        score: this.score,
+        remaining: this.remaining
+      }, "*");
+    }
+
     this.draw();
 
     if (this.remaining <= 0) {
@@ -413,17 +435,8 @@ class RobustUSCatchGame {
   }
 
   drawHud() {
-    const ctx = this.ctx;
-
-    ctx.save();
-    // Reorganizando HUD para Layout de 3 áreas: esquerda, centro, direita
-    // Esquerda: Placar (o botão voltar está no React fora do iframe)
-    drawScoreBadge(ctx, 110, 36, this.score);
-    // Centro: Logo RobustUS
-    drawRobustusLogo(ctx, this.logo.image, this.width / 2, 46);
-    // Direita: Tempo
-    drawTimerBadge(ctx, this.width - 250, 48, Math.ceil(this.remaining));
-    ctx.restore();
+    // HUD agora é renderizado pelo React pai para ser idêntico ao jogo da memória
+    return;
   }
 }
 
