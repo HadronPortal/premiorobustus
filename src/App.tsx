@@ -453,30 +453,24 @@ const GameContent = () => {
               </motion.div>
             </div>
 
-            <div className="w-full max-w-[min(90%,600px)] flex flex-col gap-4 sm:gap-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-                <motion.button 
-                  whileTap={{ scale: 0.96 }} 
-                  onClick={() => setGameState('AUTH')} 
-                  className="w-full bg-[#f7941d] py-5 sm:py-10 rounded-3xl shadow-[0_15px_30px_-5px_rgba(0,0,0,0.4)] flex flex-col items-center justify-center gap-3 sm:gap-4 border-b-[6px] sm:border-b-[10px] border-[#d47a00] active:border-b-0 transition-all group"
-                >
-                  <div className="bg-white/20 p-3 sm:p-5 rounded-2xl group-hover:scale-110 transition-transform">
-                    <LayoutGrid className="w-8 h-8 sm:w-14 sm:h-14 text-white" />
-                  </div>
-                  <span className="text-xl sm:text-2xl font-black text-white tracking-widest uppercase italic text-center px-4 leading-tight">JOGO DA<br/>MEMÓRIA</span>
-                </motion.button>
+            <div className="w-full max-w-[min(95%,500px)] flex flex-col gap-3 sm:gap-4">
+              <motion.button 
+                whileTap={{ scale: 0.98 }} 
+                onClick={() => setGameState('AUTH')} 
+                className="w-full bg-[#f7941d] py-3 sm:py-4 rounded-2xl shadow-lg flex items-center justify-center gap-3 border-b-[4px] border-[#d47a00] active:border-b-0 transition-all group"
+              >
+                <LayoutGrid className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                <span className="text-lg sm:text-xl font-black text-white tracking-wider uppercase italic">JOGO DA MEMÓRIA</span>
+              </motion.button>
 
-                <motion.button 
-                  whileTap={{ scale: 0.96 }} 
-                  onClick={() => navigate('/jogo-cesta')} 
-                  className="w-full bg-[#00348c] py-5 sm:py-10 rounded-3xl shadow-[0_15px_30px_-5px_rgba(0,0,0,0.4)] flex flex-col items-center justify-center gap-3 sm:gap-4 border-b-[6px] sm:border-b-[10px] border-[#001d4d] active:border-b-0 transition-all border border-white/10 group"
-                >
-                  <div className="bg-white/10 p-3 sm:p-5 rounded-2xl group-hover:scale-110 transition-transform">
-                    <ShoppingBasket className="w-8 h-8 sm:w-14 sm:h-14 text-[#f7941d]" />
-                  </div>
-                  <span className="text-xl sm:text-2xl font-black text-white tracking-widest uppercase italic text-center px-4 leading-tight">JOGO DA<br/>CESTA</span>
-                </motion.button>
-              </div>
+              <motion.button 
+                whileTap={{ scale: 0.98 }} 
+                onClick={() => navigate('/jogo-cesta')} 
+                className="w-full bg-[#00348c] py-3 sm:py-4 rounded-2xl shadow-lg flex items-center justify-center gap-3 border-b-[4px] border-[#001d4d] active:border-b-0 transition-all border border-white/10 group"
+              >
+                <ShoppingBasket className="w-5 h-5 sm:w-6 sm:h-6 text-[#f7941d]" />
+                <span className="text-lg sm:text-xl font-black text-white tracking-wider uppercase italic">JOGO DA CESTA</span>
+              </motion.button>
             </div>
 
             <div className="flex flex-col items-center gap-4 mb-8">
