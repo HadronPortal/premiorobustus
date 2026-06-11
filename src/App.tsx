@@ -480,9 +480,9 @@ const GameContent = () => {
                 className="group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-all border-4 border-transparent hover:border-[#0047ab] aspect-[3/4]"
               >
                 <div className="flex-1 w-full overflow-hidden relative bg-white">
-                  {/* Screenshot Realístico do Jogo da Cesta */}
+                  {/* Foto enviada pelo usuário para o Jogo da Cesta */}
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
-                     <img src="/cesta-preview.png" alt="Jogo da Cesta" className="w-full h-full object-cover object-top" />
+                     <img src="/cesta-final.png" alt="Jogo da Cesta" className="w-full h-full object-cover" />
                   </div>
                 </div>
                 <div className="bg-[#0047ab] py-4 sm:py-7 w-full flex items-center justify-center">
