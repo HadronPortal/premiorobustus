@@ -107,10 +107,13 @@ export default function JogoCesta() {
                 {audioMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
               </button>
               <button 
-                onClick={() => navigate('/')}
+                onClick={() => {
+                  stopBackgroundMusic();
+                  navigate('/');
+                }}
                 className="bg-white/20 hover:bg-white/30 backdrop-blur-md p-2 rounded-full text-white border-2 border-white/30 shadow-sm transition-all active:scale-95"
               >
-                <RotateCcw size={18} />
+                <ArrowLeft size={18} />
               </button>
             </div>
           </div>

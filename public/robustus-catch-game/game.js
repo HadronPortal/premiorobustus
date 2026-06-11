@@ -154,6 +154,7 @@ class RobustUSCatchGame {
   bindMessageEvents() {
     window.addEventListener("message", (event) => {
       if (event.data.type === "ROBUSTUS_CATCH_RESTART") {
+        this.resetGame();
         this.showStart();
       } else if (event.data.type === "ROBUSTUS_CATCH_MUTE") {
         this.isMuted = event.data.muted;
