@@ -518,18 +518,6 @@ const GameContent = () => {
               />
             </div>
           </motion.div>
-        )}
-                      onClick={() => { setLeaderboard([]); setLoadingLeaderboard(false); }}
-                      className="w-full mt-4 bg-[#0047ab] text-white py-3 rounded-xl font-black uppercase italic"
-                    >
-                      Fechar
-                    </button>
-                  </div>
-                </motion.div>
-              ) : null}
-            </AnimatePresence>
-          </motion.div>
-        )}
 
         {gameState === 'AUTH' && <AuthScreen key="auth" onStart={initializeGame} onClose={() => setGameState('START')} />}
 
