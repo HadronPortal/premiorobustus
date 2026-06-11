@@ -184,7 +184,7 @@ export const BasketCatcherGame = () => {
                   COMEÇAR
                 </motion.button>
                 <button 
-                  onClick={() => window.location.href = '/'}
+                  onClick={() => navigate('/')}
                   className="text-white/60 text-4xl font-bold uppercase italic mt-10 hover:text-white transition-colors flex items-center justify-center gap-4"
                 >
                   <ArrowLeft className="w-10 h-10" /> Voltar ao Memória
