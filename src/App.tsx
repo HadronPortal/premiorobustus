@@ -20,7 +20,8 @@ import { AuthScreen } from './components/auth/AuthScreen';
 import { AdminScreen } from './components/admin/AdminScreen';
 import { DogFoodGame } from './components/DogFoodGame';
 import { BasketCatcherGame } from './components/BasketCatcherGame';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
+import JogoCesta from './pages/JogoCesta';
 import { Toaster } from 'sonner';
 import { useAudioManager } from './hooks/useAudioManager';
 
@@ -118,6 +119,7 @@ const Leaderboard = ({ entries, loading }: { entries: LeaderboardEntry[], loadin
 
 const GameContent = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [gameState, setGameState] = useState<GameState>('START');
   const { isMuted, toggleMute, playSound, startBackgroundMusic, stopBackgroundMusic, initAudio } = useAudioManager();
   const [cards, setCards] = useState<Card[]>([]);
@@ -449,10 +451,25 @@ const GameContent = () => {
               </motion.div>
             </div>
 
-            <motion.button whileTap={{ scale: 0.94 }} onClick={() => setGameState('AUTH')} className="w-full max-w-[min(90%,480px)] bg-[#f7941d] py-6 sm:py-10 rounded-3xl sm:rounded-[5rem] shadow-[0_20px_40px_-10px_rgba(0,0,0,0.6)] flex items-center justify-center gap-4 sm:gap-8 border-b-[8px] sm:border-b-[16px] border-[#d47a00] active:border-b-0 transition-all mb-4">
-              <Play className="w-10 h-10 sm:w-16 sm:h-16 text-white fill-current" />
-              <span className="text-3xl sm:text-6xl font-black text-white tracking-widest uppercase italic">JOGAR</span>
-            </motion.button>
+            <div className="w-full max-w-[min(90%,540px)] flex flex-col gap-4 sm:gap-6">
+              <motion.button 
+                whileTap={{ scale: 0.94 }} 
+                onClick={() => setGameState('AUTH')} 
+                className="w-full bg-[#f7941d] py-5 sm:py-8 rounded-3xl sm:rounded-[5rem] shadow-[0_20px_40px_-10px_rgba(0,0,0,0.6)] flex items-center justify-center gap-4 sm:gap-8 border-b-[8px] sm:border-b-[16px] border-[#d47a00] active:border-b-0 transition-all"
+              >
+                <Play className="w-8 h-8 sm:w-14 sm:h-14 text-white fill-current" />
+                <span className="text-2xl sm:text-5xl font-black text-white tracking-widest uppercase italic">JOGO DA MEMÓRIA</span>
+              </motion.button>
+
+              <motion.button 
+                whileTap={{ scale: 0.94 }} 
+                onClick={() => navigate('/jogo-cesta')} 
+                className="w-full bg-[#00348c] py-5 sm:py-8 rounded-3xl sm:rounded-[5rem] shadow-[0_20px_40px_-10px_rgba(0,0,0,0.6)] flex items-center justify-center gap-4 sm:gap-8 border-b-[8px] sm:border-b-[16px] border-[#001d4d] active:border-b-0 transition-all border border-white/20"
+              >
+                <Zap className="w-8 h-8 sm:w-14 sm:h-14 text-[#f7941d] fill-current" />
+                <span className="text-2xl sm:text-5xl font-black text-white tracking-widest uppercase italic">JOGO DA CESTA</span>
+              </motion.button>
+            </div>
 
             <div className="flex flex-col items-center gap-4 mb-8">
               <button 
@@ -706,6 +723,7 @@ const App = () => {
           <Route path="/validar-brinde" element={<AdminScreen />} />
           <Route path="/cachorro-racao" element={<DogFoodGame />} />
           <Route path="/cesta-robustus" element={<BasketCatcherGame />} />
+          <Route path="/jogo-cesta" element={<JogoCesta />} />
         </Routes>
       <Toaster position="top-center" richColors />
     </BrowserRouter>

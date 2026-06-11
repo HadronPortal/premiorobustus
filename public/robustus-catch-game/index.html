@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Desafio Pet RobustUS</title>
+    <link rel="icon" href="data:," />
+    <script>
+      function setAppHeight() {
+        document.documentElement.style.setProperty("--app-height", `${window.innerHeight}px`);
+      }
+      setAppHeight();
+      window.addEventListener("resize", setAppHeight);
+      window.addEventListener("orientationchange", () => setTimeout(setAppHeight, 250));
+    </script>
+    <link rel="stylesheet" href="styles.css?v=20260611-score-rules" />
+  </head>
+  <body>
+    <main class="totem-shell">
+      <section id="start-screen" class="screen screen-start">
+        <img class="start-logo" src="robustus-logo.png" alt="RobustUS" />
+        <div class="start-heading">
+          <h1>Escolha seu pet</h1>
+          <p>Toque no cachorro ou no gato para jogar. A racao do outro pet tira pontos.</p>
+          <p class="rules-note">Normal: 5 pontos. Life Special: 10 pontos. Maximo: 250 pontos.</p>
+        </div>
+        <div class="pet-selection" aria-label="Escolha com qual pet jogar">
+          <button id="choose-dog-button" class="pet-option selected" type="button" data-pet="dog">
+            <span class="pet-image-frame">
+              <img src="start-dog.png" alt="" />
+            </span>
+            <span class="pet-name">Cachorro</span>
+          </button>
+          <button id="choose-cat-button" class="pet-option" type="button" data-pet="cat">
+            <span class="pet-image-frame">
+              <img src="start-cat.png" alt="" />
+            </span>
+            <span class="pet-name">Gato</span>
+          </button>
+        </div>
+        <button id="start-button" class="primary-button" type="button">Comecar com cachorro</button>
+      </section>
+
+      <section id="game-screen" class="screen screen-game hidden">
+        <canvas id="gameCanvas" width="720" height="1280"></canvas>
+      </section>
+
+      <section id="result-screen" class="screen screen-result hidden">
+        <div class="result-panel">
+          <img class="result-logo" src="robustus-logo.png" alt="RobustUS" />
+          <div id="result-badge" class="result-badge"></div>
+          <h2 id="result-title">Resultado</h2>
+          <p id="result-message"></p>
+          <div class="score-card">
+            <span>Pontuacao final</span>
+            <strong id="final-score">0</strong>
+            <small>Mostre sua pontuacao para a equipe do stand.</small>
+          </div>
+          <button id="restart-button" class="primary-button result-button" type="button">Jogar novamente</button>
+        </div>
+      </section>
+
+      <p class="credit">Base tecnica adaptada de Basketcatcher, MIT License, Ankit Warbhe.</p>
+    </main>
+
+    <script src="game.js?v=20260611-score-rules"></script>
+  </body>
+</html>
