@@ -482,7 +482,7 @@ const GameContent = () => {
                 <div className="flex-1 w-full overflow-hidden relative bg-white">
                   {/* Screenshot Realístico do Jogo da Cesta */}
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
-                     <img src="/cesta-preview.png" alt="Jogo da Cesta" className="w-full h-full object-cover" />
+                     <img src="/cesta-preview.png" alt="Jogo da Cesta" className="w-full h-full object-cover object-top" />
                   </div>
                 </div>
                 <div className="bg-[#0047ab] py-4 sm:py-7 w-full flex items-center justify-center">
