@@ -265,6 +265,19 @@ export default function OfflineMemoryGame() {
         </div>
       </main>
 
+      {phase === "memorizing" && (
+        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 z-40 flex flex-col items-center pointer-events-none">
+          <div className="bg-black/70 backdrop-blur-md px-6 py-4 rounded-2xl border-2 border-[#f7941d] text-center shadow-2xl">
+            <p className="text-white text-sm sm:text-lg font-black uppercase italic tracking-widest">
+              Memorize os produtos
+            </p>
+            <p className="text-[#f7941d] text-5xl sm:text-6xl font-black mt-1">
+              {memoCountdown}
+            </p>
+          </div>
+        </div>
+      )}
+
       {done && (
         <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-50 p-6">
           <div className="bg-white rounded-3xl border-t-[12px] border-[#f7941d] p-8 max-w-lg w-full text-center shadow-2xl">
