@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { OFFLINE_LOGO, OFFLINE_MEMORY_PRODUCTS } from "./offlineAssets";
 import { readOfflineDraft, clearOfflineDraft } from "./OfflineRegister";
 import { saveOfflinePlay, OfflineParticipant } from "@/lib/offlineStorage";
+import { useOfflineAudio } from "./useOfflineAudio";
 
 const MAX_ATTEMPTS = 20;
 const MAX_SECONDS = 60;
@@ -43,12 +44,16 @@ export default function OfflineMemoryGame() {
   const [timeLeft, setTimeLeft] = useState(MAX_SECONDS);
   const [startedAt] = useState(() => Date.now());
   const [lock, setLock] = useState(false);
-  const [muted, setMuted] = useState(false);
+  const { muted, toggleMute, playSound, startBackgroundMusic, stopBackgroundMusic, ensureCtx } = useOfflineAudio();
   const [done, setDone] = useState<OfflineParticipant | null>(null);
 
   useEffect(() => {
     if (!draft) navigate("/tablet-offline");
   }, [draft, navigate]);
+
+  useEffect(() => {
+    return () => stopBackgroundMusic();
+  }, [stopBackgroundMusic]);
 
   useEffect(() => {
     if (done) return;
