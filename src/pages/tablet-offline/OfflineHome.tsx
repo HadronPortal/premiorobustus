@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { PawPrint, Gift } from "lucide-react";
+import { PawPrint } from "lucide-react";
 import { OFFLINE_LOGO } from "./offlineAssets";
 import { ensureOfflineServiceWorker } from "./registerOfflineSW";
 
@@ -96,13 +96,6 @@ export default function OfflineHome() {
           </motion.button>
         </div>
 
-        {/* Validar brinde discreto */}
-        <button
-          onClick={() => navigate("/tablet-offline/validar-brinde")}
-          className="mt-2 inline-flex items-center gap-2 bg-white/15 hover:bg-white/25 text-white px-5 py-2.5 rounded-full font-black uppercase italic tracking-widest text-xs sm:text-sm border border-white/25 backdrop-blur-md"
-        >
-          <Gift className="w-4 h-4" /> Validar Brinde
-        </button>
 
         <div className="opacity-40 flex items-center gap-2 text-white">
           <PawPrint className="w-4 h-4" />
