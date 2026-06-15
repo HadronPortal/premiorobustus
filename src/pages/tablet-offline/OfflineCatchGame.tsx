@@ -22,18 +22,30 @@ export default function OfflineCatchGame() {
       return;
     }
     let saved = false;
-    ensureCtx();
-    startBackgroundMusic();
+    const unlock = () => {
+      ensureCtx();
+      startBackgroundMusic();
+    };
+    window.addEventListener("pointerdown", unlock, { once: true });
+    window.addEventListener("touchstart", unlock, { once: true });
+    window.addEventListener("keydown", unlock, { once: true });
+
     const handler = (event: MessageEvent) => {
       if (!event.data || typeof event.data !== "object") return;
       const d = event.data;
+      if (d.type === "ROBUSTUS_CATCH_PLAY_SOUND") {
+        unlock();
+        const kind = d.soundType;
+        if (kind === "match") playSound("match");
+        else if (kind === "error") playSound("error");
+        else if (kind === "flip") playSound("flip");
+        else if (kind === "click") playSound("click");
+        return;
+      }
       if (d.type === "ROBUSTUS_CATCH_STATE_CHANGE") {
         if (typeof d.score === "number") {
-          const newScore = d.score;
-          if (newScore > lastScoreRef.current) playSound("match");
-          else if (newScore < lastScoreRef.current) playSound("error");
-          lastScoreRef.current = newScore;
-          setScore(newScore);
+          lastScoreRef.current = d.score;
+          setScore(d.score);
         }
         if (typeof d.elapsed === "number") setElapsed(d.elapsed);
         if (d.state === "finished" && !saved) {
@@ -62,6 +74,9 @@ export default function OfflineCatchGame() {
     window.addEventListener("message", handler);
     return () => {
       window.removeEventListener("message", handler);
+      window.removeEventListener("pointerdown", unlock);
+      window.removeEventListener("touchstart", unlock);
+      window.removeEventListener("keydown", unlock);
       stopBackgroundMusic();
     };
   }, [draft, navigate, ensureCtx, startBackgroundMusic, stopBackgroundMusic, playSound]);
