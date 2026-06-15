@@ -4,6 +4,7 @@ import { Timer, Volume2, VolumeX, RotateCcw } from "lucide-react";
 import { OFFLINE_LOGO, OFFLINE_CATCH_GAME_URL } from "./offlineAssets";
 import { readOfflineDraft, clearOfflineDraft } from "./OfflineRegister";
 import { saveOfflinePlay, OfflineParticipant } from "@/lib/offlineStorage";
+import { useOfflineAudio } from "./useOfflineAudio";
 
 export default function OfflineCatchGame() {
   const navigate = useNavigate();
@@ -11,8 +12,9 @@ export default function OfflineCatchGame() {
   const [done, setDone] = useState<OfflineParticipant | null>(null);
   const [score, setScore] = useState(0);
   const [elapsed, setElapsed] = useState(0);
-  const [muted, setMuted] = useState(false);
+  const { muted, toggleMute: toggleAudioMute, playSound, startBackgroundMusic, stopBackgroundMusic, ensureCtx } = useOfflineAudio();
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const lastScoreRef = useRef(0);
 
   useEffect(() => {
     if (!draft) {
