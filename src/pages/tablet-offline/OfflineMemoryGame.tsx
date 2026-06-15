@@ -42,8 +42,10 @@ export default function OfflineMemoryGame() {
   const [matches, setMatches] = useState(0);
   const [attempts, setAttempts] = useState(0);
   const [timeLeft, setTimeLeft] = useState(MAX_SECONDS);
-  const [startedAt] = useState(() => Date.now());
-  const [lock, setLock] = useState(false);
+  const [phase, setPhase] = useState<"memorizing" | "playing" | "finished">("memorizing");
+  const [memoCountdown, setMemoCountdown] = useState(4);
+  const [startedAt, setStartedAt] = useState(() => Date.now());
+  const [lock, setLock] = useState(true);
   const { muted, toggleMute, playSound, startBackgroundMusic, stopBackgroundMusic, ensureCtx } = useOfflineAudio();
   const [done, setDone] = useState<OfflineParticipant | null>(null);
 
@@ -55,15 +57,30 @@ export default function OfflineMemoryGame() {
     return () => stopBackgroundMusic();
   }, [stopBackgroundMusic]);
 
+  // Fase MEMORIZE: 4s com cartas abertas e contagem regressiva
   useEffect(() => {
-    if (done) return;
+    if (phase !== "memorizing") return;
+    if (memoCountdown <= 1) {
+      const t = setTimeout(() => {
+        setPhase("playing");
+        setLock(false);
+        setStartedAt(Date.now());
+      }, 1000);
+      return () => clearTimeout(t);
+    }
+    const t = setTimeout(() => setMemoCountdown((n) => n - 1), 1000);
+    return () => clearTimeout(t);
+  }, [phase, memoCountdown]);
+
+  useEffect(() => {
+    if (done || phase !== "playing") return;
     if (timeLeft <= 0) {
       finish(false);
       return;
     }
     const t = setTimeout(() => setTimeLeft((s) => s - 1), 1000);
     return () => clearTimeout(t);
-  }, [timeLeft, done]);
+  }, [timeLeft, done, phase]);
 
   function finish(won: boolean) {
     if (done || !draft) return;
