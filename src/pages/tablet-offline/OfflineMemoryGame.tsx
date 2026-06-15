@@ -203,20 +203,21 @@ export default function OfflineMemoryGame() {
         </div>
       </div>
 
-      {/* Tabuleiro */}
-      <main className="flex-1 min-h-0 w-full flex items-start justify-center px-3 sm:px-6 pb-4 overflow-auto">
+      {/* Tabuleiro - 2 colunas x 5 linhas, ocupa toda altura disponível */}
+      <main className="flex-1 min-h-0 w-full flex items-stretch justify-center px-3 sm:px-6 pb-3 overflow-hidden">
         <div
-          className="grid gap-2 sm:gap-3 mt-2 w-full"
+          className="grid gap-2 sm:gap-3 w-full h-full"
           style={{
-            gridTemplateColumns: "repeat(5, minmax(0, 1fr))",
-            maxWidth: "min(900px, 100%)",
+            gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+            gridTemplateRows: "repeat(5, minmax(0, 1fr))",
+            maxWidth: "min(560px, 100%)",
           }}
         >
           {cards.map((c) => (
             <button
               key={c.instanceId}
               onClick={() => handleClick(c.instanceId)}
-              className="aspect-[3/4] rounded-2xl shadow-lg border-4 transition-all relative overflow-hidden"
+              className="w-full h-full min-h-0 rounded-2xl shadow-lg border-4 transition-all relative overflow-hidden"
               style={{
                 background: c.isFlipped || c.isMatched ? "#fff" : "#0047ab",
                 borderColor: c.isMatched
