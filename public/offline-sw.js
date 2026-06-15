@@ -18,6 +18,12 @@ const ASSETS_TO_CACHE = [
   "/cesta-final.png",
   "/cesta-preview.png",
 
+  // Banners do carrossel offline
+  "/offline-banners/banner1.jpg",
+  "/offline-banners/banner2.png",
+  "/offline-banners/banner3.png",
+  "/offline-banners/banner4.png",
+
   // Jogo da cesta (HTML/JS/CSS/imagens)
   "/robustus-catch-game/index.html",
   "/robustus-catch-game/styles.css",
