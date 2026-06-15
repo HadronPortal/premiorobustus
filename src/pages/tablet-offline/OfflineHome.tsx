@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { PawPrint } from "lucide-react";
 import { OFFLINE_LOGO } from "./offlineAssets";
 import { ensureOfflineServiceWorker } from "./registerOfflineSW";
+import { OfflineBannerCarousel } from "./OfflineBannerCarousel";
 
 export default function OfflineHome() {
   const navigate = useNavigate();
