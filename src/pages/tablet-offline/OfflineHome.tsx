@@ -98,6 +98,8 @@ export default function OfflineHome() {
         </div>
 
 
+        <OfflineBannerCarousel />
+
         <div className="opacity-40 flex items-center gap-2 text-white">
           <PawPrint className="w-4 h-4" />
           <span className="text-[10px] sm:text-xs font-black tracking-widest uppercase italic">
