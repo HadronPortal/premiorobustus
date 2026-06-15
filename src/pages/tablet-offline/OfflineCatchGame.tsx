@@ -4,6 +4,7 @@ import { Timer, Volume2, VolumeX, RotateCcw } from "lucide-react";
 import { OFFLINE_LOGO, OFFLINE_CATCH_GAME_URL } from "./offlineAssets";
 import { readOfflineDraft, clearOfflineDraft } from "./OfflineRegister";
 import { saveOfflinePlay, OfflineParticipant } from "@/lib/offlineStorage";
+import { useOfflineAudio } from "./useOfflineAudio";
 
 export default function OfflineCatchGame() {
   const navigate = useNavigate();
@@ -11,8 +12,9 @@ export default function OfflineCatchGame() {
   const [done, setDone] = useState<OfflineParticipant | null>(null);
   const [score, setScore] = useState(0);
   const [elapsed, setElapsed] = useState(0);
-  const [muted, setMuted] = useState(false);
+  const { muted, toggleMute: toggleAudioMute, playSound, startBackgroundMusic, stopBackgroundMusic, ensureCtx } = useOfflineAudio();
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const lastScoreRef = useRef(0);
 
   useEffect(() => {
     if (!draft) {
@@ -20,16 +22,27 @@ export default function OfflineCatchGame() {
       return;
     }
     let saved = false;
+    ensureCtx();
+    startBackgroundMusic();
     const handler = (event: MessageEvent) => {
       if (!event.data || typeof event.data !== "object") return;
       const d = event.data;
       if (d.type === "ROBUSTUS_CATCH_STATE_CHANGE") {
-        if (typeof d.score === "number") setScore(d.score);
+        if (typeof d.score === "number") {
+          const newScore = d.score;
+          if (newScore > lastScoreRef.current) playSound("match");
+          else if (newScore < lastScoreRef.current) playSound("error");
+          lastScoreRef.current = newScore;
+          setScore(newScore);
+        }
         if (typeof d.elapsed === "number") setElapsed(d.elapsed);
         if (d.state === "finished" && !saved) {
           saved = true;
           const finalScore = Number(d.score || 0);
           const finalElapsed = Number(d.elapsed || 0) || 30;
+          const won = finalScore >= 200;
+          stopBackgroundMusic();
+          playSound(won ? "victory" : "lost");
           const entry = saveOfflinePlay({
             name: draft.name,
             phone: draft.phone,
@@ -37,7 +50,7 @@ export default function OfflineCatchGame() {
             score: finalScore,
             attempts: 1,
             timeSeconds: finalElapsed,
-            won: finalScore >= 200,
+            won,
           });
           clearOfflineDraft();
           setDone(entry);
@@ -47,14 +60,16 @@ export default function OfflineCatchGame() {
       }
     };
     window.addEventListener("message", handler);
-    return () => window.removeEventListener("message", handler);
-  }, [draft, navigate]);
+    return () => {
+      window.removeEventListener("message", handler);
+      stopBackgroundMusic();
+    };
+  }, [draft, navigate, ensureCtx, startBackgroundMusic, stopBackgroundMusic, playSound]);
 
   const toggleMute = () => {
-    const next = !muted;
-    setMuted(next);
+    toggleAudioMute();
     iframeRef.current?.contentWindow?.postMessage(
-      { type: "ROBUSTUS_CATCH_MUTE", muted: next },
+      { type: "ROBUSTUS_CATCH_MUTE", muted: !muted },
       "*"
     );
   };

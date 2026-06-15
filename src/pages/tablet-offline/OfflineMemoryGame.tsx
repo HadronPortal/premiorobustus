@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { OFFLINE_LOGO, OFFLINE_MEMORY_PRODUCTS } from "./offlineAssets";
 import { readOfflineDraft, clearOfflineDraft } from "./OfflineRegister";
 import { saveOfflinePlay, OfflineParticipant } from "@/lib/offlineStorage";
+import { useOfflineAudio } from "./useOfflineAudio";
 
 const MAX_ATTEMPTS = 20;
 const MAX_SECONDS = 60;
@@ -43,12 +44,16 @@ export default function OfflineMemoryGame() {
   const [timeLeft, setTimeLeft] = useState(MAX_SECONDS);
   const [startedAt] = useState(() => Date.now());
   const [lock, setLock] = useState(false);
-  const [muted, setMuted] = useState(false);
+  const { muted, toggleMute, playSound, startBackgroundMusic, stopBackgroundMusic, ensureCtx } = useOfflineAudio();
   const [done, setDone] = useState<OfflineParticipant | null>(null);
 
   useEffect(() => {
     if (!draft) navigate("/tablet-offline");
   }, [draft, navigate]);
+
+  useEffect(() => {
+    return () => stopBackgroundMusic();
+  }, [stopBackgroundMusic]);
 
   useEffect(() => {
     if (done) return;
@@ -80,6 +85,9 @@ export default function OfflineMemoryGame() {
     if (lock || done) return;
     const card = cards.find((c) => c.instanceId === id);
     if (!card || card.isFlipped || card.isMatched) return;
+    ensureCtx();
+    startBackgroundMusic();
+    playSound("flip");
     const next = cards.map((c) =>
       c.instanceId === id ? { ...c, isFlipped: true } : c
     );
@@ -94,6 +102,7 @@ export default function OfflineMemoryGame() {
       const newAttempts = attempts + 1;
       setAttempts(newAttempts);
       if (ca.productId === cb.productId) {
+        playSound("match");
         setTimeout(() => {
           const updated = next.map((c) =>
             c.productId === ca.productId ? { ...c, isMatched: true } : c
@@ -103,9 +112,14 @@ export default function OfflineMemoryGame() {
           setMatches(nm);
           setFlipped([]);
           setLock(false);
-          if (nm === WINNING_PAIRS) finish(true);
+          if (nm === WINNING_PAIRS) {
+            playSound("victory");
+            stopBackgroundMusic();
+            finish(true);
+          }
         }, 500);
       } else {
+        playSound("error");
         setTimeout(() => {
           setCards((prev) =>
             prev.map((c) =>
@@ -116,7 +130,11 @@ export default function OfflineMemoryGame() {
           );
           setFlipped([]);
           setLock(false);
-          if (newAttempts >= MAX_ATTEMPTS) finish(false);
+          if (newAttempts >= MAX_ATTEMPTS) {
+            playSound("lost");
+            stopBackgroundMusic();
+            finish(false);
+          }
         }, 800);
       }
     }
@@ -146,7 +164,7 @@ export default function OfflineMemoryGame() {
 
           <div className="flex gap-2">
             <button
-              onClick={() => setMuted((m) => !m)}
+              onClick={toggleMute}
               className="p-2 sm:p-3 bg-white/15 backdrop-blur-md rounded-xl text-white border border-white/20"
               aria-label={muted ? "Ativar som" : "Desativar som"}
             >
