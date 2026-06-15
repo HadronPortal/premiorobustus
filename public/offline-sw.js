@@ -2,7 +2,7 @@
 // IMPORTANTE: trocar o nome do cache a cada release para forçar atualização
 // no tablet quando ele abrir com internet.
 
-const CACHE_NAME = "robustus-tablet-offline-v2026-06-15-02";
+const CACHE_NAME = "robustus-tablet-offline-v2026-06-15-03";
 
 const ASSETS_TO_CACHE = [
   // Rotas da SPA (todas resolvem para o index.html da SPA via fallback)
@@ -17,6 +17,12 @@ const ASSETS_TO_CACHE = [
   "/memoria-final.png",
   "/cesta-final.png",
   "/cesta-preview.png",
+
+  // Banners do carrossel offline
+  "/offline-banners/banner1.jpg",
+  "/offline-banners/banner2.png",
+  "/offline-banners/banner3.png",
+  "/offline-banners/banner4.png",
 
   // Jogo da cesta (HTML/JS/CSS/imagens)
   "/robustus-catch-game/index.html",

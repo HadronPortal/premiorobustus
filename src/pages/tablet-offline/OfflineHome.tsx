@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { PawPrint } from "lucide-react";
 import { OFFLINE_LOGO } from "./offlineAssets";
 import { ensureOfflineServiceWorker } from "./registerOfflineSW";
+import { OfflineBannerCarousel } from "./OfflineBannerCarousel";
 
 export default function OfflineHome() {
   const navigate = useNavigate();
@@ -96,6 +97,8 @@ export default function OfflineHome() {
           </motion.button>
         </div>
 
+
+        <OfflineBannerCarousel />
 
         <div className="opacity-40 flex items-center gap-2 text-white">
           <PawPrint className="w-4 h-4" />
