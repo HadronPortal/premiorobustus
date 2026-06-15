@@ -11,7 +11,7 @@ export default function OfflineCatchGame() {
   const draft = useMemo(() => readOfflineDraft(), []);
   const [done, setDone] = useState<OfflineParticipant | null>(null);
   const [score, setScore] = useState(0);
-  const [elapsed, setElapsed] = useState(0);
+  const [remaining, setRemaining] = useState(30);
   const { muted, toggleMute: toggleAudioMute, playSound, startBackgroundMusic, stopBackgroundMusic, ensureCtx } = useOfflineAudio();
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const lastScoreRef = useRef(0);
@@ -42,16 +42,22 @@ export default function OfflineCatchGame() {
         else if (kind === "click") playSound("click");
         return;
       }
-      if (d.type === "ROBUSTUS_CATCH_STATE_CHANGE") {
+      if (d.type === "ROBUSTUS_CATCH_UPDATE") {
         if (typeof d.score === "number") {
           lastScoreRef.current = d.score;
           setScore(d.score);
         }
-        if (typeof d.elapsed === "number") setElapsed(d.elapsed);
+        if (typeof d.remaining === "number") {
+          setRemaining(Math.max(0, Math.ceil(d.remaining)));
+        }
+        return;
+      }
+      if (d.type === "ROBUSTUS_CATCH_STATE_CHANGE") {
         if (d.state === "finished" && !saved) {
           saved = true;
-          const finalScore = Number(d.score || 0);
-          const finalElapsed = Number(d.elapsed || 0) || 30;
+          const finalScore = Number(d.score ?? lastScoreRef.current ?? 0);
+          const finalElapsed =
+            Number(d.elapsedSeconds ?? d.elapsed ?? 0) || 30;
           const won = finalScore >= 200;
           stopBackgroundMusic();
           playSound(won ? "victory" : "lost");
@@ -89,7 +95,7 @@ export default function OfflineCatchGame() {
     );
   };
 
-  const timeLeft = Math.max(0, 30 - elapsed);
+  const timeLeft = remaining;
 
   return (
     <div className="fixed inset-0 flex flex-col overflow-hidden bg-black">

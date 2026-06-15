@@ -42,8 +42,10 @@ export default function OfflineMemoryGame() {
   const [matches, setMatches] = useState(0);
   const [attempts, setAttempts] = useState(0);
   const [timeLeft, setTimeLeft] = useState(MAX_SECONDS);
-  const [startedAt] = useState(() => Date.now());
-  const [lock, setLock] = useState(false);
+  const [phase, setPhase] = useState<"memorizing" | "playing" | "finished">("memorizing");
+  const [memoCountdown, setMemoCountdown] = useState(4);
+  const [startedAt, setStartedAt] = useState(() => Date.now());
+  const [lock, setLock] = useState(true);
   const { muted, toggleMute, playSound, startBackgroundMusic, stopBackgroundMusic, ensureCtx } = useOfflineAudio();
   const [done, setDone] = useState<OfflineParticipant | null>(null);
 
@@ -55,15 +57,30 @@ export default function OfflineMemoryGame() {
     return () => stopBackgroundMusic();
   }, [stopBackgroundMusic]);
 
+  // Fase MEMORIZE: 4s com cartas abertas e contagem regressiva
   useEffect(() => {
-    if (done) return;
+    if (phase !== "memorizing") return;
+    if (memoCountdown <= 1) {
+      const t = setTimeout(() => {
+        setPhase("playing");
+        setLock(false);
+        setStartedAt(Date.now());
+      }, 1000);
+      return () => clearTimeout(t);
+    }
+    const t = setTimeout(() => setMemoCountdown((n) => n - 1), 1000);
+    return () => clearTimeout(t);
+  }, [phase, memoCountdown]);
+
+  useEffect(() => {
+    if (done || phase !== "playing") return;
     if (timeLeft <= 0) {
       finish(false);
       return;
     }
     const t = setTimeout(() => setTimeLeft((s) => s - 1), 1000);
     return () => clearTimeout(t);
-  }, [timeLeft, done]);
+  }, [timeLeft, done, phase]);
 
   function finish(won: boolean) {
     if (done || !draft) return;
@@ -213,36 +230,53 @@ export default function OfflineMemoryGame() {
             maxWidth: "min(560px, 100%)",
           }}
         >
-          {cards.map((c) => (
-            <button
-              key={c.instanceId}
-              onClick={() => handleClick(c.instanceId)}
-              className="w-full h-full min-h-0 rounded-2xl shadow-lg border-4 transition-all relative overflow-hidden"
-              style={{
-                background: c.isFlipped || c.isMatched ? "#fff" : "#0047ab",
-                borderColor: c.isMatched
-                  ? "#10b981"
-                  : c.isFlipped
-                  ? "#f7941d"
-                  : "rgba(255,255,255,0.25)",
-              }}
-            >
-              {c.isFlipped || c.isMatched ? (
-                <>
-                  {c.isMatched && (
-                    <div className="absolute top-1 right-1 bg-[#f7941d] text-white p-1 rounded-full shadow border border-white z-10">
-                      <CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4" />
-                    </div>
-                  )}
-                  <img src={c.img} alt={c.name} className="w-full h-full object-contain p-2" />
-                </>
-              ) : (
-                <span className="text-white text-3xl sm:text-4xl font-black">?</span>
-              )}
-            </button>
-          ))}
+          {cards.map((c) => {
+            const showFront = c.isFlipped || c.isMatched || phase === "memorizing";
+            return (
+              <button
+                key={c.instanceId}
+                onClick={() => handleClick(c.instanceId)}
+                disabled={phase !== "playing"}
+                className="w-full h-full min-h-0 rounded-2xl shadow-lg border-4 transition-all relative overflow-hidden"
+                style={{
+                  background: showFront ? "#fff" : "#0047ab",
+                  borderColor: c.isMatched
+                    ? "#10b981"
+                    : showFront
+                    ? "#f7941d"
+                    : "rgba(255,255,255,0.25)",
+                }}
+              >
+                {showFront ? (
+                  <>
+                    {c.isMatched && (
+                      <div className="absolute top-1 right-1 bg-[#f7941d] text-white p-1 rounded-full shadow border border-white z-10">
+                        <CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4" />
+                      </div>
+                    )}
+                    <img src={c.img} alt={c.name} className="w-full h-full object-contain p-2" />
+                  </>
+                ) : (
+                  <span className="text-white text-3xl sm:text-4xl font-black">?</span>
+                )}
+              </button>
+            );
+          })}
         </div>
       </main>
+
+      {phase === "memorizing" && (
+        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 z-40 flex flex-col items-center pointer-events-none">
+          <div className="bg-black/70 backdrop-blur-md px-6 py-4 rounded-2xl border-2 border-[#f7941d] text-center shadow-2xl">
+            <p className="text-white text-sm sm:text-lg font-black uppercase italic tracking-widest">
+              Memorize os produtos
+            </p>
+            <p className="text-[#f7941d] text-5xl sm:text-6xl font-black mt-1">
+              {memoCountdown}
+            </p>
+          </div>
+        </div>
+      )}
 
       {done && (
         <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-50 p-6">
