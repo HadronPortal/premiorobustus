@@ -27,6 +27,11 @@ import JogoCesta from './pages/JogoCesta';
 import { Toaster } from 'sonner';
 import { useAudioManager } from './hooks/useAudioManager';
 import { BannerCarousel } from './components/BannerCarousel';
+import OfflineHome from './pages/tablet-offline/OfflineHome';
+import OfflineRegister from './pages/tablet-offline/OfflineRegister';
+import OfflineMemoryGame from './pages/tablet-offline/OfflineMemoryGame';
+import OfflineCatchGame from './pages/tablet-offline/OfflineCatchGame';
+import OfflineValidatePrize from './pages/tablet-offline/OfflineValidatePrize';
 
 // Configuração da Marca RobustUS
 const BRAND = {
@@ -734,6 +739,12 @@ const App = () => {
           <Route path="/cachorro-racao" element={<DogFoodGame />} />
           <Route path="/cesta-robustus" element={<BasketCatcherGame />} />
           <Route path="/jogo-cesta" element={<JogoCesta />} />
+          {/* Versão TABLET OFFLINE — totalmente isolada, sem Supabase */}
+          <Route path="/tablet-offline" element={<OfflineHome />} />
+          <Route path="/tablet-offline/cadastro" element={<OfflineRegister />} />
+          <Route path="/tablet-offline/jogo-memoria" element={<OfflineMemoryGame />} />
+          <Route path="/tablet-offline/jogo-cesta" element={<OfflineCatchGame />} />
+          <Route path="/tablet-offline/validar-brinde" element={<OfflineValidatePrize />} />
         </Routes>
       <Toaster position="top-center" richColors />
     </BrowserRouter>
