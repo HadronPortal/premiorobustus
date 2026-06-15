@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { OFFLINE_LOGO } from "./offlineAssets";
+import { ensureOfflineServiceWorker } from "./registerOfflineSW";
 
 interface Props {
   children: React.ReactNode;
@@ -10,6 +11,9 @@ interface Props {
 export const OfflineLayout: React.FC<Props> = ({ children, hideBadge }) => {
   const location = useLocation();
   const isHome = location.pathname === "/tablet-offline";
+  useEffect(() => {
+    ensureOfflineServiceWorker();
+  }, []);
   return (
     <div
       className="fixed inset-0 flex flex-col overflow-hidden"
