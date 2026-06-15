@@ -230,34 +230,38 @@ export default function OfflineMemoryGame() {
             maxWidth: "min(560px, 100%)",
           }}
         >
-          {cards.map((c) => (
-            <button
-              key={c.instanceId}
-              onClick={() => handleClick(c.instanceId)}
-              className="w-full h-full min-h-0 rounded-2xl shadow-lg border-4 transition-all relative overflow-hidden"
-              style={{
-                background: c.isFlipped || c.isMatched ? "#fff" : "#0047ab",
-                borderColor: c.isMatched
-                  ? "#10b981"
-                  : c.isFlipped
-                  ? "#f7941d"
-                  : "rgba(255,255,255,0.25)",
-              }}
-            >
-              {c.isFlipped || c.isMatched ? (
-                <>
-                  {c.isMatched && (
-                    <div className="absolute top-1 right-1 bg-[#f7941d] text-white p-1 rounded-full shadow border border-white z-10">
-                      <CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4" />
-                    </div>
-                  )}
-                  <img src={c.img} alt={c.name} className="w-full h-full object-contain p-2" />
-                </>
-              ) : (
-                <span className="text-white text-3xl sm:text-4xl font-black">?</span>
-              )}
-            </button>
-          ))}
+          {cards.map((c) => {
+            const showFront = c.isFlipped || c.isMatched || phase === "memorizing";
+            return (
+              <button
+                key={c.instanceId}
+                onClick={() => handleClick(c.instanceId)}
+                disabled={phase !== "playing"}
+                className="w-full h-full min-h-0 rounded-2xl shadow-lg border-4 transition-all relative overflow-hidden"
+                style={{
+                  background: showFront ? "#fff" : "#0047ab",
+                  borderColor: c.isMatched
+                    ? "#10b981"
+                    : showFront
+                    ? "#f7941d"
+                    : "rgba(255,255,255,0.25)",
+                }}
+              >
+                {showFront ? (
+                  <>
+                    {c.isMatched && (
+                      <div className="absolute top-1 right-1 bg-[#f7941d] text-white p-1 rounded-full shadow border border-white z-10">
+                        <CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4" />
+                      </div>
+                    )}
+                    <img src={c.img} alt={c.name} className="w-full h-full object-contain p-2" />
+                  </>
+                ) : (
+                  <span className="text-white text-3xl sm:text-4xl font-black">?</span>
+                )}
+              </button>
+            );
+          })}
         </div>
       </main>
 
