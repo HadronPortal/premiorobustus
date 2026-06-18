@@ -616,9 +616,9 @@ const GameContent = () => {
                     <div className={`card-front bg-white border-2 sm:border-4 shadow-lg flex flex-col items-center justify-between transition-all duration-300 ${card.isMatched ? 'border-[#f7941d] bg-orange-50' : 'border-white'}`} style={{ transform: 'rotateY(180deg)' }}>
                       {card.isMatched && <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute top-1 right-1 sm:top-2 sm:right-2 bg-[#f7941d] text-white p-0.5 sm:p-1 rounded-full shadow-lg z-[2] border border-white"><CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4" /></motion.div>}
                       <div className="w-full h-full min-h-0 flex items-center justify-center relative bg-slate-50 rounded-md sm:rounded-xl p-0.5 sm:p-1 overflow-hidden">
-                        <img src={card.img} alt={card.name} />
+                        <img src={card.img} alt={card.name} className="max-w-full max-h-full w-auto h-auto object-contain" />
                       </div>
-                      <div className="w-full text-center flex flex-col items-center">
+                      <div className="w-full text-center hidden sm:flex flex-col items-center">
                         <span className="product-badge inline-block px-1.5 py-0.5 bg-[#0047ab] rounded-full font-black text-white uppercase italic tracking-widest mb-0.5">{card.line}</span>
                         <h4 className="product-name font-black text-[#003380] uppercase italic">{card.name}</h4>
                       </div>
