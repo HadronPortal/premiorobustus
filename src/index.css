@@ -200,6 +200,38 @@
   padding: 6px;
 }
 
+/* Mobile: somente o pacote, ocupando a carta inteira */
+@media (max-width: 599px) {
+  .memory-card-front {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    overflow: hidden;
+    background: #fff;
+  }
+  .memory-card-front .memory-card-image-wrap {
+    background: transparent !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    width: 100%;
+    height: 100%;
+  }
+  .memory-card-front .memory-card-img {
+    width: 90%;
+    height: 90%;
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+    object-position: center;
+  }
+  .memory-card-text,
+  .product-badge,
+  .product-name {
+    display: none !important;
+  }
+}
+
 .card-back {
   position: absolute;
   inset: 0;
