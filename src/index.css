@@ -218,14 +218,23 @@
     height: 100%;
   }
   .memory-card-front .memory-card-img {
-    width: 90%;
-    height: 90%;
-    max-width: 90%;
-    max-height: 90%;
+    width: 90% !important;
+    height: 90% !important;
+    max-width: 90% !important;
+    max-height: 90% !important;
     object-fit: contain;
     object-position: center;
   }
+  .memory-card-front .memory-card-img-desktop {
+    display: none !important;
+  }
+  .memory-card-front .memory-card-img-mobile {
+    display: block !important;
+  }
   .memory-card-text,
+  .memory-card-title,
+  .memory-card-label,
+  .memory-card-description,
   .product-badge,
   .product-name {
     display: none !important;
