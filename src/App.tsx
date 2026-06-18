@@ -32,6 +32,7 @@ import OfflineRegister from './pages/tablet-offline/OfflineRegister';
 import OfflineMemoryGame from './pages/tablet-offline/OfflineMemoryGame';
 import OfflineCatchGame from './pages/tablet-offline/OfflineCatchGame';
 import OfflineValidatePrize from './pages/tablet-offline/OfflineValidatePrize';
+import { OFFLINE_MEMORY_PRODUCTS } from './pages/tablet-offline/offlineAssets';
 
 // Configuração da Marca RobustUS
 const BRAND = {
@@ -49,11 +50,11 @@ const ASSETS = {
 };
 
 const PRODUCTS = [
-  { id: 1, name: 'Life Special Filhote', line: 'Cão Filhote', img: 'https://robustus.com.br/wp-content/uploads/2025/10/DASDASDAS-768x633.png' },
-  { id: 2, name: 'Adulto Mini e Pequeno', line: 'Cão Adulto', img: 'https://robustus.com.br/wp-content/uploads/2025/10/cao-mini-768x633.png' },
-  { id: 3, name: 'Adulto Médio e Grande', line: 'Cão Adulto', img: 'https://robustus.com.br/wp-content/uploads/2025/10/cao-ADULTO-768x633.png' },
-  { id: 4, name: 'Gato Castrado', line: 'Life Special', img: 'https://robustus.com.br/wp-content/uploads/2025/10/sdsadasdas-1-768x633.png' },
-  { id: 5, name: 'Gato Adulto', line: 'Life Special', img: 'https://robustus.com.br/wp-content/uploads/2025/10/DASDASDAS-2-768x633.png' },
+  { id: 1, name: 'Life Special Filhote', line: 'Cão Filhote', img: 'https://robustus.com.br/wp-content/uploads/2025/10/DASDASDAS-768x633.png', packageImg: OFFLINE_MEMORY_PRODUCTS[0].img },
+  { id: 2, name: 'Adulto Mini e Pequeno', line: 'Cão Adulto', img: 'https://robustus.com.br/wp-content/uploads/2025/10/cao-mini-768x633.png', packageImg: OFFLINE_MEMORY_PRODUCTS[1].img },
+  { id: 3, name: 'Adulto Médio e Grande', line: 'Cão Adulto', img: 'https://robustus.com.br/wp-content/uploads/2025/10/cao-ADULTO-768x633.png', packageImg: OFFLINE_MEMORY_PRODUCTS[2].img },
+  { id: 4, name: 'Gato Castrado', line: 'Life Special', img: 'https://robustus.com.br/wp-content/uploads/2025/10/sdsadasdas-1-768x633.png', packageImg: OFFLINE_MEMORY_PRODUCTS[3].img },
+  { id: 5, name: 'Gato Adulto', line: 'Life Special', img: 'https://robustus.com.br/wp-content/uploads/2025/10/DASDASDAS-2-768x633.png', packageImg: OFFLINE_MEMORY_PRODUCTS[4].img },
 ];
 
 type GameState = 'START' | 'AUTH' | 'PLAYING' | 'VICTORY' | 'GAMEOVER' | 'ADMIN' | 'ERROR';
@@ -64,6 +65,7 @@ interface Card {
   name: string;
   line: string;
   img: string;
+  packageImg: string;
   isFlipped: boolean;
   isMatched: boolean;
 }
@@ -616,7 +618,8 @@ const GameContent = () => {
                       <div className={`card-front memory-card-front bg-white border-2 sm:border-4 shadow-lg flex flex-col items-center justify-between transition-all duration-300 ${card.isMatched ? 'border-[#f7941d] bg-orange-50' : 'border-white'}`} style={{ transform: 'rotateY(180deg)' }}>
                         {card.isMatched && <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute top-1 right-1 sm:top-2 sm:right-2 bg-[#f7941d] text-white p-0.5 sm:p-1 rounded-full shadow-lg z-[2] border border-white"><CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4" /></motion.div>}
                         <div className="memory-card-image-wrap w-full h-full min-h-0 flex items-center justify-center relative bg-slate-50 rounded-md sm:rounded-xl p-0.5 sm:p-1 overflow-hidden">
-                          <img src={card.img} alt={card.name} className="memory-card-img max-w-full max-h-full w-auto h-auto object-contain" />
+                          <img src={card.packageImg} alt={card.name} className="memory-card-img memory-card-img-mobile max-w-full max-h-full w-auto h-auto object-contain sm:hidden" />
+                          <img src={card.img} alt={card.name} className="memory-card-img memory-card-img-desktop max-w-full max-h-full w-auto h-auto object-contain hidden sm:block" />
                         </div>
                         <div className="memory-card-text w-full text-center hidden sm:flex flex-col items-center">
                           <span className="product-badge inline-block px-1.5 py-0.5 bg-[#0047ab] rounded-full font-black text-white uppercase italic tracking-widest mb-0.5">{card.line}</span>
