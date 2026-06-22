@@ -33,6 +33,12 @@ import OfflineMemoryGame from './pages/tablet-offline/OfflineMemoryGame';
 import OfflineCatchGame from './pages/tablet-offline/OfflineCatchGame';
 import OfflineValidatePrize from './pages/tablet-offline/OfflineValidatePrize';
 import { OFFLINE_MEMORY_PRODUCTS } from './pages/tablet-offline/offlineAssets';
+import { MobileOfflineAuth } from './components/auth/MobileOfflineAuth';
+import { OfflineStatusBadge } from './components/OfflineStatusBadge';
+import { installMobileSync, setCurrentParticipantId } from './lib/mobileOfflineDb';
+
+const isMobileView = () =>
+  typeof window !== 'undefined' && window.matchMedia('(max-width: 639px)').matches;
 
 // Configuração da Marca RobustUS
 const BRAND = {
@@ -459,8 +465,8 @@ const GameContent = () => {
               </motion.h1>
             </div>
 
-            <div className="w-full max-w-[min(94vw,800px)] grid grid-cols-2 gap-4 sm:gap-10 mt-1">
-              {/* Card Jogo da Memória */}
+            <div className="w-full max-w-[min(94vw,800px)] grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-10 mt-1 place-items-center">
+              {/* Card Jogo da Memória — oculto no mobile */}
               <motion.button 
                 whileHover={{ scale: 1.05, y: -8 }}
                 whileTap={{ scale: 0.95 }}
@@ -468,10 +474,9 @@ const GameContent = () => {
                   setSelectedGame('memoria');
                   setGameState('AUTH');
                 }}
-                className="group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-all border-4 border-transparent hover:border-[#f7941d] aspect-[3/4]"
+                className="hidden sm:flex group relative flex-col overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-all border-4 border-transparent hover:border-[#f7941d] aspect-[3/4] w-full"
               >
                 <div className="flex-1 w-full overflow-hidden relative bg-white">
-                  {/* Foto inteira enviada pelo usuário para o Jogo da Memória */}
                   <div className="absolute inset-0 flex flex-col items-center justify-center p-0">
                      <img src="/memoria-final.png" alt="Jogo da Memória" className="w-full h-full object-contain" />
                   </div>
@@ -486,10 +491,9 @@ const GameContent = () => {
                   setSelectedGame('cesta');
                   setGameState('AUTH');
                 }}
-                className="group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-all border-4 border-transparent hover:border-[#0047ab] aspect-[3/4]"
+                className="group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-all border-4 border-transparent hover:border-[#0047ab] aspect-[3/4] w-full max-w-[min(80vw,360px)] sm:max-w-none"
               >
                 <div className="flex-1 w-full overflow-hidden relative bg-white">
-                  {/* Foto inteira enviada pelo usuário para o Jogo da Cesta */}
                   <div className="absolute inset-0 flex flex-col items-center justify-center p-0">
                      <img src="/cesta-final.png" alt="Jogo da Cesta" className="w-full h-full object-contain" />
                   </div>
@@ -532,7 +536,21 @@ const GameContent = () => {
           </motion.div>
         )}
 
-        {gameState === 'AUTH' && <AuthScreen key="auth" onStart={initializeGame} onClose={() => setGameState('START')} />}
+        {gameState === 'AUTH' && (
+          isMobileView() && selectedGame === 'cesta' ? (
+            <MobileOfflineAuth
+              key="mobile-auth"
+              game="cesta"
+              onClose={() => setGameState('START')}
+              onStart={({ participantId }) => {
+                setCurrentParticipantId(participantId);
+                initializeGame({ participantId });
+              }}
+            />
+          ) : (
+            <AuthScreen key="auth" onStart={initializeGame} onClose={() => setGameState('START')} />
+          )
+        )}
 
 
         {gameState === 'PLAYING' && (
