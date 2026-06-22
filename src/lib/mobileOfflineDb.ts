@@ -165,6 +165,8 @@ async function trySyncNew(rec: MobileParticipant) {
         p_phone: rec.phone,
         p_event_slug: "robustus-expo-2026",
         p_name: rec.name,
+        p_participant_type: rec.participantType,
+        p_participant_type_other: rec.participantTypeOther || null,
       }
     );
     if (error || !data?.ok) return;
@@ -193,6 +195,8 @@ export async function syncAll(): Promise<void> {
             p_phone: rec.phone,
             p_event_slug: "robustus-expo-2026",
             p_name: rec.name,
+            p_participant_type: rec.participantType,
+            p_participant_type_other: rec.participantTypeOther || null,
           }
         );
         if (error || !data?.ok) continue;
