@@ -128,6 +128,47 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
             />
           </div>
 
+          {/* Perfil do participante */}
+          <div className="space-y-3">
+            <div className="relative">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#0047ab] pointer-events-none">
+                <Briefcase className="w-6 h-6" />
+              </div>
+              <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[#0047ab] pointer-events-none">
+                <ChevronDown className="w-5 h-5" />
+              </div>
+              <select
+                aria-label="Qual é o seu perfil?"
+                value={participantType}
+                onChange={(e) => setParticipantType(e.target.value as ParticipantTypeOption)}
+                required
+                className={`w-full appearance-none bg-slate-100 p-3 pl-12 pr-12 rounded-xl text-lg font-bold border-2 border-transparent focus:border-[#f7941d] outline-none uppercase h-[56px] ${
+                  participantType === "" ? "text-slate-400" : "text-[#003380]"
+                }`}
+              >
+                <option value="" disabled>SELECIONE UMA OPÇÃO</option>
+                <option value="lojista">LOJISTA</option>
+                <option value="veterinario">VETERINÁRIO</option>
+                <option value="outros">OUTROS</option>
+              </select>
+            </div>
+
+            {participantType === "outros" && (
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="QUAL? (EX: TUTOR, ADESTRADOR...)"
+                  value={participantTypeOther}
+                  onChange={(e) => setParticipantTypeOther(e.target.value.toUpperCase())}
+                  required
+                  maxLength={60}
+                  className="w-full bg-slate-100 p-3 px-4 rounded-xl text-lg font-bold text-[#003380] border-2 border-transparent focus:border-[#f7941d] outline-none placeholder:text-slate-400 uppercase"
+                />
+              </div>
+            )}
+          </div>
+
+
           <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
             <label className="flex items-start gap-3 cursor-pointer">
               <div className="relative mt-1 flex-shrink-0">
