@@ -293,7 +293,7 @@ class RobustUSCatchGame {
     document.querySelectorAll(".pet-option").forEach((button) => {
       button.classList.toggle("selected", button.dataset.pet === species);
     });
-    document.getElementById("start-button").textContent = species === "cat" ? "Comecar com gato" : "Comecar com cachorro";
+    document.getElementById("start-button").textContent = species === "cat" ? "Comecar com RobusCat" : "Comecar com RobusCão";
     window.parent.postMessage({ type: "ROBUSTUS_CATCH_PET_SELECTED", pet: species === "cat" ? "gato" : "cachorro" }, "*");
     this.drawStaticPreview();
   }
@@ -323,11 +323,11 @@ class RobustUSCatchGame {
     this.drawStaticPreview();
   }
 
-  movePlayerToPointer(event) {
+  updateTargetFromPointer(event) {
     const rect = this.canvas.getBoundingClientRect();
     const ratioX = this.canvas.width / rect.width;
     const pointerX = (event.clientX - rect.left) * ratioX;
-    this.player.x = clamp(pointerX, this.player.basketWidth / 2, this.width - this.player.basketWidth / 2);
+    this.targetX = clamp(pointerX, this.player.basketWidth / 2, this.width - this.player.basketWidth / 2);
   }
 
   loop(time) {
@@ -362,12 +362,37 @@ class RobustUSCatchGame {
     this.remaining = Math.max(0, CONFIG.durationSeconds - this.elapsed);
     this.speedBoost = Math.min(4.3, this.elapsed / 8.5);
 
-    const movingLeft = this.keys.has("ArrowLeft") || this.keys.has("a") || this.keys.has("A") || this.leftHeld;
-    const movingRight = this.keys.has("ArrowRight") || this.keys.has("d") || this.keys.has("D") || this.rightHeld;
+    const movingLeftKey = this.keys.has("ArrowLeft") || this.keys.has("a") || this.keys.has("A") || this.leftHeld;
+    const movingRightKey = this.keys.has("ArrowRight") || this.keys.has("d") || this.keys.has("D") || this.rightHeld;
 
-    if (movingLeft) this.player.x -= this.player.speed * delta;
-    if (movingRight) this.player.x += this.player.speed * delta;
+    if (movingLeftKey) this.targetX = (this.targetX ?? this.player.x) - this.player.speed * delta;
+    if (movingRightKey) this.targetX = (this.targetX ?? this.player.x) + this.player.speed * delta;
+    if (this.targetX != null) {
+      this.targetX = clamp(this.targetX, this.player.basketWidth / 2, this.width - this.player.basketWidth / 2);
+    }
+
+    // Suavizacao do movimento - segue o dedo sem atraso visivel mas sem trepidacao
+    const target = this.targetX ?? this.player.x;
+    const dx = target - this.player.x;
+    const follow = Math.min(1, 0.32 * delta);
+    this.player.x += dx * follow;
+    if (Math.abs(dx) < 0.4) this.player.x = target;
     this.player.x = clamp(this.player.x, this.player.basketWidth / 2, this.width - this.player.basketWidth / 2);
+
+    // Direcao e animacao de andar
+    const speedNow = Math.abs(dx);
+    const isMoving = (this.pointerActive || movingLeftKey || movingRightKey) && speedNow > 0.6;
+    if (dx > 0.4) this.facing = 1;
+    else if (dx < -0.4) this.facing = -1;
+    if (isMoving) {
+      this.animTime += delta;
+      // Pequeno balanco vertical (passos)
+      this.bounce = Math.sin(this.animTime * 0.55) * 8;
+    } else {
+      this.animTime = 0;
+      this.bounce = 0;
+    }
+    this.isMoving = isMoving;
 
     this.spawnClock -= delta;
     if (this.spawnClock <= 0) {
