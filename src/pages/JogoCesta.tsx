@@ -9,7 +9,7 @@ import {
   clearCurrentParticipantId,
   syncAll,
 } from '@/lib/mobileOfflineDb';
-import { upsertMatch, normalizePhone, getCurrentPlayId, clearCurrentPlayId } from '@/lib/cestaMatches';
+import { upsertPlay, normalizePhone, getCurrentPlayId, clearCurrentPlayId } from '@/lib/cestaMatches';
 
 function generatePrizeCode() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -44,7 +44,7 @@ export default function JogoCesta() {
             const pid = getCurrentPlayId() || '';
             playIdRef.current = pid;
             playStartRef.current = Date.now();
-            if (pid) void upsertMatch({ playId: pid, status: 'playing' });
+            if (pid) void upsertPlay({ playId: pid, status: 'playing' });
           }
         } else if (event.data.state === 'finished' || event.data.state === 'start') {
           stopBackgroundMusic();
@@ -81,14 +81,11 @@ export default function JogoCesta() {
                   participant = await getParticipant(pid);
                 } catch {}
               }
-              // UPSERT por playId — atualiza o registro criado no cadastro.
+              // UPSERT por playId — atualiza a tentativa criada no cadastro.
               try {
-                await upsertMatch({
+                await upsertPlay({
                   playId,
-                  name: participant?.name || '',
                   phone: normalizePhone(participant?.phone || ''),
-                  participantType: participant?.participantType || '',
-                  participantTypeOther: participant?.participantTypeOther || '',
                   pet,
                   score: finalScore,
                   durationSeconds,
@@ -103,7 +100,7 @@ export default function JogoCesta() {
         }
       } else if (event.data.type === 'ROBUSTUS_CATCH_PET_SELECTED') {
         const playId = playIdRef.current || getCurrentPlayId();
-        if (playId) void upsertMatch({ playId, pet: event.data.pet });
+        if (playId) void upsertPlay({ playId, pet: event.data.pet });
       } else if (event.data.type === 'ROBUSTUS_CATCH_PLAY_SOUND') {
         playSound(event.data.soundType);
       } else if (event.data.type === 'ROBUSTUS_CATCH_NAVIGATE_HOME') {

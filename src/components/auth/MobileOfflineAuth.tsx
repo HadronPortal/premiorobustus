@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { User, Phone, CheckCircle2, ChevronRight, X, Briefcase, ChevronDown } from "lucide-react";
 import { createParticipant, type ParticipantType } from "@/lib/mobileOfflineDb";
-import { createCurrentPlayId, upsertMatch } from "@/lib/cestaMatches";
+import { createCurrentPlayId, upsertParticipant, upsertPlay } from "@/lib/cestaMatches";
 
 interface Props {
   game: "cesta" | "memoria";
@@ -67,13 +67,18 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
           participantType === "outros" ? participantTypeOther.trim() : "",
       });
       if (game === "cesta") {
-        await upsertMatch({
-          playId,
-          name: cleanedName,
+        // 1) UMA pessoa por telefone (upsert no store `participants`).
+        await upsertParticipant({
           phone: cleanedPhone,
+          name: cleanedName,
           participantType: participantType as ParticipantType,
           participantTypeOther:
             participantType === "outros" ? participantTypeOther.trim() : "",
+        });
+        // 2) Uma nova tentativa em `plays` (status registered).
+        await upsertPlay({
+          playId,
+          phone: cleanedPhone,
           status: "registered",
           playedAt: new Date().toISOString(),
         });
