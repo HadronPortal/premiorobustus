@@ -12,7 +12,7 @@ export default function OfflineCatchGame() {
   const [done, setDone] = useState<OfflineParticipant | null>(null);
   const [score, setScore] = useState(0);
   const [remaining, setRemaining] = useState(30);
-  const { muted, toggleMute: toggleAudioMute, playSound, startBackgroundMusic, stopBackgroundMusic, ensureCtx } = useOfflineAudio();
+  const { muted, toggleMute: toggleAudioMute, playSound, ensureCtx } = useOfflineAudio();
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const lastScoreRef = useRef(0);
 
@@ -24,7 +24,6 @@ export default function OfflineCatchGame() {
     let saved = false;
     const unlock = () => {
       ensureCtx();
-      startBackgroundMusic();
     };
     window.addEventListener("pointerdown", unlock, { once: true });
     window.addEventListener("touchstart", unlock, { once: true });
@@ -77,8 +76,6 @@ export default function OfflineCatchGame() {
           const finalElapsed =
             Number(d.elapsedSeconds ?? d.elapsed ?? 0) || 30;
           const won = finalScore >= 200;
-          stopBackgroundMusic();
-          playSound(won ? "victory" : "lost");
           const entry = saveOfflinePlay({
             name: draft.name,
             phone: draft.phone,
@@ -101,9 +98,8 @@ export default function OfflineCatchGame() {
       window.removeEventListener("pointerdown", unlock);
       window.removeEventListener("touchstart", unlock);
       window.removeEventListener("keydown", unlock);
-      stopBackgroundMusic();
     };
-  }, [draft, navigate, ensureCtx, startBackgroundMusic, stopBackgroundMusic, playSound]);
+  }, [draft, navigate, ensureCtx, playSound]);
 
   const toggleMute = () => {
     toggleAudioMute();
@@ -154,9 +150,15 @@ export default function OfflineCatchGame() {
       <iframe
         ref={iframeRef}
         title="Jogo da Cesta Offline"
-        src={`${OFFLINE_CATCH_GAME_URL}?offline=1&hideHud=1`}
+        src={`${OFFLINE_CATCH_GAME_URL}?offline=1&hideHud=1&v=20260622-audio-1`}
         style={{ width: "100%", height: "100%", border: 0, display: "block" }}
         allow="autoplay; fullscreen"
+        onLoad={() => {
+          iframeRef.current?.contentWindow?.postMessage(
+            { type: "ROBUSTUS_CATCH_MUTE", muted },
+            "*"
+          );
+        }}
       />
 
       {done && (

@@ -23,6 +23,13 @@ const CONFIG = {
     walkA: "robuscat-walk-a.webp",
     walkB: "robuscat-walk-b.webp"
   },
+  audioUrls: {
+    background: "/audio/background.mp3",
+    error: "/audio/error.mp3",
+    fanfare: "/audio/fanfare.mp3",
+    bark: "/sounds/dog-bark.mp3",
+    meow: "/sounds/cat-meow.mp3"
+  },
   // Sprites nativos olham para a ESQUERDA. Inverter quando direcao = +1.
   nativeFacing: -1,
   logoUrl: "robustus-logo.png"
@@ -146,6 +153,14 @@ class RobustUSCatchGame {
       walkB: new ProductAsset(CONFIG.catPoses.walkB, "RobusCat walk B")
     };
     this.logo = new ProductAsset(CONFIG.logoUrl, "Logo RobustUS");
+    this.isMuted = false;
+    this.audio = {
+      background: this.createAudio(CONFIG.audioUrls.background, 0.12, true),
+      error: this.createAudio(CONFIG.audioUrls.error, 0.72),
+      fanfare: this.createAudio(CONFIG.audioUrls.fanfare, 0.68),
+      bark: this.createAudio(CONFIG.audioUrls.bark, 0.72),
+      meow: this.createAudio(CONFIG.audioUrls.meow, 0.72)
+    };
     this.selectedSpecies = "dog";
     this.lowPowerMode =
       window.matchMedia("(pointer: coarse)").matches ||
@@ -180,14 +195,56 @@ class RobustUSCatchGame {
         this.resetGame();
         this.showStart();
       } else if (event.data.type === "ROBUSTUS_CATCH_MUTE") {
-        this.isMuted = event.data.muted;
+        this.setMuted(Boolean(event.data.muted));
       }
     });
   }
 
+  createAudio(src, volume, loop = false) {
+    const audio = new Audio(src);
+    audio.preload = "auto";
+    audio.volume = volume;
+    audio.loop = loop;
+    return audio;
+  }
+
+  setMuted(muted) {
+    this.isMuted = muted;
+    Object.values(this.audio).forEach((audio) => {
+      audio.muted = muted;
+    });
+  }
+
+  startBackgroundMusic() {
+    const music = this.audio.background;
+    music.muted = this.isMuted;
+    if (music.paused) {
+      music.currentTime = 0;
+      music.play().catch(() => {});
+    }
+  }
+
+  stopBackgroundMusic() {
+    const music = this.audio.background;
+    music.pause();
+    music.currentTime = 0;
+  }
+
   playSound(type) {
     if (this.isMuted) return;
-    window.parent.postMessage({ type: "ROBUSTUS_CATCH_PLAY_SOUND", soundType: type }, "*");
+    const sound = this.audio[type];
+    if (!sound) {
+      window.parent.postMessage({ type: "ROBUSTUS_CATCH_PLAY_SOUND", soundType: type }, "*");
+      return;
+    }
+
+    try {
+      sound.pause();
+      sound.currentTime = 0;
+    } catch {}
+    sound.play().catch(() => {
+      window.parent.postMessage({ type: "ROBUSTUS_CATCH_PLAY_SOUND", soundType: type }, "*");
+    });
   }
 
   syncCanvasToViewport() {
@@ -244,6 +301,7 @@ class RobustUSCatchGame {
     });
     document.getElementById("restart-button").addEventListener("click", () => {
       this.playSound('flip');
+      this.stopBackgroundMusic();
       window.parent.postMessage({ type: "ROBUSTUS_CATCH_NAVIGATE_HOME" }, "*");
     });
     document.getElementById("choose-dog-button").addEventListener("click", () => {
@@ -308,6 +366,7 @@ class RobustUSCatchGame {
   start() {
     this.syncCanvasToViewport();
     this.resetGame();
+    this.startBackgroundMusic();
     this.state = "playing";
     window.parent.postMessage({ type: "ROBUSTUS_CATCH_STATE_CHANGE", state: "playing" }, "*");
     showScreen("game-screen");
@@ -316,6 +375,7 @@ class RobustUSCatchGame {
   }
 
   showStart() {
+    this.stopBackgroundMusic();
     this.state = "start";
     window.parent.postMessage({ type: "ROBUSTUS_CATCH_STATE_CHANGE", state: "start" }, "*");
     this.syncCanvasToViewport();
@@ -433,6 +493,8 @@ class RobustUSCatchGame {
   }
 
   finish(result) {
+    this.stopBackgroundMusic();
+    this.playSound("fanfare");
     this.state = "finished";
     window.parent.postMessage({
       type: "ROBUSTUS_CATCH_STATE_CHANGE",

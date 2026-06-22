@@ -20,13 +20,14 @@ function generatePrizeCode() {
 
 export default function JogoCesta() {
   const navigate = useNavigate();
-  const { playSound, startBackgroundMusic, stopBackgroundMusic, isMuted: audioMuted, toggleMute: toggleAudioMute } = useAudioManager();
+  const { playSound, isMuted: audioMuted, toggleMute: toggleAudioMute } = useAudioManager();
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(30);
   const [gameState, setGameState] = useState('start');
   const playStartRef = React.useRef<number | null>(null);
   const playIdRef = React.useRef<string | null>(null);
   const savingRef = React.useRef(false);
+  const iframeRef = React.useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
@@ -38,7 +39,6 @@ export default function JogoCesta() {
         
         // Gerenciamento de áudio baseado no estado do jogo
         if (event.data.state === 'playing') {
-          startBackgroundMusic();
           // O playId é criado somente no cadastro. Aqui apenas reaproveitamos e atualizamos.
           if (!playIdRef.current) {
             const pid = getCurrentPlayId() || '';
@@ -47,7 +47,6 @@ export default function JogoCesta() {
             if (pid) void upsertPlay({ playId: pid, status: 'playing' });
           }
         } else if (event.data.state === 'finished' || event.data.state === 'start') {
-          stopBackgroundMusic();
           if (event.data.state === 'finished') {
             const finalScore = event.data.score || 0;
             const wonPrize = finalScore >= 200;
@@ -62,8 +61,6 @@ export default function JogoCesta() {
             playStartRef.current = null;
             playIdRef.current = null;
             clearCurrentPlayId();
-
-            if (wonPrize) playSound('victory-applause'); else playSound('lost');
 
             const pid = getCurrentParticipantId();
             const prizeCode = wonPrize ? generatePrizeCode() : null;
@@ -114,16 +111,15 @@ export default function JogoCesta() {
     window.addEventListener('message', handleMessage);
     return () => {
       window.removeEventListener('message', handleMessage);
-      stopBackgroundMusic();
     };
-  }, [playSound, startBackgroundMusic, stopBackgroundMusic, navigate]);
+  }, [playSound, navigate]);
 
   useEffect(() => {
     // Sincronizar mute com o iframe quando o estado mudar
-    const iframe = document.querySelector('iframe');
-    if (iframe && iframe.contentWindow) {
-      iframe.contentWindow.postMessage({ type: 'ROBUSTUS_CATCH_MUTE', muted: audioMuted }, '*');
-    }
+    iframeRef.current?.contentWindow?.postMessage(
+      { type: 'ROBUSTUS_CATCH_MUTE', muted: audioMuted },
+      '*'
+    );
   }, [audioMuted]);
 
   const handleToggleMute = () => {
@@ -180,7 +176,6 @@ export default function JogoCesta() {
               </button>
               <button 
                 onClick={() => {
-                  stopBackgroundMusic();
                   navigate('/');
                 }}
                 className="bg-white/20 hover:bg-white/30 backdrop-blur-md p-2 rounded-full text-white border-2 border-white/30 shadow-sm transition-all active:scale-95"
@@ -233,10 +228,17 @@ export default function JogoCesta() {
       )}
 
       <iframe
+        ref={iframeRef}
         title="Desafio Pet RobustUS"
-        src="/robustus-catch-game/index.html?v=20260611-score-rules"
+        src="/robustus-catch-game/index.html?v=20260622-audio-1"
         style={{ width: "100%", height: "100%", border: 0, display: "block" }}
-        allow="fullscreen"
+        allow="autoplay; fullscreen"
+        onLoad={() => {
+          iframeRef.current?.contentWindow?.postMessage(
+            { type: 'ROBUSTUS_CATCH_MUTE', muted: audioMuted },
+            '*'
+          );
+        }}
       />
     </main>
   );

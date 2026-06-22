@@ -2,7 +2,7 @@
 // IMPORTANTE: trocar o nome do cache a cada release para forçar atualização
 // no tablet quando ele abrir com internet.
 
-const CACHE_NAME = "robustus-tablet-offline-v2026-06-22-07";
+const CACHE_NAME = "robustus-tablet-offline-v2026-06-22-08-audio";
 
 const ASSETS_TO_CACHE = [
   // Rotas da SPA (todas resolvem para o index.html da SPA via fallback)
@@ -41,7 +41,10 @@ const ASSETS_TO_CACHE = [
   "/robustus-catch-game/package-gato-adulto.png",
   "/robustus-catch-game/package-gato-castrado.png",
 
-  // Sons dos mascotes (latido e miado)
+  // Audio local do jogo
+  "/audio/background.mp3",
+  "/audio/error.mp3",
+  "/audio/fanfare.mp3",
   "/sounds/dog-bark.mp3",
   "/sounds/cat-meow.mp3",
 ];
