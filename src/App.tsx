@@ -752,8 +752,13 @@ const GameContent = () => {
 };
 
 const App = () => {
+  useEffect(() => {
+    // Inicia o sincronizador local-first para a versão mobile
+    try { installMobileSync(); } catch {}
+  }, []);
   return (
     <BrowserRouter>
+        <OfflineStatusBadge />
         <Routes>
           <Route path="/" element={<GameContent />} />
           <Route path="/validar-brinde" element={<AdminScreen />} />
