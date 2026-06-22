@@ -74,6 +74,7 @@ function uuid(): string {
 }
 
 export async function createParticipant(input: {
+  playId?: string;
   name: string;
   phone: string;
   game: "cesta" | "memoria";
@@ -82,7 +83,7 @@ export async function createParticipant(input: {
   pet?: string;
 }): Promise<MobileParticipant> {
   const rec: MobileParticipant = {
-    id: uuid(),
+    id: input.playId || uuid(),
     name: input.name.trim(),
     phone: input.phone.replace(/\D/g, ""),
     participantType: input.participantType,

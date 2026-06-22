@@ -71,7 +71,7 @@ export default function AdminRelatorioOffline() {
   }, [authed]);
 
   const stats = useMemo(() => {
-    // matches já vem deduplicado por playId (keyPath = id).
+    // matches já vem deduplicado por playId (keyPath = playId).
     const total = matches.length;
     const uniquePhones = new Set(matches.map(m => (m.phone || '').replace(/\D/g, '')).filter(Boolean)).size;
     const by = (pred: (m: CestaMatch) => boolean) => matches.filter(pred).length;
@@ -305,7 +305,7 @@ export default function AdminRelatorioOffline() {
               </thead>
               <tbody>
                 {matches.map(m => (
-                  <tr key={m.id} style={{ borderTop: '1px solid #f1f5f9' }}>
+                  <tr key={m.playId} style={{ borderTop: '1px solid #f1f5f9' }}>
                     <td style={td}>{fmtDateBR(m.playedAt)}</td>
                     <td style={td}>{m.name || '-'}</td>
                     <td style={td}>{m.phone || '-'}</td>

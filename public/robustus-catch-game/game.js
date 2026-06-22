@@ -256,6 +256,7 @@ class RobustUSCatchGame {
       button.classList.toggle("selected", button.dataset.pet === species);
     });
     document.getElementById("start-button").textContent = species === "cat" ? "Comecar com gato" : "Comecar com cachorro";
+    window.parent.postMessage({ type: "ROBUSTUS_CATCH_PET_SELECTED", pet: species === "cat" ? "gato" : "cachorro" }, "*");
     this.drawStaticPreview();
   }
 
@@ -369,7 +370,12 @@ class RobustUSCatchGame {
 
   finish(result) {
     this.state = "finished";
-    window.parent.postMessage({ type: "ROBUSTUS_CATCH_STATE_CHANGE", state: "finished" }, "*");
+    window.parent.postMessage({
+      type: "ROBUSTUS_CATCH_STATE_CHANGE",
+      state: "finished",
+      score: this.score,
+      pet: this.selectedSpecies === "cat" ? "gato" : "cachorro"
+    }, "*");
     const elapsedSeconds = Math.round(this.elapsed);
 
     window.parent?.postMessage(
@@ -377,6 +383,7 @@ class RobustUSCatchGame {
         type: "ROBUSTUS_CATCH_FINISHED",
         result,
         score: this.score,
+        pet: this.selectedSpecies === "cat" ? "gato" : "cachorro",
         elapsedSeconds
       },
       "*"
