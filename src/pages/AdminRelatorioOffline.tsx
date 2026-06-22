@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Download, FileText, Save, Upload, LockKeyhole } from 'lucide-react';
+import { ArrowLeft, Download, FileText, Save, Upload, LockKeyhole, ShieldCheck } from 'lucide-react';
 import { listMatches, importMatches, type CestaMatch } from '@/lib/cestaMatches';
+import { hasAdminPin, setAdminPin, verifyAdminPin } from '@/lib/adminPin';
 
-const ADMIN_PIN = (import.meta as any).env?.VITE_ADMIN_PIN || '2468';
 const AUTH_KEY = 'robustus.admin.relatorio.ok';
 
 function pad(n: number) { return String(n).padStart(2, '0'); }
@@ -21,7 +21,6 @@ function todayStamp() {
   return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 }
 function csvEscape(v: string) {
-  // Separador é ; — escapa aspas e remove quebras
   const s = (v ?? '').toString().replace(/\r?\n/g, ' ').replace(/"/g, '""');
   return /[";]/.test(s) ? `"${s}"` : s;
 }
@@ -44,8 +43,11 @@ export default function AdminRelatorioOffline() {
   const [authed, setAuthed] = useState<boolean>(() => {
     try { return sessionStorage.getItem(AUTH_KEY) === '1'; } catch { return false; }
   });
+  const [pinExists, setPinExists] = useState<boolean | null>(null);
   const [pin, setPin] = useState('');
+  const [pinConfirm, setPinConfirm] = useState('');
   const [pinErr, setPinErr] = useState('');
+  const [busy, setBusy] = useState(false);
   const [matches, setMatches] = useState<CestaMatch[]>([]);
   const [loading, setLoading] = useState(true);
   const [msg, setMsg] = useState<string>('');
@@ -58,6 +60,11 @@ export default function AdminRelatorioOffline() {
   };
 
   useEffect(() => { if (authed) reload(); }, [authed]);
+
+  useEffect(() => {
+    if (authed) return;
+    hasAdminPin().then(setPinExists).catch(() => setPinExists(false));
+  }, [authed]);
 
   const stats = useMemo(() => {
     const total = matches.length;
@@ -75,15 +82,37 @@ export default function AdminRelatorioOffline() {
     return { total, uniquePhones, lojista, vet, outros, cachorro, gato, avg, best, pct };
   }, [matches]);
 
-  const handlePin = (e: React.FormEvent) => {
+  const handlePin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (pin.trim() === ADMIN_PIN) {
-      try { sessionStorage.setItem(AUTH_KEY, '1'); } catch {}
-      setAuthed(true); setPinErr('');
+    setPinErr('');
+    const value = pin.trim();
+    if (pinExists === false) {
+      // Criação inicial
+      if (!/^\d{4,6}$/.test(value)) { setPinErr('Use de 4 a 6 dígitos numéricos.'); return; }
+      if (value !== pinConfirm.trim()) { setPinErr('Os PINs não conferem.'); return; }
+      setBusy(true);
+      try {
+        await setAdminPin(value);
+        try { sessionStorage.setItem(AUTH_KEY, '1'); } catch {}
+        setAuthed(true);
+      } catch (err: any) {
+        setPinErr(err?.message || 'Falha ao salvar o PIN.');
+      } finally { setBusy(false); }
     } else {
-      setPinErr('PIN incorreto.');
+      // Verificação
+      if (!value) { setPinErr('Informe o PIN.'); return; }
+      setBusy(true);
+      try {
+        const ok = await verifyAdminPin(value);
+        if (ok) {
+          try { sessionStorage.setItem(AUTH_KEY, '1'); } catch {}
+          setAuthed(true);
+        } else setPinErr('PIN incorreto.');
+      } finally { setBusy(false); }
     }
   };
+
+
 
   const exportCSV = () => {
     const header = 'data;nome;telefone;perfil;perfil_outro;personagem;pontuacao;duracao';

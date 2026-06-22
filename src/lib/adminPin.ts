@@ -35,8 +35,10 @@ function fromHex(hex: string): Uint8Array {
 async function derive(pin: string, saltHex: string): Promise<string> {
   const enc = new TextEncoder();
   const key = await crypto.subtle.importKey("raw", enc.encode(pin), "PBKDF2", false, ["deriveBits"]);
+  const saltBytes = fromHex(saltHex);
+  const salt = new Uint8Array(saltBytes); // garante ArrayBuffer (não SharedArrayBuffer)
   const bits = await crypto.subtle.deriveBits(
-    { name: "PBKDF2", salt: fromHex(saltHex), iterations: 100_000, hash: "SHA-256" },
+    { name: "PBKDF2", salt: salt.buffer as ArrayBuffer, iterations: 100_000, hash: "SHA-256" },
     key,
     256
   );
@@ -54,8 +56,9 @@ export async function hasAdminPin(): Promise<boolean> {
 
 export async function setAdminPin(pin: string): Promise<void> {
   if (!/^\d{4,6}$/.test(pin)) throw new Error("PIN deve ter de 4 a 6 dígitos.");
-  const saltBytes = crypto.getRandomValues(new Uint8Array(16));
-  const salt = toHex(saltBytes.buffer);
+  const saltBytes = new Uint8Array(16);
+  crypto.getRandomValues(saltBytes);
+  const salt = toHex(saltBytes.buffer as ArrayBuffer);
   const hash = await derive(pin, salt);
   const rec: PinRecord = { key: KEY, salt, hash, createdAt: new Date().toISOString() };
   const db = await openDB();
