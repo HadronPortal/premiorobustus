@@ -477,8 +477,9 @@ class RobustUSCatchGame {
 
   draw() {
     this.drawEnvironment();
-    this.drawPlayer();
+    this.drawMascot();
     this.productsFalling.forEach((product) => product.draw(this.ctx));
+    this.drawBasketLayer();
     this.drawEffects();
     this.drawHud();
   }
@@ -488,28 +489,65 @@ class RobustUSCatchGame {
     ctx.drawImage(this.backgroundCanvas, 0, 0);
   }
 
-  drawPlayer() {
+  getPoses() {
+    return this.selectedSpecies === "cat" ? this.catPoses : this.dogPoses;
+  }
+
+  drawMascot() {
     const ctx = this.ctx;
     const x = this.player.x;
-    const y = this.player.y;
+    const y = this.player.y - (this.bounce || 0);
+    const sw = this.player.spriteWidth;
+    const sh = this.player.spriteHeight;
 
+    // Sombra no chao - segue o personagem mas nao sobe com o bounce
     ctx.save();
     ctx.shadowColor = "rgba(0,0,0,0.22)";
     ctx.shadowBlur = 18;
-    ctx.fillStyle = "rgba(0,0,0,0.22)";
+    ctx.fillStyle = "rgba(0,0,0,0.28)";
     ctx.beginPath();
-    ctx.ellipse(x, y + this.player.spriteHeight - 12, this.player.spriteWidth * 0.36, 23, 0, 0, Math.PI * 2);
+    const shadowScale = 1 - Math.min(0.25, (this.bounce || 0) * 0.02);
+    ctx.ellipse(this.player.x, this.player.y + sh - 18, sw * 0.34 * shadowScale, 18 * shadowScale, 0, 0, Math.PI * 2);
     ctx.fill();
-    ctx.shadowBlur = 0;
+    ctx.restore();
 
-    const hero = this.selectedSpecies === "cat" ? this.catHero : this.dogHero;
-    if (hero.ready) {
-      drawBasketDogPhoto(ctx, hero.image, x, y, this.player.spriteWidth, this.player.spriteHeight);
+    const poses = this.getPoses();
+    let img;
+    if (this.isMoving) {
+      // Alterna walkA / walkB a cada ~180ms (~10 frames)
+      const frame = Math.floor(this.animTime / 10) % 2;
+      img = frame === 0 ? poses.walkA.image : poses.walkB.image;
+      if (!(img && img.complete && img.naturalWidth > 0)) img = poses.idle.image;
     } else {
-      drawDog(ctx, x, y + 70, 150);
-      drawBasket(ctx, x, y + this.player.basketOffsetY + 26, this.player.basketWidth, this.player.basketHeight);
-      drawDogPaws(ctx, x, y + this.player.basketOffsetY - 16, this.player.basketWidth);
+      img = poses.idle.image;
     }
+
+    if (!(img && img.complete && img.naturalWidth > 0)) return;
+
+    ctx.save();
+    ctx.shadowColor = "rgba(0,0,0,0.24)";
+    ctx.shadowBlur = 16;
+    ctx.shadowOffsetY = 10;
+    // Sprites nativos olham para a ESQUERDA (CONFIG.nativeFacing = -1).
+    // Quando facing = +1 (direita), invertemos horizontalmente.
+    const flip = this.facing !== CONFIG.nativeFacing ? -1 : 1;
+    ctx.translate(x, y);
+    ctx.scale(flip, 1);
+    drawContainedImage(ctx, img, -sw / 2, 0, sw, sh);
+    ctx.restore();
+  }
+
+  drawBasketLayer() {
+    // Cesta como camada separada SEMPRE na frente das racoes.
+    const ctx = this.ctx;
+    const x = this.player.x;
+    const y = this.player.y - (this.bounce || 0);
+    const basketCenterY = y + this.player.basketOffsetY;
+    ctx.save();
+    ctx.shadowColor = "rgba(0,0,0,0.32)";
+    ctx.shadowBlur = 12;
+    ctx.shadowOffsetY = 8;
+    drawBasket(ctx, x, basketCenterY, this.player.basketWidth, this.player.basketHeight);
     ctx.restore();
   }
 
