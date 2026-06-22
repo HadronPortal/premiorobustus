@@ -111,6 +111,8 @@ export default function JogoCesta() {
         playSound(event.data.soundType);
       } else if (event.data.type === 'ROBUSTUS_CATCH_NAVIGATE_HOME') {
         clearCurrentParticipantId();
+        try { sessionStorage.removeItem(PLAY_ID_KEY); } catch {}
+        playIdRef.current = null;
         navigate('/');
       }
     };
