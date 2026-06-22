@@ -516,12 +516,23 @@ class RobustUSCatchGame {
     ctx.restore();
 
     const poses = this.getPoses();
+    const isCat = this.selectedSpecies === "cat";
     let img;
+    let tilt = 0;
     if (this.isMoving) {
-      // Alterna walkA / walkB a cada ~180ms (~10 frames)
-      const frame = Math.floor(this.animTime / 10) % 2;
-      img = frame === 0 ? poses.walkA.image : poses.walkB.image;
-      if (!(img && img.complete && img.naturalWidth > 0)) img = poses.idle.image;
+      if (isCat) {
+        // RobusCat: usar SEMPRE a mesma pose de caminhada em quatro patas
+        // (P3-gato.png = walkA). Nao alternar para walkB (pose em pe).
+        img = poses.walkA.image;
+        if (!(img && img.complete && img.naturalWidth > 0)) img = poses.idle.image;
+        // Pequena rotacao oscilante para dar sensacao de passos sem trocar pose
+        tilt = Math.sin(this.animTime * 0.55) * 0.05;
+      } else {
+        // RobusCao: alterna walkA / walkB a cada ~180ms (~10 frames)
+        const frame = Math.floor(this.animTime / 10) % 2;
+        img = frame === 0 ? poses.walkA.image : poses.walkB.image;
+        if (!(img && img.complete && img.naturalWidth > 0)) img = poses.idle.image;
+      }
     } else {
       img = poses.idle.image;
     }
@@ -537,6 +548,12 @@ class RobustUSCatchGame {
     const flip = this.facing !== CONFIG.nativeFacing ? -1 : 1;
     ctx.translate(x, y);
     ctx.scale(flip, 1);
+    if (tilt) {
+      // Rotaciona em torno da base (pes) para manter os pes no chao
+      ctx.translate(0, sh);
+      ctx.rotate(tilt);
+      ctx.translate(0, -sh);
+    }
     drawContainedImage(ctx, img, -sw / 2, 0, sw, sh);
     ctx.restore();
   }
