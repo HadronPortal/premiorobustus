@@ -4,10 +4,12 @@ import { ArrowLeft, Volume2, VolumeX, RotateCcw } from 'lucide-react';
 import { useAudioManager } from '../hooks/useAudioManager';
 import {
   getCurrentParticipantId,
+  getParticipant,
   updateParticipant,
   clearCurrentParticipantId,
   syncAll,
 } from '@/lib/mobileOfflineDb';
+import { addMatch } from '@/lib/cestaMatches';
 
 function generatePrizeCode() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -22,6 +24,7 @@ export default function JogoCesta() {
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(30);
   const [gameState, setGameState] = useState('start');
+  const playStartRef = React.useRef<number | null>(null);
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
@@ -34,11 +37,17 @@ export default function JogoCesta() {
         // Gerenciamento de áudio baseado no estado do jogo
         if (event.data.state === 'playing') {
           startBackgroundMusic();
+          playStartRef.current = Date.now();
         } else if (event.data.state === 'finished' || event.data.state === 'start') {
           stopBackgroundMusic();
           if (event.data.state === 'finished') {
             const finalScore = event.data.score || 0;
             const wonPrize = finalScore >= 200;
+            const pet = (event.data.pet || '') as 'cachorro' | 'gato' | '';
+            const durationSeconds = playStartRef.current
+              ? Math.max(0, Math.round((Date.now() - playStartRef.current) / 1000))
+              : 0;
+            playStartRef.current = null;
             if (wonPrize) {
               playSound('victory-applause');
             } else {
@@ -46,18 +55,36 @@ export default function JogoCesta() {
             }
             // Local-first: atualiza o participante atual no IndexedDB
             const pid = getCurrentParticipantId();
-            if (pid) {
-              const prizeCode = wonPrize ? generatePrizeCode() : null;
-              updateParticipant(pid, {
-                score: finalScore,
-                attempts: 1,
-                pet: event.data.pet || '',
-                prizeCode,
-                prizeStatus: wonPrize ? 'pendente' : null,
-              })
-                .then(() => syncAll())
-                .catch(() => {});
-            }
+            const prizeCode = wonPrize ? generatePrizeCode() : null;
+            (async () => {
+              let participant: any = null;
+              if (pid) {
+                try {
+                  await updateParticipant(pid, {
+                    score: finalScore,
+                    attempts: 1,
+                    pet,
+                    prizeCode,
+                    prizeStatus: wonPrize ? 'pendente' : null,
+                  });
+                  participant = await getParticipant(pid);
+                } catch {}
+              }
+              // Salva uma NOVA partida no relatório offline (sempre cria nova)
+              try {
+                await addMatch({
+                  name: participant?.name || '',
+                  phone: participant?.phone || '',
+                  participantType: participant?.participantType || '',
+                  participantTypeOther: participant?.participantTypeOther || '',
+                  pet,
+                  score: finalScore,
+                  playedAt: new Date().toISOString(),
+                  durationSeconds,
+                });
+              } catch {}
+              try { await syncAll(); } catch {}
+            })();
           }
         }
       } else if (event.data.type === 'ROBUSTUS_CATCH_PLAY_SOUND') {
