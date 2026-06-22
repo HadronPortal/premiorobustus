@@ -40,6 +40,10 @@ const ASSETS_TO_CACHE = [
   "/robustus-catch-game/package-cao-mini.png",
   "/robustus-catch-game/package-gato-adulto.png",
   "/robustus-catch-game/package-gato-castrado.png",
+
+  // Sons dos mascotes (latido e miado)
+  "/sounds/dog-bark.mp3",
+  "/sounds/cat-meow.mp3",
 ];
 
 // 1) Install: pré-cache e ativação imediata
