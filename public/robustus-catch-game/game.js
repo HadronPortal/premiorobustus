@@ -471,7 +471,8 @@ class RobustUSCatchGame {
 
   drawStaticPreview() {
     this.drawEnvironment();
-    this.drawPlayer();
+    this.drawMascot();
+    this.drawBasketLayer();
     this.drawHud();
   }
 
