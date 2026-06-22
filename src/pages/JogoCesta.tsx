@@ -9,9 +9,7 @@ import {
   clearCurrentParticipantId,
   syncAll,
 } from '@/lib/mobileOfflineDb';
-import { upsertMatch, getMatch, normalizePhone, uuid } from '@/lib/cestaMatches';
-
-const PLAY_ID_KEY = 'robustus.cesta.currentPlayId';
+import { upsertMatch, normalizePhone, getCurrentPlayId, clearCurrentPlayId } from '@/lib/cestaMatches';
 
 function generatePrizeCode() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -28,7 +26,7 @@ export default function JogoCesta() {
   const [gameState, setGameState] = useState('start');
   const playStartRef = React.useRef<number | null>(null);
   const playIdRef = React.useRef<string | null>(null);
-  const processedRef = React.useRef<Set<string>>(new Set());
+  const savingRef = React.useRef(false);
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
@@ -41,16 +39,12 @@ export default function JogoCesta() {
         // Gerenciamento de áudio baseado no estado do jogo
         if (event.data.state === 'playing') {
           startBackgroundMusic();
-          // Gera UM playId por partida e mantém em sessionStorage até finalizar
+          // O playId é criado somente no cadastro. Aqui apenas reaproveitamos e atualizamos.
           if (!playIdRef.current) {
-            let pid = '';
-            try { pid = sessionStorage.getItem(PLAY_ID_KEY) || ''; } catch {}
-            if (!pid) {
-              pid = uuid();
-              try { sessionStorage.setItem(PLAY_ID_KEY, pid); } catch {}
-            }
+            const pid = getCurrentPlayId() || '';
             playIdRef.current = pid;
             playStartRef.current = Date.now();
+            if (pid) void upsertMatch({ playId: pid, status: 'playing' });
           }
         } else if (event.data.state === 'finished' || event.data.state === 'start') {
           stopBackgroundMusic();
@@ -61,14 +55,13 @@ export default function JogoCesta() {
             const durationSeconds = playStartRef.current
               ? Math.max(0, Math.round((Date.now() - playStartRef.current) / 1000))
               : 0;
-            const playId = playIdRef.current || uuid();
+            const playId = playIdRef.current || getCurrentPlayId() || '';
+            if (!playId || savingRef.current) return;
+            savingRef.current = true;
             // Reset para a próxima partida
             playStartRef.current = null;
             playIdRef.current = null;
-            try { sessionStorage.removeItem(PLAY_ID_KEY); } catch {}
-            // Guarda contra StrictMode/duplo evento
-            if (processedRef.current.has(playId)) return;
-            processedRef.current.add(playId);
+            clearCurrentPlayId();
 
             if (wonPrize) playSound('victory-applause'); else playSound('lost');
 
@@ -88,30 +81,34 @@ export default function JogoCesta() {
                   participant = await getParticipant(pid);
                 } catch {}
               }
-              // UPSERT por playId — nunca duplica.
+              // UPSERT por playId — atualiza o registro criado no cadastro.
               try {
-                const existing = await getMatch(playId);
                 await upsertMatch({
-                  id: playId,
+                  playId,
                   name: participant?.name || '',
                   phone: normalizePhone(participant?.phone || ''),
                   participantType: participant?.participantType || '',
                   participantTypeOther: participant?.participantTypeOther || '',
                   pet,
                   score: finalScore,
-                  playedAt: existing?.playedAt || new Date().toISOString(),
                   durationSeconds,
+                  status: 'finished',
+                  prizeCode,
                 });
               } catch {}
               try { await syncAll(); } catch {}
+              savingRef.current = false;
             })();
           }
         }
+      } else if (event.data.type === 'ROBUSTUS_CATCH_PET_SELECTED') {
+        const playId = playIdRef.current || getCurrentPlayId();
+        if (playId) void upsertMatch({ playId, pet: event.data.pet });
       } else if (event.data.type === 'ROBUSTUS_CATCH_PLAY_SOUND') {
         playSound(event.data.soundType);
       } else if (event.data.type === 'ROBUSTUS_CATCH_NAVIGATE_HOME') {
         clearCurrentParticipantId();
-        try { sessionStorage.removeItem(PLAY_ID_KEY); } catch {}
+        clearCurrentPlayId();
         playIdRef.current = null;
         navigate('/');
       }
