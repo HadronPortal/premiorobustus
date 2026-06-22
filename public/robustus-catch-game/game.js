@@ -12,8 +12,19 @@ const CONFIG = {
     { src: "package-gato-castrado.png", species: "cat", line: "special" },
     { src: "package-gato-adulto.png", species: "cat", line: "normal" }
   ],
-  dogHeroUrl: "dog-basket-repaired.png",
-  catHeroUrl: "cat-basket-clean.png",
+  // Mascotes oficiais RobustUS. Native facing = LEFT (cabeca para a esquerda).
+  dogPoses: {
+    idle: "robuscao-idle.webp",
+    walkA: "robuscao-walk-a.webp",
+    walkB: "robuscao-walk-b.webp"
+  },
+  catPoses: {
+    idle: "robuscat-idle.webp",
+    walkA: "robuscat-walk-a.webp",
+    walkB: "robuscat-walk-b.webp"
+  },
+  // Sprites nativos olham para a ESQUERDA. Inverter quando direcao = +1.
+  nativeFacing: -1,
   logoUrl: "robustus-logo.png"
 };
 
