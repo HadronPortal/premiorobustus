@@ -461,11 +461,15 @@ class RobustUSCatchGame {
   }
 
   basketBounds() {
+    // Cesta centrada em (player.x, player.y + basketOffsetY). Reduzimos um pouco
+    // a largura para a colisao parecer alinhada com a boca da cesta.
+    const bw = this.player.basketWidth;
+    const bh = this.player.basketHeight;
     return {
-      x: this.player.x - this.player.basketWidth / 2 + 18,
-      y: this.player.y + this.player.basketOffsetY,
-      width: this.player.basketWidth - 36,
-      height: this.player.basketHeight
+      x: this.player.x - bw / 2 + 18,
+      y: this.player.y + this.player.basketOffsetY - bh / 2,
+      width: bw - 36,
+      height: bh
     };
   }
 
