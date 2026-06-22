@@ -8,10 +8,14 @@ const DB_NAME = "robustus.mobile.v1";
 const DB_VERSION = 1;
 const STORE = "participants";
 
+export type ParticipantType = "lojista" | "veterinario" | "outros";
+
 export interface MobileParticipant {
   id: string; // UUID local
   name: string;
   phone: string;
+  participantType: ParticipantType;
+  participantTypeOther: string; // texto quando participantType === 'outros'
   playedAt: string;
   attempts: number;
   pet: string;
