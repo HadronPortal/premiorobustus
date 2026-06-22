@@ -181,25 +181,46 @@ export default function AdminRelatorioOffline() {
   };
 
   if (!authed) {
+    const creating = pinExists === false;
+    const checking = pinExists === null;
     return (
       <main style={{ minHeight: '100dvh', display: 'grid', placeItems: 'center', background: '#0a1628', padding: 16 }}>
-        <form onSubmit={handlePin} style={{ background: 'white', padding: 24, borderRadius: 16, width: '100%', maxWidth: 360, boxShadow: '0 10px 30px rgba(0,0,0,.3)' }}>
+        <form onSubmit={handlePin} style={{ background: 'white', padding: 24, borderRadius: 16, width: '100%', maxWidth: 380, boxShadow: '0 10px 30px rgba(0,0,0,.3)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12, color: '#0047ab', fontWeight: 800 }}>
-            <LockKeyhole size={20} /> Relatório Offline
+            {creating ? <ShieldCheck size={20}/> : <LockKeyhole size={20} />}
+            {creating ? 'Definir PIN administrativo' : 'Relatório Offline'}
           </div>
-          <p style={{ fontSize: 13, color: '#475569', marginBottom: 14 }}>Informe o PIN administrativo para acessar.</p>
+          <p style={{ fontSize: 13, color: '#475569', marginBottom: 14 }}>
+            {checking && 'Verificando…'}
+            {creating && 'Este é o primeiro acesso neste dispositivo. Crie um PIN de 4 a 6 dígitos. Apenas o hash será salvo localmente — guarde-o, não é possível recuperá-lo.'}
+            {pinExists === true && 'Informe o PIN administrativo para acessar.'}
+          </p>
           <input
             type="password" inputMode="numeric" autoFocus value={pin}
-            onChange={(e) => setPin(e.target.value)} placeholder="PIN"
+            disabled={checking || busy}
+            onChange={(e) => setPin(e.target.value.replace(/\D/g, '').slice(0, 6))}
+            placeholder={creating ? 'Novo PIN (4-6 dígitos)' : 'PIN'}
             style={{ width: '100%', padding: '14px 12px', fontSize: 18, border: '2px solid #e2e8f0', borderRadius: 10, outline: 'none', letterSpacing: 4, textAlign: 'center' }}
           />
+          {creating && (
+            <input
+              type="password" inputMode="numeric" value={pinConfirm}
+              disabled={busy}
+              onChange={(e) => setPinConfirm(e.target.value.replace(/\D/g, '').slice(0, 6))}
+              placeholder="Confirmar PIN"
+              style={{ width: '100%', padding: '14px 12px', fontSize: 18, border: '2px solid #e2e8f0', borderRadius: 10, outline: 'none', letterSpacing: 4, textAlign: 'center', marginTop: 10 }}
+            />
+          )}
           {pinErr && <div style={{ color: '#dc2626', fontSize: 13, marginTop: 8 }}>{pinErr}</div>}
-          <button type="submit" style={{ marginTop: 14, width: '100%', padding: '12px 16px', background: '#0047ab', color: 'white', border: 0, borderRadius: 10, fontWeight: 800, fontSize: 15 }}>Entrar</button>
+          <button type="submit" disabled={checking || busy} style={{ marginTop: 14, width: '100%', padding: '12px 16px', background: '#0047ab', color: 'white', border: 0, borderRadius: 10, fontWeight: 800, fontSize: 15, opacity: (checking || busy) ? 0.6 : 1 }}>
+            {busy ? 'Aguarde…' : creating ? 'Criar PIN e entrar' : 'Entrar'}
+          </button>
           <button type="button" onClick={() => navigate('/')} style={{ marginTop: 8, width: '100%', padding: '10px 16px', background: 'transparent', color: '#475569', border: 0, fontSize: 13 }}>Voltar</button>
         </form>
       </main>
     );
   }
+
 
   const Stat = ({ label, value, sub }: { label: string; value: React.ReactNode; sub?: string }) => (
     <div style={{ background: 'white', padding: 16, borderRadius: 12, boxShadow: '0 1px 3px rgba(0,0,0,.08)' }}>
