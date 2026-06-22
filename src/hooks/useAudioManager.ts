@@ -10,6 +10,7 @@ export const useAudioManager = () => {
 
   const audioCtx = useRef<AudioContext | null>(null);
   const bgMusic = useRef<HTMLAudioElement | null>(null);
+  const mascotSounds = useRef<Record<string, HTMLAudioElement>>({});
 
   useEffect(() => {
     localStorage.setItem('robustus-sound-muted', JSON.stringify(isMuted));
