@@ -27,6 +27,8 @@ export default function JogoCesta() {
   const [timeLeft, setTimeLeft] = useState(30);
   const [gameState, setGameState] = useState('start');
   const playStartRef = React.useRef<number | null>(null);
+  const playIdRef = React.useRef<string | null>(null);
+  const processedRef = React.useRef<Set<string>>(new Set());
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
