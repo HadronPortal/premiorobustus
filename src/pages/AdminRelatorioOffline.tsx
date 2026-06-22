@@ -262,8 +262,22 @@ export default function AdminRelatorioOffline() {
           <Stat label="Lojistas" value={stats.lojista} sub={`${stats.pct(stats.lojista).toFixed(1)}%`} />
           <Stat label="Veterinários" value={stats.vet} sub={`${stats.pct(stats.vet).toFixed(1)}%`} />
           <Stat label="Outros" value={stats.outros} sub={`${stats.pct(stats.outros).toFixed(1)}%`} />
-          <Stat label="Cachorro" value={stats.cachorro} sub={`${stats.pct(stats.cachorro).toFixed(1)}%`} />
-          <Stat label="Gato" value={stats.gato} sub={`${stats.pct(stats.gato).toFixed(1)}%`} />
+          <Stat label="Cachorro" value={stats.cachorro} sub={`${stats.pctPet(stats.cachorro).toFixed(1)}% dos pets`} />
+          <Stat label="Gato" value={stats.gato} sub={`${stats.pctPet(stats.gato).toFixed(1)}% dos pets`} />
+        </section>
+
+        <section style={{
+          background: 'linear-gradient(135deg,#0047ab,#0070f3)', color: 'white',
+          padding: 16, borderRadius: 12, marginBottom: 16, display: 'flex',
+          alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8,
+        }}>
+          <div style={{ fontSize: 13, opacity: 0.85, textTransform: 'uppercase', fontWeight: 700, letterSpacing: 0.5 }}>
+            Personagem mais escolhido
+          </div>
+          <div style={{ fontSize: 28, fontWeight: 900 }}>{stats.topPet}</div>
+          <div style={{ fontSize: 13, opacity: 0.9 }}>
+            🐶 {stats.cachorro} ({stats.pctPet(stats.cachorro).toFixed(1)}%) · 🐱 {stats.gato} ({stats.pctPet(stats.gato).toFixed(1)}%)
+          </div>
         </section>
 
         <section style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 16 }}>
