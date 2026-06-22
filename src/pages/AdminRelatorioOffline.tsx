@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Download, FileText, Save, Upload, LockKeyhole, ShieldCheck } from 'lucide-react';
-import { listMatches, importMatches, type CestaMatch } from '@/lib/cestaMatches';
+import { listMatches, importMatches, dedupeExactMatches, type CestaMatch } from '@/lib/cestaMatches';
 import { hasAdminPin, setAdminPin, verifyAdminPin } from '@/lib/adminPin';
 
 const AUTH_KEY = 'robustus.admin.relatorio.ok';
@@ -55,7 +55,11 @@ export default function AdminRelatorioOffline() {
 
   const reload = async () => {
     setLoading(true);
-    try { setMatches(await listMatches()); } catch {}
+    try {
+      // remove duplicatas exatas (mesma partida salva 2x) antes de listar
+      await dedupeExactMatches();
+      setMatches(await listMatches());
+    } catch {}
     setLoading(false);
   };
 
@@ -67,6 +71,7 @@ export default function AdminRelatorioOffline() {
   }, [authed]);
 
   const stats = useMemo(() => {
+    // matches já vem deduplicado por playId (keyPath = id).
     const total = matches.length;
     const uniquePhones = new Set(matches.map(m => (m.phone || '').replace(/\D/g, '')).filter(Boolean)).size;
     const by = (pred: (m: CestaMatch) => boolean) => matches.filter(pred).length;
@@ -75,11 +80,16 @@ export default function AdminRelatorioOffline() {
     const outros = by(m => m.participantType === 'outros');
     const cachorro = by(m => m.pet === 'cachorro');
     const gato = by(m => m.pet === 'gato');
+    const topPet = cachorro === gato
+      ? (cachorro + gato === 0 ? '—' : 'Empate')
+      : (cachorro > gato ? 'CACHORRO' : 'GATO');
+    const petTotal = cachorro + gato;
+    const pctPet = (n: number) => petTotal ? (n*100/petTotal) : 0;
     const scores = matches.map(m => Number(m.score) || 0);
     const avg = scores.length ? scores.reduce((a,b)=>a+b,0) / scores.length : 0;
     const best = scores.length ? Math.max(...scores) : 0;
     const pct = (n: number) => total ? (n*100/total) : 0;
-    return { total, uniquePhones, lojista, vet, outros, cachorro, gato, avg, best, pct };
+    return { total, uniquePhones, lojista, vet, outros, cachorro, gato, topPet, pctPet, avg, best, pct };
   }, [matches]);
 
   const handlePin = async (e: React.FormEvent) => {
@@ -252,8 +262,22 @@ export default function AdminRelatorioOffline() {
           <Stat label="Lojistas" value={stats.lojista} sub={`${stats.pct(stats.lojista).toFixed(1)}%`} />
           <Stat label="Veterinários" value={stats.vet} sub={`${stats.pct(stats.vet).toFixed(1)}%`} />
           <Stat label="Outros" value={stats.outros} sub={`${stats.pct(stats.outros).toFixed(1)}%`} />
-          <Stat label="Cachorro" value={stats.cachorro} sub={`${stats.pct(stats.cachorro).toFixed(1)}%`} />
-          <Stat label="Gato" value={stats.gato} sub={`${stats.pct(stats.gato).toFixed(1)}%`} />
+          <Stat label="Cachorro" value={stats.cachorro} sub={`${stats.pctPet(stats.cachorro).toFixed(1)}% dos pets`} />
+          <Stat label="Gato" value={stats.gato} sub={`${stats.pctPet(stats.gato).toFixed(1)}% dos pets`} />
+        </section>
+
+        <section style={{
+          background: 'linear-gradient(135deg,#0047ab,#0070f3)', color: 'white',
+          padding: 16, borderRadius: 12, marginBottom: 16, display: 'flex',
+          alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8,
+        }}>
+          <div style={{ fontSize: 13, opacity: 0.85, textTransform: 'uppercase', fontWeight: 700, letterSpacing: 0.5 }}>
+            Personagem mais escolhido
+          </div>
+          <div style={{ fontSize: 28, fontWeight: 900 }}>{stats.topPet}</div>
+          <div style={{ fontSize: 13, opacity: 0.9 }}>
+            🐶 {stats.cachorro} ({stats.pctPet(stats.cachorro).toFixed(1)}%) · 🐱 {stats.gato} ({stats.pctPet(stats.gato).toFixed(1)}%)
+          </div>
         </section>
 
         <section style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 16 }}>

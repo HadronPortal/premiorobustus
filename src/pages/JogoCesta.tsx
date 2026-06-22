@@ -9,7 +9,9 @@ import {
   clearCurrentParticipantId,
   syncAll,
 } from '@/lib/mobileOfflineDb';
-import { addMatch } from '@/lib/cestaMatches';
+import { upsertMatch, getMatch, normalizePhone, uuid } from '@/lib/cestaMatches';
+
+const PLAY_ID_KEY = 'robustus.cesta.currentPlayId';
 
 function generatePrizeCode() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -25,6 +27,8 @@ export default function JogoCesta() {
   const [timeLeft, setTimeLeft] = useState(30);
   const [gameState, setGameState] = useState('start');
   const playStartRef = React.useRef<number | null>(null);
+  const playIdRef = React.useRef<string | null>(null);
+  const processedRef = React.useRef<Set<string>>(new Set());
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
@@ -37,7 +41,17 @@ export default function JogoCesta() {
         // Gerenciamento de áudio baseado no estado do jogo
         if (event.data.state === 'playing') {
           startBackgroundMusic();
-          playStartRef.current = Date.now();
+          // Gera UM playId por partida e mantém em sessionStorage até finalizar
+          if (!playIdRef.current) {
+            let pid = '';
+            try { pid = sessionStorage.getItem(PLAY_ID_KEY) || ''; } catch {}
+            if (!pid) {
+              pid = uuid();
+              try { sessionStorage.setItem(PLAY_ID_KEY, pid); } catch {}
+            }
+            playIdRef.current = pid;
+            playStartRef.current = Date.now();
+          }
         } else if (event.data.state === 'finished' || event.data.state === 'start') {
           stopBackgroundMusic();
           if (event.data.state === 'finished') {
@@ -47,13 +61,17 @@ export default function JogoCesta() {
             const durationSeconds = playStartRef.current
               ? Math.max(0, Math.round((Date.now() - playStartRef.current) / 1000))
               : 0;
+            const playId = playIdRef.current || uuid();
+            // Reset para a próxima partida
             playStartRef.current = null;
-            if (wonPrize) {
-              playSound('victory-applause');
-            } else {
-              playSound('lost');
-            }
-            // Local-first: atualiza o participante atual no IndexedDB
+            playIdRef.current = null;
+            try { sessionStorage.removeItem(PLAY_ID_KEY); } catch {}
+            // Guarda contra StrictMode/duplo evento
+            if (processedRef.current.has(playId)) return;
+            processedRef.current.add(playId);
+
+            if (wonPrize) playSound('victory-applause'); else playSound('lost');
+
             const pid = getCurrentParticipantId();
             const prizeCode = wonPrize ? generatePrizeCode() : null;
             (async () => {
@@ -70,16 +88,18 @@ export default function JogoCesta() {
                   participant = await getParticipant(pid);
                 } catch {}
               }
-              // Salva uma NOVA partida no relatório offline (sempre cria nova)
+              // UPSERT por playId — nunca duplica.
               try {
-                await addMatch({
+                const existing = await getMatch(playId);
+                await upsertMatch({
+                  id: playId,
                   name: participant?.name || '',
-                  phone: participant?.phone || '',
+                  phone: normalizePhone(participant?.phone || ''),
                   participantType: participant?.participantType || '',
                   participantTypeOther: participant?.participantTypeOther || '',
                   pet,
                   score: finalScore,
-                  playedAt: new Date().toISOString(),
+                  playedAt: existing?.playedAt || new Date().toISOString(),
                   durationSeconds,
                 });
               } catch {}
@@ -91,6 +111,8 @@ export default function JogoCesta() {
         playSound(event.data.soundType);
       } else if (event.data.type === 'ROBUSTUS_CATCH_NAVIGATE_HOME') {
         clearCurrentParticipantId();
+        try { sessionStorage.removeItem(PLAY_ID_KEY); } catch {}
+        playIdRef.current = null;
         navigate('/');
       }
     };
