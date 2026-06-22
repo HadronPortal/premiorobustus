@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Download, FileText, Save, Upload, LockKeyhole, ShieldCheck } from 'lucide-react';
-import { listMatches, importMatches, type CestaMatch } from '@/lib/cestaMatches';
+import { listMatches, importMatches, dedupeExactMatches, type CestaMatch } from '@/lib/cestaMatches';
 import { hasAdminPin, setAdminPin, verifyAdminPin } from '@/lib/adminPin';
 
 const AUTH_KEY = 'robustus.admin.relatorio.ok';
