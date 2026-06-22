@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { User, Phone, CheckCircle2, ChevronRight, X, Briefcase, ChevronDown } from "lucide-react";
 import { createParticipant, type ParticipantType } from "@/lib/mobileOfflineDb";
+import { createCurrentPlayId, upsertMatch } from "@/lib/cestaMatches";
 
 interface Props {
   game: "cesta" | "memoria";
@@ -28,6 +29,7 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
   const [accepted, setAccepted] = useState(false);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const savingRef = useRef(false);
 
   const otherValid =
     participantType !== "outros" || participantTypeOther.trim().length >= 2;
@@ -41,7 +43,7 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (busy) return;
+    if (busy || savingRef.current) return;
     setError("");
     const cleanedPhone = phone.replace(/\D/g, "");
     const cleanedName = name.trim();
@@ -51,9 +53,12 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
     if (participantType === "outros" && participantTypeOther.trim().length < 2)
       return setError("Diga qual é o seu perfil.");
     if (!accepted) return setError("Aceite a participação para continuar.");
+    savingRef.current = true;
     setBusy(true);
     try {
+      const playId = createCurrentPlayId();
       const rec = await createParticipant({
+        playId,
         name: cleanedName,
         phone: cleanedPhone,
         game,
@@ -61,11 +66,24 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
         participantTypeOther:
           participantType === "outros" ? participantTypeOther.trim() : "",
       });
+      if (game === "cesta") {
+        await upsertMatch({
+          playId,
+          name: cleanedName,
+          phone: cleanedPhone,
+          participantType: participantType as ParticipantType,
+          participantTypeOther:
+            participantType === "outros" ? participantTypeOther.trim() : "",
+          status: "registered",
+          playedAt: new Date().toISOString(),
+        });
+      }
       onStart({ participantId: rec.id });
     } catch {
       setError("Não foi possível iniciar. Tente novamente.");
     } finally {
       setBusy(false);
+      savingRef.current = false;
     }
   };
 
