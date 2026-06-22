@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { User, Phone, CheckCircle2, ChevronRight, X } from "lucide-react";
-import { createParticipant } from "@/lib/mobileOfflineDb";
+import { User, Phone, CheckCircle2, ChevronRight, X, Briefcase, ChevronDown } from "lucide-react";
+import { createParticipant, type ParticipantType } from "@/lib/mobileOfflineDb";
 
 interface Props {
   game: "cesta" | "memoria";
   onStart: (data: { participantId: string }) => void;
   onClose?: () => void;
 }
+
+type ParticipantTypeOption = "" | ParticipantType;
 
 function formatPhone(value: string) {
   const raw = value.replace(/\D/g, "").slice(0, 11);
@@ -21,13 +23,20 @@ function formatPhone(value: string) {
 export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) => {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [participantType, setParticipantType] = useState<ParticipantTypeOption>("");
+  const [participantTypeOther, setParticipantTypeOther] = useState("");
   const [accepted, setAccepted] = useState(false);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
+  const otherValid =
+    participantType !== "outros" || participantTypeOther.trim().length >= 2;
+
   const valid =
     phone.replace(/\D/g, "").length >= 10 &&
     name.trim().length >= 3 &&
+    participantType !== "" &&
+    otherValid &&
     accepted;
 
   const submit = async (e: React.FormEvent) => {
@@ -36,8 +45,11 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
     setError("");
     const cleanedPhone = phone.replace(/\D/g, "");
     const cleanedName = name.trim();
-    if (cleanedPhone.length < 10) return setError("Informe um telefone válido.");
     if (cleanedName.length < 3) return setError("Informe seu nome.");
+    if (cleanedPhone.length < 10) return setError("Informe um telefone válido.");
+    if (participantType === "") return setError("Selecione seu perfil para continuar.");
+    if (participantType === "outros" && participantTypeOther.trim().length < 2)
+      return setError("Diga qual é o seu perfil.");
     if (!accepted) return setError("Aceite a participação para continuar.");
     setBusy(true);
     try {
@@ -45,6 +57,9 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
         name: cleanedName,
         phone: cleanedPhone,
         game,
+        participantType: participantType as ParticipantType,
+        participantTypeOther:
+          participantType === "outros" ? participantTypeOther.trim() : "",
       });
       onStart({ participantId: rec.id });
     } catch {
