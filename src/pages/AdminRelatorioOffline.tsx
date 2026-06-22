@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Download, FileText, Save, Upload, LockKeyhole } from 'lucide-react';
+import { ArrowLeft, Download, FileText, Save, Upload, LockKeyhole, ShieldCheck } from 'lucide-react';
 import { listMatches, importMatches, type CestaMatch } from '@/lib/cestaMatches';
+import { hasAdminPin, setAdminPin, verifyAdminPin } from '@/lib/adminPin';
 
-const ADMIN_PIN = (import.meta as any).env?.VITE_ADMIN_PIN || '2468';
 const AUTH_KEY = 'robustus.admin.relatorio.ok';
 
 function pad(n: number) { return String(n).padStart(2, '0'); }
@@ -21,7 +21,6 @@ function todayStamp() {
   return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 }
 function csvEscape(v: string) {
-  // Separador é ; — escapa aspas e remove quebras
   const s = (v ?? '').toString().replace(/\r?\n/g, ' ').replace(/"/g, '""');
   return /[";]/.test(s) ? `"${s}"` : s;
 }
@@ -44,8 +43,11 @@ export default function AdminRelatorioOffline() {
   const [authed, setAuthed] = useState<boolean>(() => {
     try { return sessionStorage.getItem(AUTH_KEY) === '1'; } catch { return false; }
   });
+  const [pinExists, setPinExists] = useState<boolean | null>(null);
   const [pin, setPin] = useState('');
+  const [pinConfirm, setPinConfirm] = useState('');
   const [pinErr, setPinErr] = useState('');
+  const [busy, setBusy] = useState(false);
   const [matches, setMatches] = useState<CestaMatch[]>([]);
   const [loading, setLoading] = useState(true);
   const [msg, setMsg] = useState<string>('');
@@ -58,6 +60,11 @@ export default function AdminRelatorioOffline() {
   };
 
   useEffect(() => { if (authed) reload(); }, [authed]);
+
+  useEffect(() => {
+    if (authed) return;
+    hasAdminPin().then(setPinExists).catch(() => setPinExists(false));
+  }, [authed]);
 
   const stats = useMemo(() => {
     const total = matches.length;
@@ -75,15 +82,37 @@ export default function AdminRelatorioOffline() {
     return { total, uniquePhones, lojista, vet, outros, cachorro, gato, avg, best, pct };
   }, [matches]);
 
-  const handlePin = (e: React.FormEvent) => {
+  const handlePin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (pin.trim() === ADMIN_PIN) {
-      try { sessionStorage.setItem(AUTH_KEY, '1'); } catch {}
-      setAuthed(true); setPinErr('');
+    setPinErr('');
+    const value = pin.trim();
+    if (pinExists === false) {
+      // Criação inicial
+      if (!/^\d{4,6}$/.test(value)) { setPinErr('Use de 4 a 6 dígitos numéricos.'); return; }
+      if (value !== pinConfirm.trim()) { setPinErr('Os PINs não conferem.'); return; }
+      setBusy(true);
+      try {
+        await setAdminPin(value);
+        try { sessionStorage.setItem(AUTH_KEY, '1'); } catch {}
+        setAuthed(true);
+      } catch (err: any) {
+        setPinErr(err?.message || 'Falha ao salvar o PIN.');
+      } finally { setBusy(false); }
     } else {
-      setPinErr('PIN incorreto.');
+      // Verificação
+      if (!value) { setPinErr('Informe o PIN.'); return; }
+      setBusy(true);
+      try {
+        const ok = await verifyAdminPin(value);
+        if (ok) {
+          try { sessionStorage.setItem(AUTH_KEY, '1'); } catch {}
+          setAuthed(true);
+        } else setPinErr('PIN incorreto.');
+      } finally { setBusy(false); }
     }
   };
+
+
 
   const exportCSV = () => {
     const header = 'data;nome;telefone;perfil;perfil_outro;personagem;pontuacao;duracao';
@@ -152,25 +181,46 @@ export default function AdminRelatorioOffline() {
   };
 
   if (!authed) {
+    const creating = pinExists === false;
+    const checking = pinExists === null;
     return (
       <main style={{ minHeight: '100dvh', display: 'grid', placeItems: 'center', background: '#0a1628', padding: 16 }}>
-        <form onSubmit={handlePin} style={{ background: 'white', padding: 24, borderRadius: 16, width: '100%', maxWidth: 360, boxShadow: '0 10px 30px rgba(0,0,0,.3)' }}>
+        <form onSubmit={handlePin} style={{ background: 'white', padding: 24, borderRadius: 16, width: '100%', maxWidth: 380, boxShadow: '0 10px 30px rgba(0,0,0,.3)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12, color: '#0047ab', fontWeight: 800 }}>
-            <LockKeyhole size={20} /> Relatório Offline
+            {creating ? <ShieldCheck size={20}/> : <LockKeyhole size={20} />}
+            {creating ? 'Definir PIN administrativo' : 'Relatório Offline'}
           </div>
-          <p style={{ fontSize: 13, color: '#475569', marginBottom: 14 }}>Informe o PIN administrativo para acessar.</p>
+          <p style={{ fontSize: 13, color: '#475569', marginBottom: 14 }}>
+            {checking && 'Verificando…'}
+            {creating && 'Este é o primeiro acesso neste dispositivo. Crie um PIN de 4 a 6 dígitos. Apenas o hash será salvo localmente — guarde-o, não é possível recuperá-lo.'}
+            {pinExists === true && 'Informe o PIN administrativo para acessar.'}
+          </p>
           <input
             type="password" inputMode="numeric" autoFocus value={pin}
-            onChange={(e) => setPin(e.target.value)} placeholder="PIN"
+            disabled={checking || busy}
+            onChange={(e) => setPin(e.target.value.replace(/\D/g, '').slice(0, 6))}
+            placeholder={creating ? 'Novo PIN (4-6 dígitos)' : 'PIN'}
             style={{ width: '100%', padding: '14px 12px', fontSize: 18, border: '2px solid #e2e8f0', borderRadius: 10, outline: 'none', letterSpacing: 4, textAlign: 'center' }}
           />
+          {creating && (
+            <input
+              type="password" inputMode="numeric" value={pinConfirm}
+              disabled={busy}
+              onChange={(e) => setPinConfirm(e.target.value.replace(/\D/g, '').slice(0, 6))}
+              placeholder="Confirmar PIN"
+              style={{ width: '100%', padding: '14px 12px', fontSize: 18, border: '2px solid #e2e8f0', borderRadius: 10, outline: 'none', letterSpacing: 4, textAlign: 'center', marginTop: 10 }}
+            />
+          )}
           {pinErr && <div style={{ color: '#dc2626', fontSize: 13, marginTop: 8 }}>{pinErr}</div>}
-          <button type="submit" style={{ marginTop: 14, width: '100%', padding: '12px 16px', background: '#0047ab', color: 'white', border: 0, borderRadius: 10, fontWeight: 800, fontSize: 15 }}>Entrar</button>
+          <button type="submit" disabled={checking || busy} style={{ marginTop: 14, width: '100%', padding: '12px 16px', background: '#0047ab', color: 'white', border: 0, borderRadius: 10, fontWeight: 800, fontSize: 15, opacity: (checking || busy) ? 0.6 : 1 }}>
+            {busy ? 'Aguarde…' : creating ? 'Criar PIN e entrar' : 'Entrar'}
+          </button>
           <button type="button" onClick={() => navigate('/')} style={{ marginTop: 8, width: '100%', padding: '10px 16px', background: 'transparent', color: '#475569', border: 0, fontSize: 13 }}>Voltar</button>
         </form>
       </main>
     );
   }
+
 
   const Stat = ({ label, value, sub }: { label: string; value: React.ReactNode; sub?: string }) => (
     <div style={{ background: 'white', padding: 16, borderRadius: 12, boxShadow: '0 1px 3px rgba(0,0,0,.08)' }}>
