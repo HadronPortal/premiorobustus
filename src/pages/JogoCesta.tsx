@@ -2,6 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Volume2, VolumeX, RotateCcw } from 'lucide-react';
 import { useAudioManager } from '../hooks/useAudioManager';
+import {
+  getCurrentParticipantId,
+  updateParticipant,
+  clearCurrentParticipantId,
+  syncAll,
+} from '@/lib/mobileOfflineDb';
+
+function generatePrizeCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let out = 'ROBUSTUS-';
+  for (let i = 0; i < 4; i++) out += chars[Math.floor(Math.random() * chars.length)];
+  return out;
+}
 
 export default function JogoCesta() {
   const navigate = useNavigate();
@@ -25,16 +38,32 @@ export default function JogoCesta() {
           stopBackgroundMusic();
           if (event.data.state === 'finished') {
             const finalScore = event.data.score || 0;
-            if (finalScore >= 200) {
+            const wonPrize = finalScore >= 200;
+            if (wonPrize) {
               playSound('victory-applause');
             } else {
               playSound('lost');
+            }
+            // Local-first: atualiza o participante atual no IndexedDB
+            const pid = getCurrentParticipantId();
+            if (pid) {
+              const prizeCode = wonPrize ? generatePrizeCode() : null;
+              updateParticipant(pid, {
+                score: finalScore,
+                attempts: 1,
+                pet: event.data.pet || '',
+                prizeCode,
+                prizeStatus: wonPrize ? 'pendente' : null,
+              })
+                .then(() => syncAll())
+                .catch(() => {});
             }
           }
         }
       } else if (event.data.type === 'ROBUSTUS_CATCH_PLAY_SOUND') {
         playSound(event.data.soundType);
       } else if (event.data.type === 'ROBUSTUS_CATCH_NAVIGATE_HOME') {
+        clearCurrentParticipantId();
         navigate('/');
       }
     };
@@ -44,7 +73,7 @@ export default function JogoCesta() {
       window.removeEventListener('message', handleMessage);
       stopBackgroundMusic();
     };
-  }, [playSound, startBackgroundMusic, stopBackgroundMusic]);
+  }, [playSound, startBackgroundMusic, stopBackgroundMusic, navigate]);
 
   useEffect(() => {
     // Sincronizar mute com o iframe quando o estado mudar
