@@ -260,13 +260,23 @@ class RobustUSCatchGame {
 
     this.canvas.addEventListener("pointerdown", (event) => {
       this.pointerActive = true;
-      this.movePlayerToPointer(event);
+      this.updateTargetFromPointer(event);
     });
     this.canvas.addEventListener("pointermove", (event) => {
-      if (this.pointerActive) this.movePlayerToPointer(event);
+      if (this.pointerActive) this.updateTargetFromPointer(event);
     });
-    window.addEventListener("pointerup", () => {
+    const releasePointer = () => {
       this.pointerActive = false;
+      // Travar target onde esta para parar o movimento imediatamente.
+      this.targetX = this.player.x;
+    };
+    window.addEventListener("pointerup", releasePointer);
+    window.addEventListener("pointercancel", releasePointer);
+    this.canvas.addEventListener("pointerleave", () => {
+      if (this.pointerActive) {
+        this.pointerActive = false;
+        this.targetX = this.player.x;
+      }
     });
 
     window.addEventListener("resize", () => {
