@@ -408,7 +408,8 @@ class RobustUSCatchGame {
       if (intersects(basket, product.bounds)) {
         this.score = clamp(this.score + product.value, 0, CONFIG.maxScore);
         if (product.value > 0) {
-          this.playSound('match');
+          // Som do mascote ao pegar a racao correta.
+          this.playSound(this.selectedSpecies === "cat" ? "meow" : "bark");
         } else {
           this.playSound('error');
         }
