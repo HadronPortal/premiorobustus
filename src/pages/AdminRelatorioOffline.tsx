@@ -305,7 +305,7 @@ export default function AdminRelatorioOffline() {
               </thead>
               <tbody>
                 {matches.map(m => (
-                  <tr key={m.id} style={{ borderTop: '1px solid #f1f5f9' }}>
+                  <tr key={m.playId} style={{ borderTop: '1px solid #f1f5f9' }}>
                     <td style={td}>{fmtDateBR(m.playedAt)}</td>
                     <td style={td}>{m.name || '-'}</td>
                     <td style={td}>{m.phone || '-'}</td>
