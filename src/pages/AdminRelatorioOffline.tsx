@@ -71,6 +71,7 @@ export default function AdminRelatorioOffline() {
   }, [authed]);
 
   const stats = useMemo(() => {
+    // matches já vem deduplicado por playId (keyPath = id).
     const total = matches.length;
     const uniquePhones = new Set(matches.map(m => (m.phone || '').replace(/\D/g, '')).filter(Boolean)).size;
     const by = (pred: (m: CestaMatch) => boolean) => matches.filter(pred).length;
@@ -79,11 +80,16 @@ export default function AdminRelatorioOffline() {
     const outros = by(m => m.participantType === 'outros');
     const cachorro = by(m => m.pet === 'cachorro');
     const gato = by(m => m.pet === 'gato');
+    const topPet = cachorro === gato
+      ? (cachorro + gato === 0 ? '—' : 'Empate')
+      : (cachorro > gato ? 'CACHORRO' : 'GATO');
+    const petTotal = cachorro + gato;
+    const pctPet = (n: number) => petTotal ? (n*100/petTotal) : 0;
     const scores = matches.map(m => Number(m.score) || 0);
     const avg = scores.length ? scores.reduce((a,b)=>a+b,0) / scores.length : 0;
     const best = scores.length ? Math.max(...scores) : 0;
     const pct = (n: number) => total ? (n*100/total) : 0;
-    return { total, uniquePhones, lojista, vet, outros, cachorro, gato, avg, best, pct };
+    return { total, uniquePhones, lojista, vet, outros, cachorro, gato, topPet, pctPet, avg, best, pct };
   }, [matches]);
 
   const handlePin = async (e: React.FormEvent) => {
