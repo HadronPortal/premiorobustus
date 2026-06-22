@@ -2,7 +2,7 @@
 // IMPORTANTE: trocar o nome do cache a cada release para forçar atualização
 // no tablet quando ele abrir com internet.
 
-const CACHE_NAME = "robustus-tablet-offline-v2026-06-22-04";
+const CACHE_NAME = "robustus-tablet-offline-v2026-06-22-05";
 
 const ASSETS_TO_CACHE = [
   // Rotas da SPA (todas resolvem para o index.html da SPA via fallback)
@@ -29,10 +29,12 @@ const ASSETS_TO_CACHE = [
   "/robustus-catch-game/styles.css",
   "/robustus-catch-game/game.js",
   "/robustus-catch-game/robustus-logo.png",
-  "/robustus-catch-game/start-dog.png",
-  "/robustus-catch-game/start-cat.png",
-  "/robustus-catch-game/dog-basket-repaired.png",
-  "/robustus-catch-game/cat-basket-clean.png",
+  "/robustus-catch-game/robuscao-idle.webp",
+  "/robustus-catch-game/robuscao-walk-a.webp",
+  "/robustus-catch-game/robuscao-walk-b.webp",
+  "/robustus-catch-game/robuscat-idle.webp",
+  "/robustus-catch-game/robuscat-walk-a.webp",
+  "/robustus-catch-game/robuscat-walk-b.webp",
   "/robustus-catch-game/package-cao-adulto.png",
   "/robustus-catch-game/package-cao-filhote.png",
   "/robustus-catch-game/package-cao-mini.png",
