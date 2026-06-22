@@ -55,7 +55,11 @@ export default function AdminRelatorioOffline() {
 
   const reload = async () => {
     setLoading(true);
-    try { setMatches(await listMatches()); } catch {}
+    try {
+      // remove duplicatas exatas (mesma partida salva 2x) antes de listar
+      await dedupeExactMatches();
+      setMatches(await listMatches());
+    } catch {}
     setLoading(false);
   };
 
