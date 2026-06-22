@@ -13,32 +13,38 @@
       window.addEventListener("resize", setAppHeight);
       window.addEventListener("orientationchange", () => setTimeout(setAppHeight, 250));
     </script>
-    <link rel="stylesheet" href="styles.css?v=20260611-score-rules" />
+    <link rel="stylesheet" href="styles.css?v=20260622-robus-mascots" />
+    <link rel="preload" as="image" href="robuscao-idle.webp" type="image/webp" />
+    <link rel="preload" as="image" href="robuscao-walk-a.webp" type="image/webp" />
+    <link rel="preload" as="image" href="robuscao-walk-b.webp" type="image/webp" />
+    <link rel="preload" as="image" href="robuscat-idle.webp" type="image/webp" />
+    <link rel="preload" as="image" href="robuscat-walk-a.webp" type="image/webp" />
+    <link rel="preload" as="image" href="robuscat-walk-b.webp" type="image/webp" />
   </head>
   <body>
     <main class="totem-shell">
       <section id="start-screen" class="screen screen-start">
         <img class="start-logo" src="robustus-logo.png" alt="RobustUS" />
         <div class="start-heading">
-          <h1>Escolha seu pet</h1>
-          <p>Toque no cachorro ou no gato para jogar. A racao do outro pet tira pontos.</p>
+          <h1>Escolha seu mascote</h1>
+          <p>Toque no RobusCão ou no RobusCat para jogar. A ração do outro pet tira pontos.</p>
           <p class="rules-note">Normal: 5 pontos. Life Special: 10 pontos. Maximo: 250 pontos.</p>
         </div>
-        <div class="pet-selection" aria-label="Escolha com qual pet jogar">
+        <div class="pet-selection" aria-label="Escolha com qual mascote jogar">
           <button id="choose-dog-button" class="pet-option selected" type="button" data-pet="dog">
             <span class="pet-image-frame">
-              <img src="start-dog.png" alt="" />
+              <img src="robuscao-idle.webp" alt="RobusCão" />
             </span>
-            <span class="pet-name">Cachorro</span>
+            <span class="pet-name">RobusCão</span>
           </button>
           <button id="choose-cat-button" class="pet-option" type="button" data-pet="cat">
             <span class="pet-image-frame">
-              <img src="start-cat.png" alt="" />
+              <img src="robuscat-idle.webp" alt="RobusCat" />
             </span>
-            <span class="pet-name">Gato</span>
+            <span class="pet-name">RobusCat</span>
           </button>
         </div>
-        <button id="start-button" class="primary-button" type="button">Comecar com cachorro</button>
+        <button id="start-button" class="primary-button" type="button">Comecar com RobusCão</button>
       </section>
 
       <section id="game-screen" class="screen screen-game hidden">
@@ -63,6 +69,6 @@
       <p class="credit">Base tecnica adaptada de Basketcatcher, MIT License, Ankit Warbhe.</p>
     </main>
 
-    <script src="game.js?v=20260611-score-rules"></script>
+    <script src="game.js?v=20260622-robus-mascots"></script>
   </body>
 </html>

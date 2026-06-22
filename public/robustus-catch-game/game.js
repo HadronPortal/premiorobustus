@@ -12,8 +12,19 @@ const CONFIG = {
     { src: "package-gato-castrado.png", species: "cat", line: "special" },
     { src: "package-gato-adulto.png", species: "cat", line: "normal" }
   ],
-  dogHeroUrl: "dog-basket-repaired.png",
-  catHeroUrl: "cat-basket-clean.png",
+  // Mascotes oficiais RobustUS. Native facing = LEFT (cabeca para a esquerda).
+  dogPoses: {
+    idle: "robuscao-idle.webp",
+    walkA: "robuscao-walk-a.webp",
+    walkB: "robuscao-walk-b.webp"
+  },
+  catPoses: {
+    idle: "robuscat-idle.webp",
+    walkA: "robuscat-walk-a.webp",
+    walkB: "robuscat-walk-b.webp"
+  },
+  // Sprites nativos olham para a ESQUERDA. Inverter quando direcao = +1.
+  nativeFacing: -1,
   logoUrl: "robustus-logo.png"
 };
 
@@ -124,8 +135,16 @@ class RobustUSCatchGame {
       const item = typeof product === "string" ? { src: product, species: "dog", line: "normal" } : product;
       return new ProductAsset(item.src, `Produto ${index + 1}`, item.species, item.line);
     });
-    this.dogHero = new ProductAsset(CONFIG.dogHeroUrl, "Cachorro RobustUS");
-    this.catHero = new ProductAsset(CONFIG.catHeroUrl, "Gato RobustUS");
+    this.dogPoses = {
+      idle: new ProductAsset(CONFIG.dogPoses.idle, "RobusCao idle"),
+      walkA: new ProductAsset(CONFIG.dogPoses.walkA, "RobusCao walk A"),
+      walkB: new ProductAsset(CONFIG.dogPoses.walkB, "RobusCao walk B")
+    };
+    this.catPoses = {
+      idle: new ProductAsset(CONFIG.catPoses.idle, "RobusCat idle"),
+      walkA: new ProductAsset(CONFIG.catPoses.walkA, "RobusCat walk A"),
+      walkB: new ProductAsset(CONFIG.catPoses.walkB, "RobusCat walk B")
+    };
     this.logo = new ProductAsset(CONFIG.logoUrl, "Logo RobustUS");
     this.selectedSpecies = "dog";
     this.lowPowerMode =
@@ -138,6 +157,10 @@ class RobustUSCatchGame {
     this.leftHeld = false;
     this.rightHeld = false;
     this.pointerActive = false;
+    this.targetX = null;
+    this.facing = CONFIG.nativeFacing; // -1 = esquerda (nativo), +1 = direita
+    this.animTime = 0;
+    this.bounce = 0;
     this.spawnClock = 0;
     this.lastTime = 0;
     this.fx = [];
@@ -199,14 +222,19 @@ class RobustUSCatchGame {
     const catMode = this.selectedSpecies === "cat";
     this.player = {
       x: this.width / 2,
-      y: this.height - (catMode ? 520 : 420),
-      spriteWidth: catMode ? 258 : 292,
-      spriteHeight: catMode ? 438 : 369,
-      basketWidth: catMode ? 202 : 194,
-      basketHeight: catMode ? 58 : 54,
-      basketOffsetY: catMode ? 270 : 263,
+      y: this.height - (catMode ? 520 : 480),
+      spriteWidth: catMode ? 280 : 320,
+      spriteHeight: catMode ? 280 : 320,
+      basketWidth: catMode ? 210 : 220,
+      basketHeight: catMode ? 64 : 64,
+      // Offset onde a cesta sai do corpo do mascote (em relacao a player.y)
+      basketOffsetY: catMode ? 200 : 215,
       speed: catMode ? 8.1 : 8.4
     };
+    this.targetX = this.player.x;
+    this.facing = CONFIG.nativeFacing;
+    this.animTime = 0;
+    this.bounce = 0;
   }
 
   bindEvents() {
@@ -232,13 +260,23 @@ class RobustUSCatchGame {
 
     this.canvas.addEventListener("pointerdown", (event) => {
       this.pointerActive = true;
-      this.movePlayerToPointer(event);
+      this.updateTargetFromPointer(event);
     });
     this.canvas.addEventListener("pointermove", (event) => {
-      if (this.pointerActive) this.movePlayerToPointer(event);
+      if (this.pointerActive) this.updateTargetFromPointer(event);
     });
-    window.addEventListener("pointerup", () => {
+    const releasePointer = () => {
       this.pointerActive = false;
+      // Travar target onde esta para parar o movimento imediatamente.
+      this.targetX = this.player.x;
+    };
+    window.addEventListener("pointerup", releasePointer);
+    window.addEventListener("pointercancel", releasePointer);
+    this.canvas.addEventListener("pointerleave", () => {
+      if (this.pointerActive) {
+        this.pointerActive = false;
+        this.targetX = this.player.x;
+      }
     });
 
     window.addEventListener("resize", () => {
@@ -255,7 +293,7 @@ class RobustUSCatchGame {
     document.querySelectorAll(".pet-option").forEach((button) => {
       button.classList.toggle("selected", button.dataset.pet === species);
     });
-    document.getElementById("start-button").textContent = species === "cat" ? "Comecar com gato" : "Comecar com cachorro";
+    document.getElementById("start-button").textContent = species === "cat" ? "Comecar com RobusCat" : "Comecar com RobusCão";
     window.parent.postMessage({ type: "ROBUSTUS_CATCH_PET_SELECTED", pet: species === "cat" ? "gato" : "cachorro" }, "*");
     this.drawStaticPreview();
   }
@@ -285,11 +323,11 @@ class RobustUSCatchGame {
     this.drawStaticPreview();
   }
 
-  movePlayerToPointer(event) {
+  updateTargetFromPointer(event) {
     const rect = this.canvas.getBoundingClientRect();
     const ratioX = this.canvas.width / rect.width;
     const pointerX = (event.clientX - rect.left) * ratioX;
-    this.player.x = clamp(pointerX, this.player.basketWidth / 2, this.width - this.player.basketWidth / 2);
+    this.targetX = clamp(pointerX, this.player.basketWidth / 2, this.width - this.player.basketWidth / 2);
   }
 
   loop(time) {
@@ -324,12 +362,37 @@ class RobustUSCatchGame {
     this.remaining = Math.max(0, CONFIG.durationSeconds - this.elapsed);
     this.speedBoost = Math.min(4.3, this.elapsed / 8.5);
 
-    const movingLeft = this.keys.has("ArrowLeft") || this.keys.has("a") || this.keys.has("A") || this.leftHeld;
-    const movingRight = this.keys.has("ArrowRight") || this.keys.has("d") || this.keys.has("D") || this.rightHeld;
+    const movingLeftKey = this.keys.has("ArrowLeft") || this.keys.has("a") || this.keys.has("A") || this.leftHeld;
+    const movingRightKey = this.keys.has("ArrowRight") || this.keys.has("d") || this.keys.has("D") || this.rightHeld;
 
-    if (movingLeft) this.player.x -= this.player.speed * delta;
-    if (movingRight) this.player.x += this.player.speed * delta;
+    if (movingLeftKey) this.targetX = (this.targetX ?? this.player.x) - this.player.speed * delta;
+    if (movingRightKey) this.targetX = (this.targetX ?? this.player.x) + this.player.speed * delta;
+    if (this.targetX != null) {
+      this.targetX = clamp(this.targetX, this.player.basketWidth / 2, this.width - this.player.basketWidth / 2);
+    }
+
+    // Suavizacao do movimento - segue o dedo sem atraso visivel mas sem trepidacao
+    const target = this.targetX ?? this.player.x;
+    const dx = target - this.player.x;
+    const follow = Math.min(1, 0.32 * delta);
+    this.player.x += dx * follow;
+    if (Math.abs(dx) < 0.4) this.player.x = target;
     this.player.x = clamp(this.player.x, this.player.basketWidth / 2, this.width - this.player.basketWidth / 2);
+
+    // Direcao e animacao de andar
+    const speedNow = Math.abs(dx);
+    const isMoving = (this.pointerActive || movingLeftKey || movingRightKey) && speedNow > 0.6;
+    if (dx > 0.4) this.facing = 1;
+    else if (dx < -0.4) this.facing = -1;
+    if (isMoving) {
+      this.animTime += delta;
+      // Pequeno balanco vertical (passos)
+      this.bounce = Math.sin(this.animTime * 0.55) * 8;
+    } else {
+      this.animTime = 0;
+      this.bounce = 0;
+    }
+    this.isMoving = isMoving;
 
     this.spawnClock -= delta;
     if (this.spawnClock <= 0) {
@@ -398,24 +461,30 @@ class RobustUSCatchGame {
   }
 
   basketBounds() {
+    // Cesta centrada em (player.x, player.y + basketOffsetY). Reduzimos um pouco
+    // a largura para a colisao parecer alinhada com a boca da cesta.
+    const bw = this.player.basketWidth;
+    const bh = this.player.basketHeight;
     return {
-      x: this.player.x - this.player.basketWidth / 2 + 18,
-      y: this.player.y + this.player.basketOffsetY,
-      width: this.player.basketWidth - 36,
-      height: this.player.basketHeight
+      x: this.player.x - bw / 2 + 18,
+      y: this.player.y + this.player.basketOffsetY - bh / 2,
+      width: bw - 36,
+      height: bh
     };
   }
 
   drawStaticPreview() {
     this.drawEnvironment();
-    this.drawPlayer();
+    this.drawMascot();
+    this.drawBasketLayer();
     this.drawHud();
   }
 
   draw() {
     this.drawEnvironment();
-    this.drawPlayer();
+    this.drawMascot();
     this.productsFalling.forEach((product) => product.draw(this.ctx));
+    this.drawBasketLayer();
     this.drawEffects();
     this.drawHud();
   }
@@ -425,28 +494,65 @@ class RobustUSCatchGame {
     ctx.drawImage(this.backgroundCanvas, 0, 0);
   }
 
-  drawPlayer() {
+  getPoses() {
+    return this.selectedSpecies === "cat" ? this.catPoses : this.dogPoses;
+  }
+
+  drawMascot() {
     const ctx = this.ctx;
     const x = this.player.x;
-    const y = this.player.y;
+    const y = this.player.y - (this.bounce || 0);
+    const sw = this.player.spriteWidth;
+    const sh = this.player.spriteHeight;
 
+    // Sombra no chao - segue o personagem mas nao sobe com o bounce
     ctx.save();
     ctx.shadowColor = "rgba(0,0,0,0.22)";
     ctx.shadowBlur = 18;
-    ctx.fillStyle = "rgba(0,0,0,0.22)";
+    ctx.fillStyle = "rgba(0,0,0,0.28)";
     ctx.beginPath();
-    ctx.ellipse(x, y + this.player.spriteHeight - 12, this.player.spriteWidth * 0.36, 23, 0, 0, Math.PI * 2);
+    const shadowScale = 1 - Math.min(0.25, (this.bounce || 0) * 0.02);
+    ctx.ellipse(this.player.x, this.player.y + sh - 18, sw * 0.34 * shadowScale, 18 * shadowScale, 0, 0, Math.PI * 2);
     ctx.fill();
-    ctx.shadowBlur = 0;
+    ctx.restore();
 
-    const hero = this.selectedSpecies === "cat" ? this.catHero : this.dogHero;
-    if (hero.ready) {
-      drawBasketDogPhoto(ctx, hero.image, x, y, this.player.spriteWidth, this.player.spriteHeight);
+    const poses = this.getPoses();
+    let img;
+    if (this.isMoving) {
+      // Alterna walkA / walkB a cada ~180ms (~10 frames)
+      const frame = Math.floor(this.animTime / 10) % 2;
+      img = frame === 0 ? poses.walkA.image : poses.walkB.image;
+      if (!(img && img.complete && img.naturalWidth > 0)) img = poses.idle.image;
     } else {
-      drawDog(ctx, x, y + 70, 150);
-      drawBasket(ctx, x, y + this.player.basketOffsetY + 26, this.player.basketWidth, this.player.basketHeight);
-      drawDogPaws(ctx, x, y + this.player.basketOffsetY - 16, this.player.basketWidth);
+      img = poses.idle.image;
     }
+
+    if (!(img && img.complete && img.naturalWidth > 0)) return;
+
+    ctx.save();
+    ctx.shadowColor = "rgba(0,0,0,0.24)";
+    ctx.shadowBlur = 16;
+    ctx.shadowOffsetY = 10;
+    // Sprites nativos olham para a ESQUERDA (CONFIG.nativeFacing = -1).
+    // Quando facing = +1 (direita), invertemos horizontalmente.
+    const flip = this.facing !== CONFIG.nativeFacing ? -1 : 1;
+    ctx.translate(x, y);
+    ctx.scale(flip, 1);
+    drawContainedImage(ctx, img, -sw / 2, 0, sw, sh);
+    ctx.restore();
+  }
+
+  drawBasketLayer() {
+    // Cesta como camada separada SEMPRE na frente das racoes.
+    const ctx = this.ctx;
+    const x = this.player.x;
+    const y = this.player.y - (this.bounce || 0);
+    const basketCenterY = y + this.player.basketOffsetY;
+    ctx.save();
+    ctx.shadowColor = "rgba(0,0,0,0.32)";
+    ctx.shadowBlur = 12;
+    ctx.shadowOffsetY = 8;
+    drawBasket(ctx, x, basketCenterY, this.player.basketWidth, this.player.basketHeight);
     ctx.restore();
   }
 
