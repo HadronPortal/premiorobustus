@@ -71,7 +71,7 @@ export default function AdminRelatorioOffline() {
   }, [authed]);
 
   const stats = useMemo(() => {
-    // matches já vem deduplicado por playId (keyPath = id).
+    // matches já vem deduplicado por playId (keyPath = playId).
     const total = matches.length;
     const uniquePhones = new Set(matches.map(m => (m.phone || '').replace(/\D/g, '')).filter(Boolean)).size;
     const by = (pred: (m: CestaMatch) => boolean) => matches.filter(pred).length;
