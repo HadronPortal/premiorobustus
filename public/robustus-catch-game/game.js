@@ -462,22 +462,21 @@ class RobustUSCatchGame {
   }
 
   basketBounds() {
-    // Cesta centrada em (player.x, player.y + basketOffsetY). Reduzimos um pouco
-    // a largura para a colisao parecer alinhada com a boca da cesta.
-    const bw = this.player.basketWidth;
-    const bh = this.player.basketHeight;
+    // Area de colisao invisivel sobre o corpo do mascote (sem cesta visual).
+    // Cobre a regiao central/superior do sprite para receber as racoes.
+    const sw = this.player.spriteWidth;
+    const sh = this.player.spriteHeight;
     return {
-      x: this.player.x - bw / 2 + 18,
-      y: this.player.y + this.player.basketOffsetY - bh / 2,
-      width: bw - 36,
-      height: bh
+      x: this.player.x - sw * 0.32,
+      y: this.player.y + sh * 0.12,
+      width: sw * 0.64,
+      height: sh * 0.55
     };
   }
 
   drawStaticPreview() {
     this.drawEnvironment();
     this.drawMascot();
-    this.drawBasketLayer();
     this.drawHud();
   }
 
@@ -485,7 +484,6 @@ class RobustUSCatchGame {
     this.drawEnvironment();
     this.drawMascot();
     this.productsFalling.forEach((product) => product.draw(this.ctx));
-    this.drawBasketLayer();
     this.drawEffects();
     this.drawHud();
   }
