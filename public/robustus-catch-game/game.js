@@ -222,14 +222,19 @@ class RobustUSCatchGame {
     const catMode = this.selectedSpecies === "cat";
     this.player = {
       x: this.width / 2,
-      y: this.height - (catMode ? 520 : 420),
-      spriteWidth: catMode ? 258 : 292,
-      spriteHeight: catMode ? 438 : 369,
-      basketWidth: catMode ? 202 : 194,
-      basketHeight: catMode ? 58 : 54,
-      basketOffsetY: catMode ? 270 : 263,
+      y: this.height - (catMode ? 520 : 480),
+      spriteWidth: catMode ? 280 : 320,
+      spriteHeight: catMode ? 280 : 320,
+      basketWidth: catMode ? 210 : 220,
+      basketHeight: catMode ? 64 : 64,
+      // Offset onde a cesta sai do corpo do mascote (em relacao a player.y)
+      basketOffsetY: catMode ? 200 : 215,
       speed: catMode ? 8.1 : 8.4
     };
+    this.targetX = this.player.x;
+    this.facing = CONFIG.nativeFacing;
+    this.animTime = 0;
+    this.bounce = 0;
   }
 
   bindEvents() {
