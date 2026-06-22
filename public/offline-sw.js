@@ -2,7 +2,7 @@
 // IMPORTANTE: trocar o nome do cache a cada release para forçar atualização
 // no tablet quando ele abrir com internet.
 
-const CACHE_NAME = "robustus-tablet-offline-v2026-06-22-06";
+const CACHE_NAME = "robustus-tablet-offline-v2026-06-22-07";
 
 const ASSETS_TO_CACHE = [
   // Rotas da SPA (todas resolvem para o index.html da SPA via fallback)
