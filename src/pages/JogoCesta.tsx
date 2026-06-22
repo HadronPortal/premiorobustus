@@ -9,7 +9,9 @@ import {
   clearCurrentParticipantId,
   syncAll,
 } from '@/lib/mobileOfflineDb';
-import { addMatch } from '@/lib/cestaMatches';
+import { upsertMatch, getMatch, normalizePhone, uuid } from '@/lib/cestaMatches';
+
+const PLAY_ID_KEY = 'robustus.cesta.currentPlayId';
 
 function generatePrizeCode() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
