@@ -8,10 +8,14 @@ const DB_NAME = "robustus.mobile.v1";
 const DB_VERSION = 1;
 const STORE = "participants";
 
+export type ParticipantType = "lojista" | "veterinario" | "outros";
+
 export interface MobileParticipant {
   id: string; // UUID local
   name: string;
   phone: string;
+  participantType: ParticipantType;
+  participantTypeOther: string; // texto quando participantType === 'outros'
   playedAt: string;
   attempts: number;
   pet: string;
@@ -73,12 +77,19 @@ export async function createParticipant(input: {
   name: string;
   phone: string;
   game: "cesta" | "memoria";
+  participantType: ParticipantType;
+  participantTypeOther?: string;
   pet?: string;
 }): Promise<MobileParticipant> {
   const rec: MobileParticipant = {
     id: uuid(),
     name: input.name.trim(),
     phone: input.phone.replace(/\D/g, ""),
+    participantType: input.participantType,
+    participantTypeOther:
+      input.participantType === "outros"
+        ? (input.participantTypeOther || "").trim()
+        : "",
     playedAt: new Date().toISOString(),
     attempts: 0,
     pet: input.pet || "",
@@ -154,6 +165,8 @@ async function trySyncNew(rec: MobileParticipant) {
         p_phone: rec.phone,
         p_event_slug: "robustus-expo-2026",
         p_name: rec.name,
+        p_participant_type: rec.participantType,
+        p_participant_type_other: rec.participantTypeOther || null,
       }
     );
     if (error || !data?.ok) return;
@@ -182,6 +195,8 @@ export async function syncAll(): Promise<void> {
             p_phone: rec.phone,
             p_event_slug: "robustus-expo-2026",
             p_name: rec.name,
+            p_participant_type: rec.participantType,
+            p_participant_type_other: rec.participantTypeOther || null,
           }
         );
         if (error || !data?.ok) continue;
