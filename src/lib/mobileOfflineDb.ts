@@ -77,12 +77,19 @@ export async function createParticipant(input: {
   name: string;
   phone: string;
   game: "cesta" | "memoria";
+  participantType: ParticipantType;
+  participantTypeOther?: string;
   pet?: string;
 }): Promise<MobileParticipant> {
   const rec: MobileParticipant = {
     id: uuid(),
     name: input.name.trim(),
     phone: input.phone.replace(/\D/g, ""),
+    participantType: input.participantType,
+    participantTypeOther:
+      input.participantType === "outros"
+        ? (input.participantTypeOther || "").trim()
+        : "",
     playedAt: new Date().toISOString(),
     attempts: 0,
     pet: input.pet || "",
