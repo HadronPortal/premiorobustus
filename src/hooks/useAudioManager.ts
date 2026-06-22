@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-type SoundType = 'flip' | 'match' | 'error' | 'victory' | 'lost' | 'applause' | 'crowd-ahh' | 'victory-applause';
+type SoundType = 'flip' | 'match' | 'error' | 'victory' | 'lost' | 'applause' | 'crowd-ahh' | 'victory-applause' | 'bark' | 'meow';
 
 export const useAudioManager = () => {
   const [isMuted, setIsMuted] = useState(() => {
