@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-type SoundType = 'flip' | 'match' | 'error' | 'victory' | 'lost' | 'applause' | 'crowd-ahh' | 'victory-applause';
+type SoundType = 'flip' | 'match' | 'error' | 'victory' | 'lost' | 'applause' | 'crowd-ahh' | 'victory-applause' | 'bark' | 'meow';
 
 export const useAudioManager = () => {
   const [isMuted, setIsMuted] = useState(() => {
@@ -10,6 +10,7 @@ export const useAudioManager = () => {
 
   const audioCtx = useRef<AudioContext | null>(null);
   const bgMusic = useRef<HTMLAudioElement | null>(null);
+  const mascotSounds = useRef<Record<string, HTMLAudioElement>>({});
 
   useEffect(() => {
     localStorage.setItem('robustus-sound-muted', JSON.stringify(isMuted));
@@ -87,6 +88,31 @@ export const useAudioManager = () => {
       case 'lost':
         playOscillator([110, 82, 55], 0.6, 'square', 0.3);
         break;
+      case 'bark':
+      case 'meow': {
+        // Sons especificos dos mascotes: arquivo local com reuso e currentTime=0,
+        // para tocar imediatamente na colisao sem acumular.
+        const file = type === 'bark' ? '/sounds/dog-bark.mp3' : '/sounds/cat-meow.mp3';
+        let el = mascotSounds.current[type];
+        if (!el) {
+          el = new Audio(file);
+          el.preload = 'auto';
+          el.volume = 0.6;
+          mascotSounds.current[type] = el;
+        }
+        el.muted = isMuted;
+        try { el.pause(); el.currentTime = 0; } catch {}
+        el.play().catch(() => {
+          // Fallback simples se o arquivo nao existir
+          playOscillator(
+            type === 'bark' ? [320, 220, 180] : [780, 920, 760],
+            0.22,
+            type === 'bark' ? 'square' : 'sine',
+            0.35
+          );
+        });
+        return;
+      }
     }
 
     // Tentar tocar arquivo se existir (fallback para Web Audio)

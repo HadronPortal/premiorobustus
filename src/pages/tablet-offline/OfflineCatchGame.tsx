@@ -40,6 +40,24 @@ export default function OfflineCatchGame() {
         else if (kind === "error") playSound("error");
         else if (kind === "flip") playSound("flip");
         else if (kind === "click") playSound("click");
+        else if (kind === "bark" || kind === "meow") {
+          if (!muted) {
+            const file = kind === "bark" ? "/sounds/dog-bark.mp3" : "/sounds/cat-meow.mp3";
+            const key = `__mascot_${kind}`;
+            let el: HTMLAudioElement | undefined = (window as any)[key];
+            if (!el) {
+              el = new Audio(file);
+              el.preload = "auto";
+              el.volume = 0.6;
+              (window as any)[key] = el;
+            }
+            try { el.pause(); el.currentTime = 0; } catch {}
+            el.play().catch(() => {
+              // fallback simples
+              playSound(kind === "bark" ? "error" : "match");
+            });
+          }
+        }
         return;
       }
       if (d.type === "ROBUSTUS_CATCH_UPDATE") {
