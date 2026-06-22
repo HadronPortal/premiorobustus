@@ -135,8 +135,16 @@ class RobustUSCatchGame {
       const item = typeof product === "string" ? { src: product, species: "dog", line: "normal" } : product;
       return new ProductAsset(item.src, `Produto ${index + 1}`, item.species, item.line);
     });
-    this.dogHero = new ProductAsset(CONFIG.dogHeroUrl, "Cachorro RobustUS");
-    this.catHero = new ProductAsset(CONFIG.catHeroUrl, "Gato RobustUS");
+    this.dogPoses = {
+      idle: new ProductAsset(CONFIG.dogPoses.idle, "RobusCao idle"),
+      walkA: new ProductAsset(CONFIG.dogPoses.walkA, "RobusCao walk A"),
+      walkB: new ProductAsset(CONFIG.dogPoses.walkB, "RobusCao walk B")
+    };
+    this.catPoses = {
+      idle: new ProductAsset(CONFIG.catPoses.idle, "RobusCat idle"),
+      walkA: new ProductAsset(CONFIG.catPoses.walkA, "RobusCat walk A"),
+      walkB: new ProductAsset(CONFIG.catPoses.walkB, "RobusCat walk B")
+    };
     this.logo = new ProductAsset(CONFIG.logoUrl, "Logo RobustUS");
     this.selectedSpecies = "dog";
     this.lowPowerMode =
@@ -149,6 +157,10 @@ class RobustUSCatchGame {
     this.leftHeld = false;
     this.rightHeld = false;
     this.pointerActive = false;
+    this.targetX = null;
+    this.facing = CONFIG.nativeFacing; // -1 = esquerda (nativo), +1 = direita
+    this.animTime = 0;
+    this.bounce = 0;
     this.spawnClock = 0;
     this.lastTime = 0;
     this.fx = [];
