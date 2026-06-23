@@ -17,7 +17,8 @@ function formatPhone(value: string) {
 export default function OfflineRegister() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
-  const game = (params.get("game") as OfflineGame) || "memoria";
+  const game: OfflineGame = "cesta";
+  void params;
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -39,8 +40,7 @@ export default function OfflineRegister() {
       PARTICIPANT_DRAFT_KEY,
       JSON.stringify({ name: name.trim(), phone: cleanedPhone, game })
     );
-    if (game === "cesta") navigate("/tablet-offline/jogo-cesta");
-    else navigate("/tablet-offline/jogo-memoria");
+    navigate("/tablet-offline/jogo-cesta");
   };
 
   return (
@@ -52,7 +52,7 @@ export default function OfflineRegister() {
             Cadastro
           </h2>
           <p className="text-center font-bold text-slate-500 uppercase tracking-widest mb-6">
-            {game === "cesta" ? "Jogo da Cesta" : "Jogo da Memória"} · Offline
+            Jogo da Cesta · Offline
           </p>
           <form onSubmit={submit} className="flex flex-col gap-5">
             <input

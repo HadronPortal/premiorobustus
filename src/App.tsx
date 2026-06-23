@@ -29,7 +29,7 @@ import { useAudioManager } from './hooks/useAudioManager';
 import { BannerCarousel } from './components/BannerCarousel';
 import OfflineHome from './pages/tablet-offline/OfflineHome';
 import OfflineRegister from './pages/tablet-offline/OfflineRegister';
-import OfflineMemoryGame from './pages/tablet-offline/OfflineMemoryGame';
+
 import OfflineCatchGame from './pages/tablet-offline/OfflineCatchGame';
 import OfflineValidatePrize from './pages/tablet-offline/OfflineValidatePrize';
 import AdminRelatorioOffline from './pages/AdminRelatorioOffline';
@@ -465,24 +465,7 @@ const GameContent = () => {
               </motion.h1>
             </div>
 
-            <div className="w-full max-w-[min(94vw,800px)] grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-10 mt-1 place-items-center">
-              {/* Card Jogo da Memória — oculto no mobile */}
-              <motion.button 
-                whileHover={{ scale: 1.05, y: -8 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => {
-                  setSelectedGame('memoria');
-                  setGameState('AUTH');
-                }}
-                className="hidden sm:flex group relative flex-col overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-all border-4 border-transparent hover:border-[#f7941d] aspect-[3/4] w-full"
-              >
-                <div className="flex-1 w-full overflow-hidden relative bg-white">
-                  <div className="absolute inset-0 flex flex-col items-center justify-center p-0">
-                     <img src="/memoria-final.png" alt="Jogo da Memória" className="w-full h-full object-contain" />
-                  </div>
-                </div>
-              </motion.button>
-
+            <div className="w-full max-w-[min(94vw,420px)] grid grid-cols-1 gap-4 mt-1 place-items-center">
               {/* Card Jogo da Cesta */}
               <motion.button 
                 whileHover={{ scale: 1.05, y: -8 }}
@@ -768,7 +751,7 @@ const App = () => {
           {/* Versão TABLET OFFLINE — totalmente isolada, sem Supabase */}
           <Route path="/tablet-offline" element={<OfflineHome />} />
           <Route path="/tablet-offline/cadastro" element={<OfflineRegister />} />
-          <Route path="/tablet-offline/jogo-memoria" element={<OfflineMemoryGame />} />
+          
           <Route path="/tablet-offline/jogo-cesta" element={<OfflineCatchGame />} />
           <Route path="/tablet-offline/validar-brinde" element={<OfflineValidatePrize />} />
         </Routes>
