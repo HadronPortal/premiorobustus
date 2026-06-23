@@ -202,8 +202,8 @@ export default function PrizeRouletteOverlay({
         const start = index * SLICE_ANGLE;
         const end = start + SLICE_ANGLE;
         const mid = start + SLICE_ANGLE / 2;
-        const label = pointAt(mid, 70);
-        const icon = pointAt(mid, 39);
+        const label = pointAt(mid, 82);
+        const icon = pointAt(mid, 50);
         return {
           prize,
           index,
@@ -330,17 +330,17 @@ export default function PrizeRouletteOverlay({
                         <circle
                           cx={segment.icon.x}
                           cy={segment.icon.y}
-                          r="17"
+                          r="13"
                           fill="rgba(255,255,255,.9)"
                           stroke="rgba(255,148,24,.8)"
-                          strokeWidth="1.8"
+                          strokeWidth="1.4"
                         />
                         <text
                           x={segment.icon.x}
                           y={segment.icon.y + 1}
                           textAnchor="middle"
                           dominantBaseline="middle"
-                          fontSize="15"
+                          fontSize="12"
                         >
                           {segment.meta.icon}
                         </text>
@@ -382,9 +382,9 @@ export default function PrizeRouletteOverlay({
                     );
                   })}
 
-                  <circle r="29" fill="#ffffff" stroke="#ff9418" strokeWidth="6" />
-                  <circle r="20" fill="#f4f8ff" stroke="#d7e6fb" strokeWidth="2" />
-                  <text x="0" y="1" textAnchor="middle" dominantBaseline="middle" fontSize="21">
+                  <circle r="21" fill="#ffffff" stroke="#ff9418" strokeWidth="5" />
+                  <circle r="14" fill="#f4f8ff" stroke="#d7e6fb" strokeWidth="1.6" />
+                  <text x="0" y="1" textAnchor="middle" dominantBaseline="middle" fontSize="15">
                     🎁
                   </text>
                 </svg>
@@ -650,7 +650,7 @@ export default function PrizeRouletteOverlay({
         }
 
         .roulette-stage-spinning .roulette-title-block {
-          margin-bottom: clamp(22px, 3.5vh, 34px);
+          margin-bottom: clamp(34px, 5vh, 48px);
         }
 
         .roulette-stage-result {
@@ -681,7 +681,8 @@ export default function PrizeRouletteOverlay({
         }
 
         .roulette-stage-spinning .wheel-frame {
-          width: min(74vw, 340px, 34vh);
+          width: min(70vw, 318px, 31vh);
+          margin-top: clamp(10px, 1.8vh, 18px);
         }
 
         .roulette-stage-result .wheel-frame {
@@ -951,12 +952,13 @@ export default function PrizeRouletteOverlay({
           }
 
           .roulette-stage-spinning .wheel-frame {
-            width: min(66vw, 270px, 29vh);
+            width: min(62vw, 252px, 27vh);
+            margin-top: 12px;
           }
 
           .roulette-stage-score .roulette-title-block,
           .roulette-stage-spinning .roulette-title-block {
-            margin-bottom: 18px;
+            margin-bottom: 24px;
           }
 
           .roulette-ready-card {
