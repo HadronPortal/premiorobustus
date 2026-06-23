@@ -124,7 +124,7 @@ export default function AdminRelatorioOffline() {
   };
 
   const exportCSV = () => {
-    const header = 'nome;telefone;perfil;perfil_outro;tentativas;ultimo_personagem;ultima_pontuacao;melhor_pontuacao;ultima_partida';
+    const header = 'nome;telefone;perfil;perfil_outro;tentativas;ultimo_personagem;ultima_pontuacao;melhor_pontuacao;ultimo_brinde;codigo_brinde;ultima_partida';
     const lines = rows.map(r => [
       r.name,
       fmtPhoneBR(r.phoneNormalized),
@@ -134,6 +134,8 @@ export default function AdminRelatorioOffline() {
       r.lastPet || '',
       String(r.lastScore),
       String(r.bestScore),
+      r.lastPrize || '',
+      r.lastPrizeCode || '',
       fmtDateBR(r.lastPlayedAt),
     ].map(csvEscape).join(';'));
     const csv = '\uFEFF' + [header, ...lines].join('\r\n');
@@ -160,7 +162,7 @@ export default function AdminRelatorioOffline() {
     lines.push('PARTICIPANTES:');
     rows.forEach((r, i) => {
       lines.push(
-        `${i+1}. ${r.name || '(sem nome)'} — ${fmtPhoneBR(r.phoneNormalized) || '(sem telefone)'} — ${profileLabel(r.participantType) || '-'}${r.participantTypeOther ? ` (${r.participantTypeOther})` : ''} — Tentativas: ${r.attempts} — Último: ${r.lastPet || '-'} ${r.lastScore} pts — Melhor: ${r.bestScore} pts — ${fmtDateBR(r.lastPlayedAt)}`
+        `${i+1}. ${r.name || '(sem nome)'} — ${fmtPhoneBR(r.phoneNormalized) || '(sem telefone)'} — ${profileLabel(r.participantType) || '-'}${r.participantTypeOther ? ` (${r.participantTypeOther})` : ''} — Tentativas: ${r.attempts} — Último: ${r.lastPet || '-'} ${r.lastScore} pts — Melhor: ${r.bestScore} pts — Brinde: ${r.lastPrize || '-'}${r.lastPrizeCode ? ` (${r.lastPrizeCode})` : ''} — ${fmtDateBR(r.lastPlayedAt)}`
       );
     });
     download(`robustus-participantes-${todayStamp()}.txt`, lines.join('\r\n'), 'text/plain');
@@ -310,6 +312,7 @@ export default function AdminRelatorioOffline() {
                   <th style={th}>Último personagem</th>
                   <th style={th}>Última pontuação</th>
                   <th style={th}>Melhor</th>
+                  <th style={th}>Brinde</th>
                   <th style={th}>Última partida</th>
                 </tr>
               </thead>
@@ -323,11 +326,15 @@ export default function AdminRelatorioOffline() {
                     <td style={td}>{petLabel(r.lastPet)}</td>
                     <td style={td}>{r.lastScore}</td>
                     <td style={td}>{r.bestScore}</td>
+                    <td style={td}>
+                      {r.lastPrize || '-'}
+                      {r.lastPrizeCode && <div style={{ fontSize: 11, color: '#64748b' }}>{r.lastPrizeCode}</div>}
+                    </td>
                     <td style={td}>{fmtDateBR(r.lastPlayedAt)}</td>
                   </tr>
                 ))}
                 {!loading && rows.length === 0 && (
-                  <tr><td style={{ ...td, textAlign: 'center', color: '#94a3b8', padding: 24 }} colSpan={8}>Nenhum participante registrado ainda.</td></tr>
+                  <tr><td style={{ ...td, textAlign: 'center', color: '#94a3b8', padding: 24 }} colSpan={9}>Nenhum participante registrado ainda.</td></tr>
                 )}
               </tbody>
             </table>

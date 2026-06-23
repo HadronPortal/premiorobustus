@@ -9,7 +9,8 @@ import {
   clearCurrentParticipantId,
   syncAll,
 } from '@/lib/mobileOfflineDb';
-import { upsertPlay, normalizePhone, getCurrentPlayId, clearCurrentPlayId } from '@/lib/cestaMatches';
+import { upsertPlay, normalizePhone, getCurrentPlayId, clearCurrentPlayId, getPlay } from '@/lib/cestaMatches';
+import PrizeRouletteOverlay, { PRIZES, type Prize } from '@/components/PrizeRouletteOverlay';
 
 function generatePrizeCode() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -18,16 +19,46 @@ function generatePrizeCode() {
   return out;
 }
 
+const ROULETTE_KEY = 'robustus_cesta_roulette';
+
+type RouletteSession = {
+  playId: string;
+  score: number;
+  prizeCode: string | null;
+  prize: Prize | null;
+};
+
+function readRoulette(): RouletteSession | null {
+  try {
+    const raw = sessionStorage.getItem(ROULETTE_KEY);
+    return raw ? (JSON.parse(raw) as RouletteSession) : null;
+  } catch { return null; }
+}
+function writeRoulette(s: RouletteSession | null) {
+  try {
+    if (s) sessionStorage.setItem(ROULETTE_KEY, JSON.stringify(s));
+    else sessionStorage.removeItem(ROULETTE_KEY);
+  } catch {}
+}
+
 export default function JogoCesta() {
   const navigate = useNavigate();
   const { playSound, isMuted: audioMuted, toggleMute: toggleAudioMute } = useAudioManager();
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(30);
   const [gameState, setGameState] = useState('start');
+  const [roulette, setRoulette] = useState<RouletteSession | null>(() => readRoulette());
   const playStartRef = React.useRef<number | null>(null);
   const playIdRef = React.useRef<string | null>(null);
   const savingRef = React.useRef(false);
   const iframeRef = React.useRef<HTMLIFrameElement>(null);
+
+  // Se ao carregar já existe uma sessão de roleta persistida, garantimos que ela apareça
+  // mesmo se o jogo estiver no estado "start" do iframe.
+  useEffect(() => {
+    const s = readRoulette();
+    if (s) setRoulette(s);
+  }, []);
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
@@ -90,6 +121,22 @@ export default function JogoCesta() {
                   prizeCode,
                 });
               } catch {}
+              // Verifica se essa partida já tem brinde (caso o usuário recarregue)
+              let existingPrize: Prize | null = null;
+              try {
+                const existing = await getPlay(playId);
+                if (existing?.prize && (PRIZES as readonly string[]).includes(existing.prize)) {
+                  existingPrize = existing.prize as Prize;
+                }
+              } catch {}
+              const session: RouletteSession = {
+                playId,
+                score: finalScore,
+                prizeCode,
+                prize: existingPrize,
+              };
+              writeRoulette(session);
+              setRoulette(session);
               try { await syncAll(); } catch {}
               savingRef.current = false;
             })();
@@ -240,6 +287,31 @@ export default function JogoCesta() {
           );
         }}
       />
+
+      {roulette && (
+        <PrizeRouletteOverlay
+          score={roulette.score}
+          prizeCode={roulette.prizeCode}
+          existingPrize={roulette.prize}
+          onPrizeDecided={async (prize) => {
+            const updated = { ...roulette, prize };
+            writeRoulette(updated);
+            setRoulette(updated);
+            try {
+              await upsertPlay({ playId: roulette.playId, prize, status: 'finished' } as any);
+              await syncAll();
+            } catch {}
+          }}
+          onPlayAgain={() => {
+            writeRoulette(null);
+            setRoulette(null);
+            clearCurrentParticipantId();
+            clearCurrentPlayId();
+            playIdRef.current = null;
+            navigate('/');
+          }}
+        />
+      )}
     </main>
   );
 }

@@ -41,6 +41,7 @@ export interface Play {
   durationSeconds: number;
   status: PlayStatus;
   prizeCode: string | null;
+  prize: string | null;
 }
 
 /** Tipo agregado para o relatório (uma linha por participante). */
@@ -54,6 +55,8 @@ export interface ParticipantReport {
   lastScore: number;
   lastPlayedAt: string;
   bestScore: number;
+  lastPrize: string | null;
+  lastPrizeCode: string | null;
 }
 
 // ----------------- utils -----------------
@@ -188,6 +191,7 @@ function openDB(): Promise<IDBDatabase> {
             durationSeconds: Number(v.durationSeconds) || 0,
             status: (v.status === "playing" || v.status === "finished") ? v.status : "registered",
             prizeCode: v.prizeCode || null,
+            prize: v.prize || null,
           };
           playsStore.put(play);
         }
@@ -243,7 +247,7 @@ export async function listParticipants(): Promise<Participant[]> {
 }
 
 // ----------------- plays -----------------
-async function getPlay(playId: string): Promise<Play | undefined> {
+export async function getPlay(playId: string): Promise<Play | undefined> {
   const db = await openDB();
   return new Promise((resolve, reject) => {
     const t = db.transaction(PLAYS, "readonly");
@@ -267,6 +271,7 @@ export async function upsertPlay(input: Partial<Play> & { playId: string; phone?
     durationSeconds: Number(input.durationSeconds ?? existing?.durationSeconds ?? 0) || 0,
     status: (input.status ?? existing?.status ?? "registered") as PlayStatus,
     prizeCode: input.prizeCode ?? existing?.prizeCode ?? null,
+    prize: (input as any).prize ?? (existing as any)?.prize ?? null,
   };
   await new Promise<void>((resolve, reject) => {
     const t = db.transaction(PLAYS, "readwrite");
@@ -360,6 +365,8 @@ export async function getReport(): Promise<ParticipantReport[]> {
       lastScore: last?.score || 0,
       lastPlayedAt: last?.playedAt || part?.updatedAt || "",
       bestScore: arr.reduce((m, p) => Math.max(m, p.score || 0), 0),
+      lastPrize: last?.prize ?? null,
+      lastPrizeCode: last?.prizeCode ?? null,
     });
   }
   out.sort((a, b) => (a.lastPlayedAt < b.lastPlayedAt ? 1 : -1));
@@ -478,6 +485,7 @@ export async function importBackup(raw: any): Promise<{ participants: number; pl
         durationSeconds: Number(v.durationSeconds) || 0,
         status: (v.status === "playing" || v.status === "finished") ? v.status : "registered",
         prizeCode: v.prizeCode || null,
+        prize: v.prize || null,
       } as Play);
       plCount++;
     }
