@@ -83,10 +83,10 @@ export default function OfflineHome() {
             whileHover={{ scale: 1.05, y: -8 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate("/tablet-offline/cadastro?game=cesta")}
-            className="group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-all border-4 border-transparent hover:border-[#0047ab] aspect-[3/4]"
+            className="group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-all border-4 border-transparent hover:border-[#0047ab] aspect-[31/40]"
           >
             <div className="flex-1 w-full overflow-hidden relative bg-white">
-              <div className="absolute inset-0 flex items-center justify-center">
+              <div className="absolute inset-0 flex items-center justify-center p-1">
                 <img
                   src="/cesta-final.png"
                   alt="Jogo da Cesta"

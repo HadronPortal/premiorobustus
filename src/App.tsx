@@ -35,7 +35,6 @@ import OfflineValidatePrize from './pages/tablet-offline/OfflineValidatePrize';
 import AdminRelatorioOffline from './pages/AdminRelatorioOffline';
 import { OFFLINE_MEMORY_PRODUCTS } from './pages/tablet-offline/offlineAssets';
 import { MobileOfflineAuth } from './components/auth/MobileOfflineAuth';
-import { OfflineStatusBadge } from './components/OfflineStatusBadge';
 import { installMobileSync, setCurrentParticipantId } from './lib/mobileOfflineDb';
 
 const isMobileView = () =>
@@ -492,10 +491,10 @@ const GameContent = () => {
                   setSelectedGame('cesta');
                   setGameState('AUTH');
                 }}
-                className="group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-all border-4 border-transparent hover:border-[#0047ab] aspect-[3/4] w-full max-w-[min(80vw,360px)] sm:max-w-none"
+                className="group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-all border-4 border-transparent hover:border-[#0047ab] aspect-[31/40] w-full max-w-[min(74vw,340px)] sm:max-w-none"
               >
                 <div className="flex-1 w-full overflow-hidden relative bg-white">
-                  <div className="absolute inset-0 flex flex-col items-center justify-center p-0">
+                  <div className="absolute inset-0 flex flex-col items-center justify-center p-1">
                      <img src="/cesta-final.png" alt="Jogo da Cesta" className="w-full h-full object-contain" />
                   </div>
                 </div>
@@ -759,7 +758,6 @@ const App = () => {
   }, []);
   return (
     <BrowserRouter>
-        <OfflineStatusBadge />
         <Routes>
           <Route path="/" element={<GameContent />} />
           <Route path="/validar-brinde" element={<AdminScreen />} />

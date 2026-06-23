@@ -642,11 +642,15 @@ export default function PrizeRouletteOverlay({
 
         .roulette-stage-score {
           justify-content: flex-start;
-          gap: clamp(9px, 1.35vh, 13px);
+          gap: clamp(12px, 1.9vh, 18px);
         }
 
         .roulette-stage-score .roulette-title-block {
-          margin-bottom: clamp(12px, 2vh, 18px);
+          margin-bottom: clamp(18px, 3vh, 28px);
+        }
+
+        .roulette-stage-spinning .roulette-title-block {
+          margin-bottom: clamp(22px, 3.5vh, 34px);
         }
 
         .roulette-stage-result {
@@ -673,7 +677,11 @@ export default function PrizeRouletteOverlay({
         }
 
         .roulette-stage-score .wheel-frame {
-          width: min(74vw, 342px, 35vh);
+          width: min(70vw, 320px, 32vh);
+        }
+
+        .roulette-stage-spinning .wheel-frame {
+          width: min(74vw, 340px, 34vh);
         }
 
         .roulette-stage-result .wheel-frame {
@@ -756,6 +764,7 @@ export default function PrizeRouletteOverlay({
           display: grid;
           justify-items: center;
           gap: 12px;
+          margin-top: clamp(16px, 3vh, 28px);
           padding: 11px;
           border: 1px solid rgba(255,255,255,.28);
           border-radius: 24px;
@@ -934,11 +943,24 @@ export default function PrizeRouletteOverlay({
           }
 
           .wheel-frame {
-            width: min(72vw, 300px, 34vh);
+            width: min(70vw, 292px, 32vh);
           }
 
           .roulette-stage-score .wheel-frame {
+            width: min(62vw, 252px, 27vh);
+          }
+
+          .roulette-stage-spinning .wheel-frame {
             width: min(66vw, 270px, 29vh);
+          }
+
+          .roulette-stage-score .roulette-title-block,
+          .roulette-stage-spinning .roulette-title-block {
+            margin-bottom: 18px;
+          }
+
+          .roulette-ready-card {
+            margin-top: 18px;
           }
 
           .roulette-stage-result .wheel-frame {
