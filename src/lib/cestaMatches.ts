@@ -485,6 +485,7 @@ export async function importBackup(raw: any): Promise<{ participants: number; pl
         durationSeconds: Number(v.durationSeconds) || 0,
         status: (v.status === "playing" || v.status === "finished") ? v.status : "registered",
         prizeCode: v.prizeCode || null,
+        prize: v.prize || null,
       } as Play);
       plCount++;
     }
