@@ -41,6 +41,7 @@ export interface Play {
   durationSeconds: number;
   status: PlayStatus;
   prizeCode: string | null;
+  prize: string | null;
 }
 
 /** Tipo agregado para o relatório (uma linha por participante). */
@@ -54,6 +55,8 @@ export interface ParticipantReport {
   lastScore: number;
   lastPlayedAt: string;
   bestScore: number;
+  lastPrize: string | null;
+  lastPrizeCode: string | null;
 }
 
 // ----------------- utils -----------------
