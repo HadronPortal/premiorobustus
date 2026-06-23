@@ -85,8 +85,8 @@ export default function JogoCesta() {
             const durationSeconds = playStartRef.current
               ? Math.max(0, Math.round((Date.now() - playStartRef.current) / 1000))
               : 0;
-            const playId = playIdRef.current || getCurrentPlayId() || '';
-            if (!playId || savingRef.current) return;
+            const playId = playIdRef.current || getCurrentPlayId() || `local-${Date.now()}`;
+            if (savingRef.current) return;
             savingRef.current = true;
             // Reset para a próxima partida
             playStartRef.current = null;
