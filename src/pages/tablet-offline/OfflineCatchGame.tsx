@@ -3,8 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { Timer, Volume2, VolumeX, RotateCcw } from "lucide-react";
 import { OFFLINE_LOGO, OFFLINE_CATCH_GAME_URL } from "./offlineAssets";
 import { readOfflineDraft, clearOfflineDraft } from "./OfflineRegister";
-import { saveOfflinePlay, OfflineParticipant } from "@/lib/offlineStorage";
+import { saveOfflinePlay, setOfflinePrize, OfflineParticipant } from "@/lib/offlineStorage";
 import { useOfflineAudio } from "./useOfflineAudio";
+import PrizeRouletteOverlay, { type Prize } from "@/components/PrizeRouletteOverlay";
 
 export default function OfflineCatchGame() {
   const navigate = useNavigate();
