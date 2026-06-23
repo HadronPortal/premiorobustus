@@ -124,7 +124,7 @@ export default function AdminRelatorioOffline() {
   };
 
   const exportCSV = () => {
-    const header = 'nome;telefone;perfil;perfil_outro;tentativas;ultimo_personagem;ultima_pontuacao;melhor_pontuacao;ultima_partida';
+    const header = 'nome;telefone;perfil;perfil_outro;tentativas;ultimo_personagem;ultima_pontuacao;melhor_pontuacao;ultimo_brinde;codigo_brinde;ultima_partida';
     const lines = rows.map(r => [
       r.name,
       fmtPhoneBR(r.phoneNormalized),
@@ -134,6 +134,8 @@ export default function AdminRelatorioOffline() {
       r.lastPet || '',
       String(r.lastScore),
       String(r.bestScore),
+      r.lastPrize || '',
+      r.lastPrizeCode || '',
       fmtDateBR(r.lastPlayedAt),
     ].map(csvEscape).join(';'));
     const csv = '\uFEFF' + [header, ...lines].join('\r\n');
