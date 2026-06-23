@@ -271,6 +271,7 @@ export async function upsertPlay(input: Partial<Play> & { playId: string; phone?
     durationSeconds: Number(input.durationSeconds ?? existing?.durationSeconds ?? 0) || 0,
     status: (input.status ?? existing?.status ?? "registered") as PlayStatus,
     prizeCode: input.prizeCode ?? existing?.prizeCode ?? null,
+    prize: (input as any).prize ?? (existing as any)?.prize ?? null,
   };
   await new Promise<void>((resolve, reject) => {
     const t = db.transaction(PLAYS, "readwrite");
