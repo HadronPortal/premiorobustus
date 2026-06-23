@@ -9,7 +9,8 @@ import {
   clearCurrentParticipantId,
   syncAll,
 } from '@/lib/mobileOfflineDb';
-import { upsertPlay, normalizePhone, getCurrentPlayId, clearCurrentPlayId } from '@/lib/cestaMatches';
+import { upsertPlay, normalizePhone, getCurrentPlayId, clearCurrentPlayId, getPlay } from '@/lib/cestaMatches';
+import PrizeRouletteOverlay, { PRIZES, type Prize } from '@/components/PrizeRouletteOverlay';
 
 function generatePrizeCode() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
