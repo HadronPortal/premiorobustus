@@ -70,8 +70,8 @@ const PRIZE_META: Record<Prize, PrizeMeta> = {
 
 const WHEEL_RADIUS = 112;
 const SLICE_ANGLE = 360 / PRIZES.length;
-const FULL_SPINS = 7;
-const SPIN_MS = 5200;
+const FULL_SPINS = 6;
+const SPIN_MS = 4200;
 
 let rouletteAudioCtx: AudioContext | null = null;
 
@@ -464,11 +464,11 @@ export default function PrizeRouletteOverlay({
         }
 
         .roulette-logo-card {
-          width: min(46vw, 180px);
-          min-height: 56px;
+          width: min(44vw, 172px);
+          min-height: 52px;
           display: grid;
           place-items: center;
-          padding: 9px 18px;
+          padding: 8px 17px;
           border: 3px solid #ff9418;
           border-radius: 20px;
           background: rgba(255,255,255,.97);
@@ -609,13 +609,18 @@ export default function PrizeRouletteOverlay({
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          gap: clamp(10px, 1.7vh, 18px);
+          gap: clamp(8px, 1.35vh, 14px);
           padding-bottom: 4px;
+        }
+
+        .roulette-stage-score {
+          justify-content: flex-start;
+          gap: clamp(8px, 1.2vh, 12px);
         }
 
         .roulette-stage-result {
           justify-content: flex-start;
-          gap: clamp(8px, 1.05vh, 12px);
+          gap: clamp(7px, .9vh, 10px);
         }
 
         .roulette-stage-result .roulette-title-block {
@@ -623,12 +628,12 @@ export default function PrizeRouletteOverlay({
         }
 
         .roulette-title-block h2 {
-          font-size: clamp(26px, 7vw, 42px);
+          font-size: clamp(25px, 6.4vw, 40px);
         }
 
         .wheel-frame {
           position: relative;
-          width: min(86vw, 410px, 45vh);
+          width: min(82vw, 390px, 41vh);
           aspect-ratio: 1;
           display: grid;
           place-items: center;
@@ -636,8 +641,12 @@ export default function PrizeRouletteOverlay({
           filter: drop-shadow(0 24px 28px rgba(0, 21, 68, .48));
         }
 
+        .roulette-stage-score .wheel-frame {
+          width: min(78vw, 365px, 38vh);
+        }
+
         .roulette-stage-result .wheel-frame {
-          width: min(82vw, 360px, 39vh);
+          width: min(74vw, 330px, 33vh);
           margin-top: clamp(8px, 1.2vh, 14px);
           filter: drop-shadow(0 18px 22px rgba(0, 21, 68, .42));
         }
@@ -649,7 +658,7 @@ export default function PrizeRouletteOverlay({
         }
 
         .roulette-stage-result .prize-result-card {
-          margin-top: clamp(6px, 1vh, 10px);
+          margin-top: clamp(18px, 2.4vh, 26px);
         }
 
         .wheel-frame::before {
@@ -712,11 +721,11 @@ export default function PrizeRouletteOverlay({
         }
 
         .roulette-ready-card {
-          width: min(88vw, 380px);
+          width: min(84vw, 360px);
           display: grid;
           justify-items: center;
           gap: 12px;
-          padding: 13px;
+          padding: 11px;
           border: 1px solid rgba(255,255,255,.28);
           border-radius: 24px;
           background: rgba(0, 31, 85, .24);
@@ -734,7 +743,7 @@ export default function PrizeRouletteOverlay({
 
         .roulette-ready-card .roulette-primary-button {
           width: 100%;
-          min-height: 62px;
+          min-height: 56px;
           box-shadow: 0 8px 0 #b85d00, 0 16px 28px rgba(0,0,0,.28);
         }
 
@@ -767,11 +776,11 @@ export default function PrizeRouletteOverlay({
         }
 
         .prize-result-card {
-          width: min(90vw, 400px);
+          width: min(90vw, 382px);
           display: grid;
           justify-items: center;
-          gap: 10px;
-          padding: clamp(18px, 3vh, 24px);
+          gap: 8px;
+          padding: clamp(16px, 2.5vh, 22px);
           border-top: 8px solid #ff9418;
           border-radius: 28px;
           background:
@@ -786,7 +795,7 @@ export default function PrizeRouletteOverlay({
           place-items: center;
           width: 62px;
           height: 62px;
-          margin-top: -36px;
+          margin-top: -34px;
           border: 5px solid #fff;
           border-radius: 50%;
           background: linear-gradient(180deg, #ffbd55 0%, #ff8d0d 100%);
@@ -847,13 +856,13 @@ export default function PrizeRouletteOverlay({
         }
 
         .roulette-secondary-button {
-          width: 100%;
-          min-height: 56px;
+          width: min(92%, 310px);
+          min-height: 48px;
           margin-top: 4px;
-          border-radius: 18px;
+          border-radius: 16px;
           background: linear-gradient(180deg, #075fd3 0%, #003b8f 100%);
-          box-shadow: 0 7px 0 #00245d, 0 16px 24px rgba(0,31,85,.24);
-          font-size: 17px;
+          box-shadow: 0 6px 0 #00245d, 0 14px 20px rgba(0,31,85,.22);
+          font-size: 15px;
         }
 
         @keyframes prizePulse {
@@ -874,8 +883,8 @@ export default function PrizeRouletteOverlay({
           }
 
           .roulette-logo-card {
-            width: min(38vw, 142px);
-            min-height: 45px;
+            width: min(36vw, 136px);
+            min-height: 42px;
             padding: 7px 14px;
             border-radius: 16px;
           }
@@ -886,15 +895,19 @@ export default function PrizeRouletteOverlay({
           }
 
           .roulette-primary-button {
-            min-height: 58px;
+            min-height: 52px;
           }
 
           .wheel-frame {
-            width: min(76vw, 320px, 38vh);
+            width: min(72vw, 300px, 34vh);
+          }
+
+          .roulette-stage-score .wheel-frame {
+            width: min(70vw, 292px, 32vh);
           }
 
           .roulette-stage-result .wheel-frame {
-            width: min(74vw, 300px, 34vh);
+            width: min(66vw, 270px, 29vh);
             margin-top: 8px;
           }
 
@@ -903,7 +916,7 @@ export default function PrizeRouletteOverlay({
           }
 
           .prize-result-card {
-            padding: 16px;
+            padding: 14px;
             border-radius: 23px;
           }
         }
