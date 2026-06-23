@@ -247,7 +247,7 @@ export async function listParticipants(): Promise<Participant[]> {
 }
 
 // ----------------- plays -----------------
-async function getPlay(playId: string): Promise<Play | undefined> {
+export async function getPlay(playId: string): Promise<Play | undefined> {
   const db = await openDB();
   return new Promise((resolve, reject) => {
     const t = db.transaction(PLAYS, "readonly");
