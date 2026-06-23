@@ -70,8 +70,8 @@ const PRIZE_META: Record<Prize, PrizeMeta> = {
 
 const WHEEL_RADIUS = 112;
 const SLICE_ANGLE = 360 / PRIZES.length;
-const FULL_SPINS = 6;
-const SPIN_MS = 4200;
+const FULL_SPINS = 8;
+const SPIN_MS = 6500;
 
 let rouletteAudioCtx: AudioContext | null = null;
 
@@ -159,6 +159,30 @@ function playRouletteSpinSound() {
   }
 }
 
+function playPrizeRevealSound() {
+  if (isSoundMuted() || typeof Audio === "undefined") return;
+  const audio = new Audio("/audio/fanfare.mp3");
+  audio.volume = 0.72;
+  audio.play().catch(() => {
+    const ctx = getRouletteAudioContext();
+    if (!ctx) return;
+    [523.25, 659.25, 783.99].forEach((frequency, index) => {
+      const at = ctx.currentTime + index * 0.12;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(frequency, at);
+      gain.gain.setValueAtTime(0.0001, at);
+      gain.gain.exponentialRampToValueAtTime(0.14, at + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, at + 0.22);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(at);
+      osc.stop(at + 0.26);
+    });
+  });
+}
+
 export default function PrizeRouletteOverlay({
   score,
   prizeCode,
@@ -207,14 +231,15 @@ export default function PrizeRouletteOverlay({
     setPhase("spinning");
     playRouletteSpinSound();
 
-    window.setTimeout(async () => {
+    window.setTimeout(() => {
       setChosen(prize);
+      setPhase("result");
+      playPrizeRevealSound();
       try {
-        await onPrizeDecided(prize);
+        void Promise.resolve(onPrizeDecided(prize)).catch(() => {});
       } catch {
         // Mantem a experiencia do usuario mesmo se a persistencia falhar.
       }
-      setPhase("result");
     }, SPIN_MS);
   };
 
@@ -249,121 +274,123 @@ export default function PrizeRouletteOverlay({
             </h2>
           </div>
 
-          <div className="wheel-frame">
-            <div className="wheel-pointer">
-              <span />
-            </div>
+          {phase !== "result" && (
+            <div className="wheel-frame">
+              <div className="wheel-pointer">
+                <span />
+              </div>
 
-            <div
-              className="wheel-disc"
-              style={{
-                transform: `rotate(${rotation}deg)`,
-                transition:
-                  phase === "spinning"
-                    ? `transform ${SPIN_MS}ms cubic-bezier(.08,.78,.15,1)`
-                    : "none",
-              }}
-            >
-              <svg className="wheel-svg" viewBox="-126 -126 252 252" role="img">
-                <defs>
-                  {segments.map((segment) => (
-                    <linearGradient
-                      id={`slice-gradient-${segment.index}`}
-                      key={segment.prize}
-                      x1="-90"
-                      y1="-90"
-                      x2="90"
-                      y2="90"
-                      gradientUnits="userSpaceOnUse"
-                    >
-                      <stop offset="0%" stopColor={segment.meta.colorA} />
-                      <stop offset="100%" stopColor={segment.meta.colorB} />
-                    </linearGradient>
-                  ))}
-                  <filter id="slice-shadow" x="-20%" y="-20%" width="140%" height="140%">
-                    <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#00245d" floodOpacity="0.22" />
-                  </filter>
-                </defs>
-
-                <circle r="122" fill="#ffffff" />
-                <circle r="116" fill="#ff9418" />
-                <circle r="112" fill="#ffffff" />
-
-                {segments.map((segment) => {
-                  const hasTwoLines = segment.meta.lines.length === 2;
-                  const labelY = hasTwoLines ? segment.label.y - 5 : segment.label.y + 2;
-                  return (
-                    <g key={segment.prize}>
-                      <path
-                        d={segment.path}
-                        fill={`url(#slice-gradient-${segment.index})`}
-                        stroke="#ffffff"
-                        strokeWidth="2.4"
-                        filter="url(#slice-shadow)"
-                      />
-                      <circle
-                        cx={segment.icon.x}
-                        cy={segment.icon.y}
-                        r="17"
-                        fill="rgba(255,255,255,.9)"
-                        stroke="rgba(255,148,24,.8)"
-                        strokeWidth="1.8"
-                      />
-                      <text
-                        x={segment.icon.x}
-                        y={segment.icon.y + 1}
-                        textAnchor="middle"
-                        dominantBaseline="middle"
-                        fontSize="15"
+              <div
+                className="wheel-disc"
+                style={{
+                  transform: `rotate(${rotation}deg)`,
+                  transition:
+                    phase === "spinning"
+                      ? `transform ${SPIN_MS}ms cubic-bezier(.08,.78,.15,1)`
+                      : "none",
+                }}
+              >
+                <svg className="wheel-svg" viewBox="-126 -126 252 252" role="img">
+                  <defs>
+                    {segments.map((segment) => (
+                      <linearGradient
+                        id={`slice-gradient-${segment.index}`}
+                        key={segment.prize}
+                        x1="-90"
+                        y1="-90"
+                        x2="90"
+                        y2="90"
+                        gradientUnits="userSpaceOnUse"
                       >
-                        {segment.meta.icon}
-                      </text>
-                      <text
-                        x={segment.label.x}
-                        y={labelY}
-                        textAnchor="middle"
-                        dominantBaseline="middle"
-                        fontFamily="Arial, Helvetica, sans-serif"
-                        fontWeight="900"
-                        fontSize={hasTwoLines ? "8.4" : "10.6"}
-                        letterSpacing=".35"
-                        fill="#ffffff"
-                        stroke="rgba(0,31,85,.72)"
-                        strokeWidth="2.2"
-                        paintOrder="stroke"
-                      >
-                        {segment.meta.lines[0].toUpperCase()}
-                      </text>
-                      {hasTwoLines && (
+                        <stop offset="0%" stopColor={segment.meta.colorA} />
+                        <stop offset="100%" stopColor={segment.meta.colorB} />
+                      </linearGradient>
+                    ))}
+                    <filter id="slice-shadow" x="-20%" y="-20%" width="140%" height="140%">
+                      <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#00245d" floodOpacity="0.22" />
+                    </filter>
+                  </defs>
+
+                  <circle r="122" fill="#ffffff" />
+                  <circle r="116" fill="#ff9418" />
+                  <circle r="112" fill="#ffffff" />
+
+                  {segments.map((segment) => {
+                    const hasTwoLines = segment.meta.lines.length === 2;
+                    const labelY = hasTwoLines ? segment.label.y - 5 : segment.label.y + 2;
+                    return (
+                      <g key={segment.prize}>
+                        <path
+                          d={segment.path}
+                          fill={`url(#slice-gradient-${segment.index})`}
+                          stroke="#ffffff"
+                          strokeWidth="2.4"
+                          filter="url(#slice-shadow)"
+                        />
+                        <circle
+                          cx={segment.icon.x}
+                          cy={segment.icon.y}
+                          r="17"
+                          fill="rgba(255,255,255,.9)"
+                          stroke="rgba(255,148,24,.8)"
+                          strokeWidth="1.8"
+                        />
+                        <text
+                          x={segment.icon.x}
+                          y={segment.icon.y + 1}
+                          textAnchor="middle"
+                          dominantBaseline="middle"
+                          fontSize="15"
+                        >
+                          {segment.meta.icon}
+                        </text>
                         <text
                           x={segment.label.x}
-                          y={segment.label.y + 7}
+                          y={labelY}
                           textAnchor="middle"
                           dominantBaseline="middle"
                           fontFamily="Arial, Helvetica, sans-serif"
                           fontWeight="900"
-                          fontSize="7.4"
-                          letterSpacing=".2"
+                          fontSize={hasTwoLines ? "8.4" : "10.6"}
+                          letterSpacing=".35"
                           fill="#ffffff"
                           stroke="rgba(0,31,85,.72)"
-                          strokeWidth="1.9"
+                          strokeWidth="2.2"
                           paintOrder="stroke"
                         >
-                          {segment.meta.lines[1].toUpperCase()}
+                          {segment.meta.lines[0].toUpperCase()}
                         </text>
-                      )}
-                    </g>
-                  );
-                })}
+                        {hasTwoLines && (
+                          <text
+                            x={segment.label.x}
+                            y={segment.label.y + 7}
+                            textAnchor="middle"
+                            dominantBaseline="middle"
+                            fontFamily="Arial, Helvetica, sans-serif"
+                            fontWeight="900"
+                            fontSize="7.4"
+                            letterSpacing=".2"
+                            fill="#ffffff"
+                            stroke="rgba(0,31,85,.72)"
+                            strokeWidth="1.9"
+                            paintOrder="stroke"
+                          >
+                            {segment.meta.lines[1].toUpperCase()}
+                          </text>
+                        )}
+                      </g>
+                    );
+                  })}
 
-                <circle r="29" fill="#ffffff" stroke="#ff9418" strokeWidth="6" />
-                <circle r="20" fill="#f4f8ff" stroke="#d7e6fb" strokeWidth="2" />
-                <text x="0" y="1" textAnchor="middle" dominantBaseline="middle" fontSize="21">
-                  🎁
-                </text>
-              </svg>
+                  <circle r="29" fill="#ffffff" stroke="#ff9418" strokeWidth="6" />
+                  <circle r="20" fill="#f4f8ff" stroke="#d7e6fb" strokeWidth="2" />
+                  <text x="0" y="1" textAnchor="middle" dominantBaseline="middle" fontSize="21">
+                    🎁
+                  </text>
+                </svg>
+              </div>
             </div>
-          </div>
+          )}
 
           {phase === "score" && (
             <div className="roulette-ready-card">
@@ -615,12 +642,16 @@ export default function PrizeRouletteOverlay({
 
         .roulette-stage-score {
           justify-content: flex-start;
-          gap: clamp(8px, 1.2vh, 12px);
+          gap: clamp(9px, 1.35vh, 13px);
+        }
+
+        .roulette-stage-score .roulette-title-block {
+          margin-bottom: clamp(12px, 2vh, 18px);
         }
 
         .roulette-stage-result {
-          justify-content: flex-start;
-          gap: clamp(7px, .9vh, 10px);
+          justify-content: center;
+          gap: clamp(14px, 2vh, 20px);
         }
 
         .roulette-stage-result .roulette-title-block {
@@ -642,7 +673,7 @@ export default function PrizeRouletteOverlay({
         }
 
         .roulette-stage-score .wheel-frame {
-          width: min(78vw, 365px, 38vh);
+          width: min(74vw, 342px, 35vh);
         }
 
         .roulette-stage-result .wheel-frame {
@@ -721,7 +752,7 @@ export default function PrizeRouletteOverlay({
         }
 
         .roulette-ready-card {
-          width: min(84vw, 360px);
+          width: min(82vw, 348px);
           display: grid;
           justify-items: center;
           gap: 12px;
@@ -788,6 +819,10 @@ export default function PrizeRouletteOverlay({
           color: #0047ab;
           box-shadow: 0 22px 48px rgba(0,22,70,.42), inset 0 0 0 2px rgba(255,255,255,.8);
           animation: prizeCardIn 420ms cubic-bezier(.2,.9,.3,1.18) both;
+        }
+
+        .roulette-stage-result .prize-result-card {
+          margin-top: 0;
         }
 
         .prize-result-icon {
@@ -903,7 +938,7 @@ export default function PrizeRouletteOverlay({
           }
 
           .roulette-stage-score .wheel-frame {
-            width: min(70vw, 292px, 32vh);
+            width: min(66vw, 270px, 29vh);
           }
 
           .roulette-stage-result .wheel-frame {
