@@ -287,6 +287,31 @@ export default function JogoCesta() {
           );
         }}
       />
+
+      {roulette && (
+        <PrizeRouletteOverlay
+          score={roulette.score}
+          prizeCode={roulette.prizeCode}
+          existingPrize={roulette.prize}
+          onPrizeDecided={async (prize) => {
+            const updated = { ...roulette, prize };
+            writeRoulette(updated);
+            setRoulette(updated);
+            try {
+              await upsertPlay({ playId: roulette.playId, prize, status: 'finished' } as any);
+              await syncAll();
+            } catch {}
+          }}
+          onPlayAgain={() => {
+            writeRoulette(null);
+            setRoulette(null);
+            clearCurrentParticipantId();
+            clearCurrentPlayId();
+            playIdRef.current = null;
+            navigate('/');
+          }}
+        />
+      )}
     </main>
   );
 }
