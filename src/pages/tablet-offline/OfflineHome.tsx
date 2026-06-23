@@ -60,30 +60,13 @@ export default function OfflineHome() {
           DESAFIO <span className="text-[#f7941d]">RobustUS</span>
         </motion.h1>
 
-        {/* Cards dos jogos */}
-        <div className="w-full max-w-[min(94vw,900px)] grid grid-cols-2 gap-4 sm:gap-10 mt-1">
-          <motion.button
-            whileHover={{ scale: 1.05, y: -8 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => navigate("/tablet-offline/cadastro?game=memoria")}
-            className="group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-all border-4 border-transparent hover:border-[#f7941d] aspect-[3/4]"
-          >
-            <div className="flex-1 w-full overflow-hidden relative bg-white">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <img
-                  src="/memoria-final.png"
-                  alt="Jogo da Memória"
-                  className="w-full h-full object-contain"
-                />
-              </div>
-            </div>
-          </motion.button>
-
+        {/* Card do jogo */}
+        <div className="w-full max-w-[min(94vw,520px)] grid grid-cols-1 gap-4 sm:gap-10 mt-1 place-items-center">
           <motion.button
             whileHover={{ scale: 1.05, y: -8 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate("/tablet-offline/cadastro?game=cesta")}
-            className="group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-all border-4 border-transparent hover:border-[#0047ab] aspect-[31/40]"
+            className="group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-all border-4 border-transparent hover:border-[#0047ab] aspect-[31/40] w-full max-w-[min(74vw,360px)]"
           >
             <div className="flex-1 w-full overflow-hidden relative bg-white">
               <div className="absolute inset-0 flex items-center justify-center p-1">
