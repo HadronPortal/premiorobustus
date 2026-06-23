@@ -365,6 +365,8 @@ export async function getReport(): Promise<ParticipantReport[]> {
       lastScore: last?.score || 0,
       lastPlayedAt: last?.playedAt || part?.updatedAt || "",
       bestScore: arr.reduce((m, p) => Math.max(m, p.score || 0), 0),
+      lastPrize: last?.prize ?? null,
+      lastPrizeCode: last?.prizeCode ?? null,
     });
   }
   out.sort((a, b) => (a.lastPlayedAt < b.lastPlayedAt ? 1 : -1));
