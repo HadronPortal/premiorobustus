@@ -173,27 +173,23 @@ export default function PrizeRouletteOverlay({
         <img src={LOGO_URL} alt="RobustUS" />
       </div>
 
-      {phase === "score" && (
-        <section className="score-stage">
-          <div className="score-kicker">Fim de jogo</div>
-          <h2>Confira seus pontos</h2>
-          <div className="score-medal">
-            <span>{score}</span>
-            <small>pontos</small>
-          </div>
-          <p>Agora gire a roleta e descubra qual brinde voce ganhou.</p>
-          <button className="roulette-primary-button" type="button" onClick={startSpin}>
-            <span>🎁</span>
-            Sortear brinde
-          </button>
-        </section>
-      )}
-
-      {(phase === "spinning" || phase === "result") && (
+      {(phase === "score" || phase === "spinning" || phase === "result") && (
         <section className="roulette-stage">
           <div className="roulette-title-block">
-            <span>{phase === "spinning" ? "Boa sorte" : "Premio sorteado"}</span>
-            <h2>{phase === "spinning" ? "Girando a roleta" : "Parabens!"}</h2>
+            <span>
+              {phase === "score"
+                ? `${score} pontos`
+                : phase === "spinning"
+                  ? "Boa sorte"
+                  : "Premio sorteado"}
+            </span>
+            <h2>
+              {phase === "score"
+                ? "Gire a roleta"
+                : phase === "spinning"
+                  ? "Girando a roleta"
+                  : "Parabens!"}
+            </h2>
           </div>
 
           <div className="wheel-frame">
@@ -311,6 +307,16 @@ export default function PrizeRouletteOverlay({
               </svg>
             </div>
           </div>
+
+          {phase === "score" && (
+            <div className="roulette-ready-card">
+              <p>Toque no botão para sortear seu brinde.</p>
+              <button className="roulette-primary-button" type="button" onClick={startSpin}>
+                <span>🎁</span>
+                Girar roleta
+              </button>
+            </div>
+          )}
 
           {phase === "spinning" && (
             <div className="roulette-waiting">
@@ -621,6 +627,33 @@ export default function PrizeRouletteOverlay({
           background: #fff;
           transform: translateX(-50%);
           box-shadow: inset 0 -2px 0 rgba(0,79,182,.18);
+        }
+
+        .roulette-ready-card {
+          width: min(88vw, 380px);
+          display: grid;
+          justify-items: center;
+          gap: 12px;
+          padding: 13px;
+          border: 1px solid rgba(255,255,255,.28);
+          border-radius: 24px;
+          background: rgba(0, 31, 85, .24);
+          box-shadow: inset 0 0 0 1px rgba(255,255,255,.08), 0 14px 24px rgba(0, 31, 85, .16);
+          backdrop-filter: blur(8px);
+        }
+
+        .roulette-ready-card p {
+          margin: 0;
+          color: rgba(255,255,255,.94);
+          font-size: clamp(13px, 3.3vw, 16px);
+          font-weight: 900;
+          letter-spacing: .5px;
+        }
+
+        .roulette-ready-card .roulette-primary-button {
+          width: 100%;
+          min-height: 62px;
+          box-shadow: 0 8px 0 #b85d00, 0 16px 28px rgba(0,0,0,.28);
         }
 
         .roulette-waiting {
