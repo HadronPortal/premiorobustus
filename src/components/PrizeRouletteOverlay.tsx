@@ -73,6 +73,8 @@ const SLICE_ANGLE = 360 / PRIZES.length;
 const FULL_SPINS = 7;
 const SPIN_MS = 5200;
 
+let rouletteAudioCtx: AudioContext | null = null;
+
 function normalizePrize(value: Prize | string | null): Prize | null {
   return value && (PRIZES as readonly string[]).includes(value)
     ? (value as Prize)
@@ -101,6 +103,60 @@ function slicePath(start: number, end: number) {
 function formatPrizeCode(code: string | null) {
   if (!code) return "";
   return code.replace("ROBUSTUS-", "ROBUSTUS ");
+}
+
+function isSoundMuted() {
+  try {
+    return JSON.parse(localStorage.getItem("robustus-sound-muted") || "false") === true;
+  } catch {
+    return false;
+  }
+}
+
+function getRouletteAudioContext() {
+  if (typeof window === "undefined") return null;
+  if (!rouletteAudioCtx) {
+    const AudioCtor = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioCtor) return null;
+    rouletteAudioCtx = new AudioCtor();
+  }
+  if (rouletteAudioCtx.state === "suspended") {
+    void rouletteAudioCtx.resume();
+  }
+  return rouletteAudioCtx;
+}
+
+function scheduleRouletteTick(ctx: AudioContext, at: number, progress: number, tick: number) {
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = "triangle";
+  osc.frequency.setValueAtTime(880 - progress * 360 + (tick % 2) * 42, at);
+  gain.gain.setValueAtTime(0.0001, at);
+  gain.gain.exponentialRampToValueAtTime(0.11 - progress * 0.045, at + 0.006);
+  gain.gain.exponentialRampToValueAtTime(0.0001, at + 0.045);
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start(at);
+  osc.stop(at + 0.055);
+}
+
+function playRouletteSpinSound() {
+  if (isSoundMuted()) return;
+  const ctx = getRouletteAudioContext();
+  if (!ctx) return;
+
+  const duration = SPIN_MS / 1000;
+  const startAt = ctx.currentTime + 0.02;
+  let elapsed = 0;
+  let tick = 0;
+
+  while (elapsed < duration - 0.18) {
+    const progress = elapsed / duration;
+    const interval = 0.034 + progress * progress * 0.125;
+    scheduleRouletteTick(ctx, startAt + elapsed, progress, tick);
+    elapsed += interval;
+    tick += 1;
+  }
 }
 
 export default function PrizeRouletteOverlay({
@@ -149,6 +205,7 @@ export default function PrizeRouletteOverlay({
     setChosen(null);
     setRotation(targetRotation);
     setPhase("spinning");
+    playRouletteSpinSound();
 
     window.setTimeout(async () => {
       setChosen(prize);
@@ -174,7 +231,7 @@ export default function PrizeRouletteOverlay({
       </div>
 
       {(phase === "score" || phase === "spinning" || phase === "result") && (
-        <section className="roulette-stage">
+        <section className={`roulette-stage roulette-stage-${phase}`}>
           <div className="roulette-title-block">
             <span>
               {phase === "score"
@@ -556,6 +613,15 @@ export default function PrizeRouletteOverlay({
           padding-bottom: 4px;
         }
 
+        .roulette-stage-result {
+          justify-content: flex-start;
+          gap: clamp(8px, 1.05vh, 12px);
+        }
+
+        .roulette-stage-result .roulette-title-block {
+          margin-bottom: clamp(8px, 1.2vh, 14px);
+        }
+
         .roulette-title-block h2 {
           font-size: clamp(26px, 7vw, 42px);
         }
@@ -568,6 +634,22 @@ export default function PrizeRouletteOverlay({
           place-items: center;
           border-radius: 50%;
           filter: drop-shadow(0 24px 28px rgba(0, 21, 68, .48));
+        }
+
+        .roulette-stage-result .wheel-frame {
+          width: min(82vw, 360px, 39vh);
+          margin-top: clamp(8px, 1.2vh, 14px);
+          filter: drop-shadow(0 18px 22px rgba(0, 21, 68, .42));
+        }
+
+        .roulette-stage-result .wheel-pointer {
+          top: -18px;
+          width: 52px;
+          height: 64px;
+        }
+
+        .roulette-stage-result .prize-result-card {
+          margin-top: clamp(6px, 1vh, 10px);
         }
 
         .wheel-frame::before {
@@ -809,6 +891,15 @@ export default function PrizeRouletteOverlay({
 
           .wheel-frame {
             width: min(76vw, 320px, 38vh);
+          }
+
+          .roulette-stage-result .wheel-frame {
+            width: min(74vw, 300px, 34vh);
+            margin-top: 8px;
+          }
+
+          .roulette-stage-result .roulette-title-block {
+            margin-bottom: 8px;
           }
 
           .prize-result-card {
