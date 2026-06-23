@@ -3,8 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { Timer, Volume2, VolumeX, RotateCcw } from "lucide-react";
 import { OFFLINE_LOGO, OFFLINE_CATCH_GAME_URL } from "./offlineAssets";
 import { readOfflineDraft, clearOfflineDraft } from "./OfflineRegister";
-import { saveOfflinePlay, OfflineParticipant } from "@/lib/offlineStorage";
+import { saveOfflinePlay, setOfflinePrize, OfflineParticipant } from "@/lib/offlineStorage";
 import { useOfflineAudio } from "./useOfflineAudio";
+import PrizeRouletteOverlay, { type Prize } from "@/components/PrizeRouletteOverlay";
 
 export default function OfflineCatchGame() {
   const navigate = useNavigate();
@@ -162,30 +163,16 @@ export default function OfflineCatchGame() {
       />
 
       {done && (
-        <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-50 p-8">
-          <div className="bg-white rounded-3xl border-t-[12px] border-[#f7941d] p-8 max-w-lg w-full text-center shadow-2xl">
-            <h2 className="text-4xl font-black italic uppercase text-[#0047ab]">
-              {done.won ? "Você ganhou!" : "Fim de jogo"}
-            </h2>
-            <p className="mt-3 font-bold text-slate-500 uppercase tracking-widest">
-              Pontuação: {done.score} · {done.timeSeconds}s
-            </p>
-            {done.won && done.prizeCode && (
-              <div className="mt-6 bg-[#f7941d]/10 border-2 border-[#f7941d] rounded-2xl p-4">
-                <p className="text-xs uppercase font-bold text-slate-500 tracking-widest">
-                  Código do brinde
-                </p>
-                <p className="text-3xl font-black text-[#0047ab] mt-1">{done.prizeCode}</p>
-              </div>
-            )}
-            <button
-              onClick={() => navigate("/tablet-offline")}
-              className="mt-6 w-full bg-[#0047ab] py-4 rounded-2xl text-white text-xl font-black uppercase italic tracking-widest shadow-xl"
-            >
-              Voltar ao início
-            </button>
-          </div>
-        </div>
+        <PrizeRouletteOverlay
+          score={done.score}
+          prizeCode={done.prizeCode ?? null}
+          existingPrize={done.prize ?? null}
+          onPrizeDecided={(prize: Prize) => {
+            setOfflinePrize(done.id, prize);
+            setDone({ ...done, prize });
+          }}
+          onPlayAgain={() => navigate("/tablet-offline")}
+        />
       )}
     </div>
   );
