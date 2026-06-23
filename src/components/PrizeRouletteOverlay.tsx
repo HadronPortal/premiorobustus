@@ -10,38 +10,98 @@ export const PRIZES = [
 ] as const;
 export type Prize = (typeof PRIZES)[number];
 
-/** Paleta Robustus: azul + laranja alternados, com tons. */
-const SLICE_COLORS = [
-  "#0047ab",
-  "#ff9418",
-  "#003a8a",
-  "#ffa940",
-  "#0e57c7",
-  "#ff7a1a",
-];
-
-/** Quebra de texto em até 2 linhas + ícone por prêmio. */
-const PRIZE_META: Record<Prize, { icon: string; lines: [string] | [string, string] }> = {
-  "Copo": { icon: "🥤", lines: ["Copo"] },
-  "Comedouro gato": { icon: "🐱", lines: ["Comedouro", "gato"] },
-  "Comedouro cachorro": { icon: "🐶", lines: ["Comedouro", "cachorro"] },
-  "Brinde surpresa": { icon: "🎁", lines: ["Brinde", "surpresa"] },
-  "Kit caneta": { icon: "🖊️", lines: ["Kit", "caneta"] },
-  "Amostras gato e cachorro": { icon: "📦", lines: ["Amostras", "gato e cachorro"] },
-};
-
 type Phase = "score" | "spinning" | "result";
 
 interface Props {
   score: number;
   prizeCode: string | null;
-  /** Se já houver brinde sorteado, pulamos direto para a tela final. */
   existingPrize: Prize | string | null;
   onPrizeDecided: (prize: Prize) => Promise<void> | void;
   onPlayAgain: () => void;
 }
 
-const LOGO_URL = "https://robustus.com.br/wp-content/uploads/2025/03/logo.png";
+type PrizeMeta = {
+  icon: string;
+  lines: [string] | [string, string];
+  colorA: string;
+  colorB: string;
+};
+
+const LOGO_URL = "/robustus-catch-game/robustus-logo.png";
+
+const PRIZE_META: Record<Prize, PrizeMeta> = {
+  Copo: {
+    icon: "🥤",
+    lines: ["Copo"],
+    colorA: "#0a62d9",
+    colorB: "#003f9b",
+  },
+  "Comedouro gato": {
+    icon: "🐱",
+    lines: ["Comedouro", "gato"],
+    colorA: "#ffad35",
+    colorB: "#ff8514",
+  },
+  "Comedouro cachorro": {
+    icon: "🐶",
+    lines: ["Comedouro", "cachorro"],
+    colorA: "#0754bd",
+    colorB: "#003783",
+  },
+  "Brinde surpresa": {
+    icon: "🎁",
+    lines: ["Brinde", "surpresa"],
+    colorA: "#ff9c20",
+    colorB: "#f07800",
+  },
+  "Kit caneta": {
+    icon: "✒️",
+    lines: ["Kit", "caneta"],
+    colorA: "#0f6ee6",
+    colorB: "#004cae",
+  },
+  "Amostras gato e cachorro": {
+    icon: "📦",
+    lines: ["Amostras", "pet"],
+    colorA: "#ffbd55",
+    colorB: "#ff9118",
+  },
+};
+
+const WHEEL_RADIUS = 112;
+const SLICE_ANGLE = 360 / PRIZES.length;
+const FULL_SPINS = 7;
+const SPIN_MS = 5200;
+
+function normalizePrize(value: Prize | string | null): Prize | null {
+  return value && (PRIZES as readonly string[]).includes(value)
+    ? (value as Prize)
+    : null;
+}
+
+function pointAt(degreesFromTop: number, radius: number) {
+  const radians = ((degreesFromTop - 90) * Math.PI) / 180;
+  return {
+    x: Math.cos(radians) * radius,
+    y: Math.sin(radians) * radius,
+  };
+}
+
+function slicePath(start: number, end: number) {
+  const a = pointAt(start, WHEEL_RADIUS);
+  const b = pointAt(end, WHEEL_RADIUS);
+  return [
+    "M 0 0",
+    `L ${a.x.toFixed(3)} ${a.y.toFixed(3)}`,
+    `A ${WHEEL_RADIUS} ${WHEEL_RADIUS} 0 0 1 ${b.x.toFixed(3)} ${b.y.toFixed(3)}`,
+    "Z",
+  ].join(" ");
+}
+
+function formatPrizeCode(code: string | null) {
+  if (!code) return "";
+  return code.replace("ROBUSTUS-", "ROBUSTUS ");
+}
 
 export default function PrizeRouletteOverlay({
   score,
@@ -50,549 +110,678 @@ export default function PrizeRouletteOverlay({
   onPrizeDecided,
   onPlayAgain,
 }: Props) {
-  const [phase, setPhase] = useState<Phase>(() => (existingPrize ? "result" : "score"));
-  const [chosen, setChosen] = useState<Prize | null>(
-    existingPrize && (PRIZES as readonly string[]).includes(existingPrize as string)
-      ? (existingPrize as Prize)
-      : null
-  );
+  const initialPrize = normalizePrize(existingPrize);
+  const [phase, setPhase] = useState<Phase>(() => (initialPrize ? "result" : "score"));
+  const [chosen, setChosen] = useState<Prize | null>(initialPrize);
   const [rotation, setRotation] = useState(0);
-  const decidedRef = useRef(false);
+  const decidedRef = useRef(Boolean(initialPrize));
 
-  const sliceAngle = 360 / PRIZES.length;
+  const segments = useMemo(
+    () =>
+      PRIZES.map((prize, index) => {
+        const start = index * SLICE_ANGLE;
+        const end = start + SLICE_ANGLE;
+        const mid = start + SLICE_ANGLE / 2;
+        const label = pointAt(mid, 70);
+        const icon = pointAt(mid, 39);
+        return {
+          prize,
+          index,
+          mid,
+          label,
+          icon,
+          path: slicePath(start, end),
+          meta: PRIZE_META[prize],
+        };
+      }),
+    []
+  );
 
   const startSpin = () => {
     if (phase !== "score" || decidedRef.current) return;
     decidedRef.current = true;
-    const idx = Math.floor(Math.random() * PRIZES.length);
-    const prize = PRIZES[idx];
-    // Pointer no topo (12h). Centro da fatia idx na rotação 0° está em (idx*slice + slice/2).
-    // Para alinhar o centro da fatia ao topo, giramos no sentido horário até que
-    // (idx*slice + slice/2 + rotation) ≡ 360 (mod 360). Mais 6 voltas para suspense.
-    const target = 360 * 6 + (360 - (idx * sliceAngle + sliceAngle / 2));
-    setRotation(target);
+
+    const index = Math.floor(Math.random() * PRIZES.length);
+    const prize = PRIZES[index];
+    const centerAngle = index * SLICE_ANGLE + SLICE_ANGLE / 2;
+    const targetRotation = FULL_SPINS * 360 + (360 - centerAngle);
+
+    setChosen(null);
+    setRotation(targetRotation);
     setPhase("spinning");
+
     window.setTimeout(async () => {
       setChosen(prize);
       try {
         await onPrizeDecided(prize);
-      } catch {}
+      } catch {
+        // Mantem a experiencia do usuario mesmo se a persistencia falhar.
+      }
       setPhase("result");
-    }, 5200);
+    }, SPIN_MS);
   };
 
-  const slices = useMemo(
-    () =>
-      PRIZES.map((label, i) => {
-        const start = i * sliceAngle;
-        return {
-          label,
-          start,
-          color: SLICE_COLORS[i % SLICE_COLORS.length],
-          meta: PRIZE_META[label],
-        };
-      }),
-    [sliceAngle]
-  );
+  const resultMeta = chosen ? PRIZE_META[chosen] : null;
 
   return (
-    <div
-      style={{
-        position: "absolute",
-        inset: 0,
-        zIndex: 1000,
-        background:
-          "radial-gradient(120% 70% at 50% 0%, #0a5fd8 0%, #003a8a 55%, #001f55 100%)",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "flex-start",
-        padding: "max(20px, env(safe-area-inset-top)) 18px 24px",
-        textAlign: "center",
-        color: "white",
-        overflowY: "auto",
-        fontFamily: "system-ui, -apple-system, 'Segoe UI', sans-serif",
-      }}
-    >
-      {/* Confetes decorativos sutis */}
-      <div
-        aria-hidden
-        style={{
-          position: "absolute",
-          inset: 0,
-          backgroundImage:
-            "radial-gradient(circle at 12% 18%, rgba(255,148,24,.18) 0 6px, transparent 7px), radial-gradient(circle at 88% 22%, rgba(255,255,255,.12) 0 5px, transparent 6px), radial-gradient(circle at 78% 78%, rgba(255,148,24,.14) 0 4px, transparent 5px), radial-gradient(circle at 18% 82%, rgba(255,255,255,.1) 0 5px, transparent 6px)",
-          pointerEvents: "none",
-        }}
-      />
+    <div className="prize-roulette-overlay">
+      <div className="roulette-light roulette-light-a" />
+      <div className="roulette-light roulette-light-b" />
+      <div className="roulette-pattern" />
 
-      {/* Logo */}
-      <div
-        style={{
-          background: "white",
-          padding: "10px 18px",
-          borderRadius: 16,
-          boxShadow: "0 10px 26px rgba(0,0,0,.35), inset 0 0 0 3px #ff9418",
-          marginBottom: 14,
-          zIndex: 2,
-        }}
-      >
-        <img
-          src={LOGO_URL}
-          alt="RobustUS"
-          style={{ width: 140, display: "block", height: "auto" }}
-        />
+      <div className="roulette-logo-card" aria-label="RobustUS">
+        <img src={LOGO_URL} alt="RobustUS" />
       </div>
 
       {phase === "score" && (
-        <div style={{ zIndex: 2, width: "100%", maxWidth: 460 }}>
-          <h2
-            style={{
-              fontSize: "clamp(28px, 6vw, 44px)",
-              fontWeight: 900,
-              fontStyle: "italic",
-              textTransform: "uppercase",
-              margin: "0 0 6px",
-              letterSpacing: 1,
-              textShadow: "0 3px 10px rgba(0,0,0,.4)",
-            }}
-          >
-            Fim de jogo!
-          </h2>
-          <p
-            style={{
-              opacity: 0.9,
-              fontWeight: 700,
-              textTransform: "uppercase",
-              letterSpacing: 2,
-              fontSize: 12,
-              margin: 0,
-            }}
-          >
-            Sua pontuação final
-          </p>
-          <div
-            style={{
-              margin: "16px auto 24px",
-              padding: "20px 28px",
-              background: "rgba(255,255,255,.12)",
-              border: "2px solid rgba(255,255,255,.28)",
-              borderRadius: 24,
-              backdropFilter: "blur(6px)",
-              display: "inline-block",
-            }}
-          >
-            <div
-              style={{
-                fontSize: "clamp(52px, 13vw, 96px)",
-                fontWeight: 900,
-                lineHeight: 1,
-                color: "#ffb14a",
-                textShadow: "0 4px 14px rgba(0,0,0,.35)",
-              }}
-            >
-              {score}
-            </div>
-            <div
-              style={{
-                fontSize: 13,
-                fontWeight: 800,
-                letterSpacing: 2,
-                textTransform: "uppercase",
-                marginTop: 4,
-              }}
-            >
-              pontos
-            </div>
+        <section className="score-stage">
+          <div className="score-kicker">Fim de jogo</div>
+          <h2>Confira seus pontos</h2>
+          <div className="score-medal">
+            <span>{score}</span>
+            <small>pontos</small>
           </div>
-          <button
-            onClick={startSpin}
-            style={{
-              background: "linear-gradient(180deg, #ffaa3a 0%, #ff8a00 100%)",
-              color: "white",
-              border: 0,
-              borderBottom: "6px solid #b85d00",
-              padding: "16px 32px",
-              fontSize: 20,
-              fontWeight: 900,
-              textTransform: "uppercase",
-              fontStyle: "italic",
-              letterSpacing: 1,
-              borderRadius: 20,
-              cursor: "pointer",
-              boxShadow: "0 14px 34px rgba(0,0,0,.4)",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 10,
-            }}
-          >
-            🎁 Sortear brinde
+          <p>Agora gire a roleta e descubra qual brinde voce ganhou.</p>
+          <button className="roulette-primary-button" type="button" onClick={startSpin}>
+            <span>🎁</span>
+            Sortear brinde
           </button>
-        </div>
+        </section>
       )}
 
       {(phase === "spinning" || phase === "result") && (
-        <div style={{ zIndex: 2, width: "100%", maxWidth: 460, display: "flex", flexDirection: "column", alignItems: "center" }}>
-          {phase === "spinning" && (
-            <p
-              style={{
-                fontSize: 13,
-                fontWeight: 700,
-                textTransform: "uppercase",
-                letterSpacing: 3,
-                margin: "0 0 14px",
-                opacity: 0.85,
-              }}
-            >
-              Sorteando seu brinde
-            </p>
-          )}
+        <section className="roulette-stage">
+          <div className="roulette-title-block">
+            <span>{phase === "spinning" ? "Boa sorte" : "Premio sorteado"}</span>
+            <h2>{phase === "spinning" ? "Girando a roleta" : "Parabens!"}</h2>
+          </div>
 
-          {/* WHEEL */}
-          <div
-            style={{
-              position: "relative",
-              width: "min(86vw, 360px)",
-              aspectRatio: "1 / 1",
-              filter: "drop-shadow(0 22px 30px rgba(0,0,0,.45))",
-            }}
-          >
-            {/* Pointer premium */}
-            <div
-              style={{
-                position: "absolute",
-                top: -14,
-                left: "50%",
-                transform: "translateX(-50%)",
-                zIndex: 6,
-                filter: "drop-shadow(0 6px 6px rgba(0,0,0,.45))",
-              }}
-            >
-              <svg width="46" height="58" viewBox="0 0 46 58">
-                <defs>
-                  <linearGradient id="ptr" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#ffb14a" />
-                    <stop offset="100%" stopColor="#e8730a" />
-                  </linearGradient>
-                </defs>
-                <path
-                  d="M23 56 L4 22 A19 19 0 1 1 42 22 Z"
-                  fill="url(#ptr)"
-                  stroke="#ffffff"
-                  strokeWidth="3"
-                  strokeLinejoin="round"
-                />
-                <circle cx="23" cy="20" r="5" fill="#ffffff" />
-              </svg>
+          <div className="wheel-frame">
+            <div className="wheel-pointer">
+              <span />
             </div>
 
-            {/* Anel externo branco */}
             <div
+              className="wheel-disc"
               style={{
-                position: "absolute",
-                inset: 0,
-                borderRadius: "50%",
-                background: "white",
-                boxShadow:
-                  "0 0 0 4px #ff9418, 0 0 0 10px white, 0 0 0 12px rgba(255,148,24,.55), inset 0 -10px 20px rgba(0,0,0,.15)",
-              }}
-            />
-
-            {/* Wheel rotating */}
-            <div
-              style={{
-                position: "absolute",
-                inset: 8,
-                borderRadius: "50%",
-                overflow: "hidden",
                 transform: `rotate(${rotation}deg)`,
                 transition:
                   phase === "spinning"
-                    ? "transform 5s cubic-bezier(.12,.66,.16,1)"
+                    ? `transform ${SPIN_MS}ms cubic-bezier(.08,.78,.15,1)`
                     : "none",
-                background: "white",
-                boxShadow: "inset 0 0 0 2px #ff9418",
               }}
             >
-              <svg viewBox="-1 -1 2 2" style={{ width: "100%", height: "100%", display: "block" }}>
-                {slices.map((s, i) => {
-                  const a1 = (s.start - 90) * (Math.PI / 180);
-                  const a2 = (s.start + sliceAngle - 90) * (Math.PI / 180);
-                  const x1 = Math.cos(a1);
-                  const y1 = Math.sin(a1);
-                  const x2 = Math.cos(a2);
-                  const y2 = Math.sin(a2);
-                  const largeArc = sliceAngle > 180 ? 1 : 0;
-                  const path = `M0,0 L${x1},${y1} A1,1 0 ${largeArc} 1 ${x2},${y2} Z`;
+              <svg className="wheel-svg" viewBox="-126 -126 252 252" role="img">
+                <defs>
+                  {segments.map((segment) => (
+                    <linearGradient
+                      id={`slice-gradient-${segment.index}`}
+                      key={segment.prize}
+                      x1="-90"
+                      y1="-90"
+                      x2="90"
+                      y2="90"
+                      gradientUnits="userSpaceOnUse"
+                    >
+                      <stop offset="0%" stopColor={segment.meta.colorA} />
+                      <stop offset="100%" stopColor={segment.meta.colorB} />
+                    </linearGradient>
+                  ))}
+                  <filter id="slice-shadow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#00245d" floodOpacity="0.22" />
+                  </filter>
+                </defs>
 
-                  // ângulo do centro da fatia, em graus, 0° = topo
-                  const midDeg = s.start + sliceAngle / 2;
-                  // Para o texto não ficar de cabeça pra baixo na metade inferior,
-                  // viramos 180° quando o centro está entre 90° e 270°.
-                  const flip = midDeg > 90 && midDeg < 270;
-                  // Grupo rotacionado de forma que o eixo "para fora" do centro
-                  // aponte para cima (y negativo). Texto fica horizontal nesse frame.
-                  const groupRot = midDeg + (flip ? 180 : 0);
+                <circle r="122" fill="#ffffff" />
+                <circle r="116" fill="#ff9418" />
+                <circle r="112" fill="#ffffff" />
 
-                  // posições (em coords -1..1) dentro do grupo rotacionado
-                  const iconY = flip ? 0.48 : -0.48;
-                  const line1Y = flip ? 0.7 : -0.7;
-                  const line2Y = flip ? 0.84 : -0.84;
-
-                  const hasTwoLines = s.meta.lines.length === 2;
-
+                {segments.map((segment) => {
+                  const hasTwoLines = segment.meta.lines.length === 2;
+                  const labelY = hasTwoLines ? segment.label.y - 5 : segment.label.y + 2;
                   return (
-                    <g key={i}>
+                    <g key={segment.prize}>
                       <path
-                        d={path}
-                        fill={s.color}
-                        stroke="rgba(255,255,255,.9)"
-                        strokeWidth={0.012}
+                        d={segment.path}
+                        fill={`url(#slice-gradient-${segment.index})`}
+                        stroke="#ffffff"
+                        strokeWidth="2.4"
+                        filter="url(#slice-shadow)"
                       />
-                      <g transform={`rotate(${groupRot})`}>
+                      <circle
+                        cx={segment.icon.x}
+                        cy={segment.icon.y}
+                        r="17"
+                        fill="rgba(255,255,255,.9)"
+                        stroke="rgba(255,148,24,.8)"
+                        strokeWidth="1.8"
+                      />
+                      <text
+                        x={segment.icon.x}
+                        y={segment.icon.y + 1}
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                        fontSize="15"
+                      >
+                        {segment.meta.icon}
+                      </text>
+                      <text
+                        x={segment.label.x}
+                        y={labelY}
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                        fontFamily="Arial, Helvetica, sans-serif"
+                        fontWeight="900"
+                        fontSize={hasTwoLines ? "8.4" : "10.6"}
+                        letterSpacing=".35"
+                        fill="#ffffff"
+                        stroke="rgba(0,31,85,.72)"
+                        strokeWidth="2.2"
+                        paintOrder="stroke"
+                      >
+                        {segment.meta.lines[0].toUpperCase()}
+                      </text>
+                      {hasTwoLines && (
                         <text
-                          x={0}
-                          y={iconY}
-                          fontSize={0.16}
+                          x={segment.label.x}
+                          y={segment.label.y + 7}
                           textAnchor="middle"
                           dominantBaseline="middle"
-                          style={{ fontFamily: "system-ui, sans-serif" }}
+                          fontFamily="Arial, Helvetica, sans-serif"
+                          fontWeight="900"
+                          fontSize="7.4"
+                          letterSpacing=".2"
+                          fill="#ffffff"
+                          stroke="rgba(0,31,85,.72)"
+                          strokeWidth="1.9"
+                          paintOrder="stroke"
                         >
-                          {s.meta.icon}
+                          {segment.meta.lines[1].toUpperCase()}
                         </text>
-                        {hasTwoLines ? (
-                          <>
-                            <text
-                              x={0}
-                              y={line1Y}
-                              fill="white"
-                              fontSize={0.085}
-                              fontWeight={900}
-                              textAnchor="middle"
-                              dominantBaseline="middle"
-                              style={{
-                                fontFamily: "system-ui, sans-serif",
-                                letterSpacing: "0.005px",
-                                paintOrder: "stroke",
-                                stroke: "rgba(0,0,0,.35)",
-                                strokeWidth: 0.008,
-                                textTransform: "uppercase",
-                              } as any}
-                            >
-                              {s.meta.lines[0]}
-                            </text>
-                            <text
-                              x={0}
-                              y={line2Y}
-                              fill="white"
-                              fontSize={0.07}
-                              fontWeight={800}
-                              textAnchor="middle"
-                              dominantBaseline="middle"
-                              style={{
-                                fontFamily: "system-ui, sans-serif",
-                                paintOrder: "stroke",
-                                stroke: "rgba(0,0,0,.35)",
-                                strokeWidth: 0.007,
-                              } as any}
-                            >
-                              {s.meta.lines[1]}
-                            </text>
-                          </>
-                        ) : (
-                          <text
-                            x={0}
-                            y={(line1Y + line2Y) / 2}
-                            fill="white"
-                            fontSize={0.1}
-                            fontWeight={900}
-                            textAnchor="middle"
-                            dominantBaseline="middle"
-                            style={{
-                              fontFamily: "system-ui, sans-serif",
-                              paintOrder: "stroke",
-                              stroke: "rgba(0,0,0,.35)",
-                              strokeWidth: 0.009,
-                            } as any}
-                          >
-                            {s.meta.lines[0]}
-                          </text>
-                        )}
-                      </g>
+                      )}
                     </g>
                   );
                 })}
-              </svg>
-            </div>
 
-            {/* Hub central */}
-            <div
-              style={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                width: "26%",
-                height: "26%",
-                transform: "translate(-50%, -50%)",
-                borderRadius: "50%",
-                background:
-                  "radial-gradient(circle at 35% 30%, #ffffff 0%, #f4f7fb 70%)",
-                boxShadow:
-                  "0 0 0 5px #ff9418, 0 8px 18px rgba(0,0,0,.35), inset 0 -4px 10px rgba(0,71,171,.15)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "clamp(22px, 5.5vw, 34px)",
-                zIndex: 5,
-              }}
-            >
-              🎁
+                <circle r="29" fill="#ffffff" stroke="#ff9418" strokeWidth="6" />
+                <circle r="20" fill="#f4f8ff" stroke="#d7e6fb" strokeWidth="2" />
+                <text x="0" y="1" textAnchor="middle" dominantBaseline="middle" fontSize="21">
+                  🎁
+                </text>
+              </svg>
             </div>
           </div>
 
-          {/* Mensagem abaixo da roleta */}
-          <p
-            style={{
-              marginTop: 18,
-              fontSize: 18,
-              fontWeight: 900,
-              fontStyle: "italic",
-              letterSpacing: 2,
-              textTransform: "uppercase",
-              color: "#ffb14a",
-              textShadow: "0 2px 8px rgba(0,0,0,.4)",
-            }}
-          >
-            {phase === "spinning" ? "Boa sorte!" : "🎉 Parabéns!"}
-          </p>
+          {phase === "spinning" && (
+            <div className="roulette-waiting">
+              <span />
+              <strong>Sorteando seu brinde...</strong>
+            </div>
+          )}
 
-          {/* Card de resultado */}
-          {phase === "result" && chosen && (
-            <div
-              style={{
-                marginTop: 14,
-                width: "100%",
-                maxWidth: 380,
-                background: "white",
-                color: "#0047ab",
-                borderRadius: 22,
-                padding: "18px 20px 20px",
-                boxShadow:
-                  "0 18px 40px rgba(0,0,0,.4), inset 0 0 0 3px #ff9418",
-                animation: "rouletteCardIn 380ms cubic-bezier(.2,.9,.3,1.2) both",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: 11,
-                  fontWeight: 800,
-                  letterSpacing: 3,
-                  textTransform: "uppercase",
-                  color: "#6b7a99",
-                }}
-              >
-                Você ganhou
+          {phase === "result" && chosen && resultMeta && (
+            <div className="prize-result-card">
+              <div className="prize-result-icon">{resultMeta.icon}</div>
+              <div>
+                <span>Voce ganhou</span>
+                <strong>{chosen}</strong>
               </div>
-              <div
-                style={{
-                  marginTop: 6,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 10,
-                  fontWeight: 900,
-                  fontSize: "clamp(20px, 4.6vw, 26px)",
-                  textTransform: "uppercase",
-                  fontStyle: "italic",
-                  lineHeight: 1.15,
-                }}
-              >
-                <span style={{ fontSize: "1.35em" }}>{PRIZE_META[chosen].icon}</span>
-                <span>{chosen}</span>
+              <div className="prize-result-details">
+                <span>{score} pontos</span>
+                {prizeCode && <span>{formatPrizeCode(prizeCode)}</span>}
               </div>
-
-              <div
-                style={{
-                  marginTop: 14,
-                  display: "flex",
-                  gap: 8,
-                  justifyContent: "center",
-                  flexWrap: "wrap",
-                }}
-              >
-                <span
-                  style={{
-                    background: "#eaf1fb",
-                    color: "#0047ab",
-                    padding: "7px 14px",
-                    borderRadius: 999,
-                    fontWeight: 800,
-                    fontSize: 13,
-                    textTransform: "uppercase",
-                    letterSpacing: 1,
-                  }}
-                >
-                  {score} pts
-                </span>
-                {prizeCode && (
-                  <span
-                    style={{
-                      background: "#ff9418",
-                      color: "white",
-                      padding: "7px 14px",
-                      borderRadius: 999,
-                      fontWeight: 900,
-                      fontSize: 13,
-                      letterSpacing: 1,
-                    }}
-                  >
-                    Código: {prizeCode}
-                  </span>
-                )}
-              </div>
-
-              <p
-                style={{
-                  marginTop: 12,
-                  fontSize: 12,
-                  color: "#5b6b88",
-                  fontWeight: 600,
-                }}
-              >
-                Mostre esta tela para a equipe do stand para retirar o brinde.
-              </p>
-
-              <button
-                onClick={onPlayAgain}
-                style={{
-                  marginTop: 16,
-                  width: "100%",
-                  background: "linear-gradient(180deg, #0a5fd8 0%, #003a8a 100%)",
-                  color: "white",
-                  border: 0,
-                  borderBottom: "5px solid #001f55",
-                  padding: "14px 22px",
-                  fontSize: 17,
-                  fontWeight: 900,
-                  textTransform: "uppercase",
-                  fontStyle: "italic",
-                  letterSpacing: 1,
-                  borderRadius: 16,
-                  cursor: "pointer",
-                  boxShadow: "0 10px 24px rgba(0,0,0,.3)",
-                }}
-              >
+              <p>Mostre esta tela para a equipe do stand retirar o brinde.</p>
+              <button className="roulette-secondary-button" type="button" onClick={onPlayAgain}>
                 Jogar novamente
               </button>
             </div>
           )}
-        </div>
+        </section>
       )}
 
       <style>{`
-        @keyframes rouletteCardIn {
-          from { opacity: 0; transform: translateY(14px) scale(.96); }
-          to   { opacity: 1; transform: translateY(0) scale(1); }
+        .prize-roulette-overlay {
+          position: absolute;
+          inset: 0;
+          z-index: 1000;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: clamp(10px, 1.9vh, 18px);
+          padding: max(16px, env(safe-area-inset-top)) 16px max(18px, env(safe-area-inset-bottom));
+          overflow-y: auto;
+          overflow-x: hidden;
+          color: #fff;
+          text-align: center;
+          font-family: Arial, Helvetica, sans-serif;
+          background:
+            radial-gradient(circle at 18% 12%, rgba(255, 179, 63, .36), transparent 23%),
+            radial-gradient(circle at 88% 18%, rgba(255, 255, 255, .22), transparent 18%),
+            linear-gradient(180deg, #0879df 0%, #004fb6 48%, #002e76 100%);
+        }
+
+        .roulette-pattern {
+          position: absolute;
+          inset: 0;
+          opacity: .12;
+          pointer-events: none;
+          background-image:
+            radial-gradient(circle, #fff 0 9%, transparent 11%),
+            radial-gradient(circle, #fff 0 9%, transparent 11%);
+          background-size: 46px 46px;
+          background-position: 0 0, 18px 17px;
+        }
+
+        .roulette-light {
+          position: absolute;
+          width: 46vmin;
+          aspect-ratio: 1;
+          border-radius: 50%;
+          pointer-events: none;
+          filter: blur(4px);
+        }
+
+        .roulette-light-a {
+          top: -18vmin;
+          left: -14vmin;
+          background: rgba(255, 148, 24, .22);
+        }
+
+        .roulette-light-b {
+          right: -20vmin;
+          bottom: -18vmin;
+          background: rgba(255, 255, 255, .13);
+        }
+
+        .roulette-logo-card,
+        .score-stage,
+        .roulette-stage {
+          position: relative;
+          z-index: 2;
+        }
+
+        .roulette-logo-card {
+          width: min(46vw, 180px);
+          min-height: 56px;
+          display: grid;
+          place-items: center;
+          padding: 9px 18px;
+          border: 3px solid #ff9418;
+          border-radius: 20px;
+          background: rgba(255,255,255,.97);
+          box-shadow: 0 14px 30px rgba(0, 25, 80, .32), inset 0 -4px 10px rgba(0, 79, 182, .08);
+        }
+
+        .roulette-logo-card img {
+          width: 100%;
+          max-height: 42px;
+          object-fit: contain;
+          display: block;
+        }
+
+        .score-stage {
+          width: min(92vw, 460px);
+          display: grid;
+          justify-items: center;
+          align-content: center;
+          min-height: 0;
+          margin: auto 0;
+        }
+
+        .score-kicker,
+        .roulette-title-block span {
+          color: #ffbf64;
+          font-size: clamp(11px, 2.7vw, 13px);
+          font-weight: 900;
+          letter-spacing: 3px;
+          text-transform: uppercase;
+          text-shadow: 0 2px 8px rgba(0,0,0,.3);
+        }
+
+        .score-stage h2,
+        .roulette-title-block h2 {
+          margin: 5px 0 0;
+          color: #fff;
+          font-size: clamp(34px, 9vw, 54px);
+          font-style: italic;
+          font-weight: 900;
+          line-height: .9;
+          text-transform: uppercase;
+          text-shadow: 0 6px 0 rgba(0,31,85,.28), 0 14px 22px rgba(0,0,0,.24);
+        }
+
+        .score-medal {
+          position: relative;
+          width: min(58vw, 250px);
+          aspect-ratio: 1;
+          display: grid;
+          place-items: center;
+          margin: clamp(18px, 3vh, 28px) auto;
+          border: 8px solid #fff;
+          border-radius: 50%;
+          background:
+            radial-gradient(circle at 35% 26%, #ffe1a7 0 14%, transparent 15%),
+            linear-gradient(180deg, #ffb84c 0%, #ff9012 58%, #d86d00 100%);
+          box-shadow:
+            0 24px 46px rgba(0, 22, 70, .42),
+            inset 0 -12px 18px rgba(118, 56, 0, .24),
+            inset 0 12px 18px rgba(255,255,255,.24);
+        }
+
+        .score-medal::before {
+          content: "";
+          position: absolute;
+          inset: 16px;
+          border: 2px dashed rgba(255,255,255,.74);
+          border-radius: inherit;
+        }
+
+        .score-medal span {
+          position: relative;
+          display: block;
+          color: #fff;
+          font-size: clamp(70px, 19vw, 116px);
+          font-weight: 900;
+          line-height: .78;
+          text-shadow: 0 6px 0 rgba(0,79,182,.24);
+        }
+
+        .score-medal small {
+          position: absolute;
+          bottom: 23%;
+          color: #fff;
+          font-size: clamp(12px, 3vw, 16px);
+          font-weight: 900;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+        }
+
+        .score-stage p {
+          width: min(86%, 360px);
+          margin: 0 0 18px;
+          color: rgba(255,255,255,.92);
+          font-size: clamp(15px, 3.7vw, 18px);
+          font-weight: 800;
+          line-height: 1.25;
+        }
+
+        .roulette-primary-button,
+        .roulette-secondary-button {
+          border: 0;
+          cursor: pointer;
+          color: #fff;
+          font-family: Arial, Helvetica, sans-serif;
+          font-style: italic;
+          font-weight: 900;
+          letter-spacing: 1px;
+          text-transform: uppercase;
+          transition: transform .15s ease, filter .15s ease;
+        }
+
+        .roulette-primary-button {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          width: min(84vw, 380px);
+          min-height: 68px;
+          padding: 16px 26px;
+          border-radius: 22px;
+          background: linear-gradient(180deg, #ffad35 0%, #ff8d0d 100%);
+          box-shadow: 0 9px 0 #b85d00, 0 20px 34px rgba(0,0,0,.34);
+          font-size: clamp(18px, 4.7vw, 24px);
+        }
+
+        .roulette-primary-button:active,
+        .roulette-secondary-button:active {
+          transform: translateY(4px) scale(.99);
+          filter: brightness(.98);
+        }
+
+        .roulette-stage {
+          width: min(94vw, 520px);
+          display: flex;
+          flex: 1;
+          min-height: 0;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: clamp(10px, 1.7vh, 18px);
+          padding-bottom: 4px;
+        }
+
+        .roulette-title-block h2 {
+          font-size: clamp(26px, 7vw, 42px);
+        }
+
+        .wheel-frame {
+          position: relative;
+          width: min(86vw, 410px, 45vh);
+          aspect-ratio: 1;
+          display: grid;
+          place-items: center;
+          border-radius: 50%;
+          filter: drop-shadow(0 24px 28px rgba(0, 21, 68, .48));
+        }
+
+        .wheel-frame::before {
+          content: "";
+          position: absolute;
+          inset: -9px;
+          border-radius: inherit;
+          background: linear-gradient(180deg, #fff 0%, #dcecff 100%);
+          box-shadow:
+            0 0 0 5px #ff9418,
+            0 0 0 11px rgba(255,255,255,.95),
+            inset 0 -10px 18px rgba(0,79,182,.2);
+        }
+
+        .wheel-disc {
+          position: absolute;
+          inset: 0;
+          border-radius: 50%;
+          transform-origin: center;
+          will-change: transform;
+        }
+
+        .wheel-svg {
+          width: 100%;
+          height: 100%;
+          display: block;
+          overflow: visible;
+        }
+
+        .wheel-pointer {
+          position: absolute;
+          top: -22px;
+          left: 50%;
+          z-index: 6;
+          width: 58px;
+          height: 70px;
+          transform: translateX(-50%);
+          filter: drop-shadow(0 7px 7px rgba(0,0,0,.42));
+        }
+
+        .wheel-pointer span {
+          display: block;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(180deg, #ffbd55 0%, #ff8d0d 100%);
+          clip-path: polygon(50% 100%, 6% 24%, 26% 9%, 50% 0, 74% 9%, 94% 24%);
+        }
+
+        .wheel-pointer::after {
+          content: "";
+          position: absolute;
+          top: 15px;
+          left: 50%;
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          background: #fff;
+          transform: translateX(-50%);
+          box-shadow: inset 0 -2px 0 rgba(0,79,182,.18);
+        }
+
+        .roulette-waiting {
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          min-height: 38px;
+          padding: 8px 15px;
+          border: 1px solid rgba(255,255,255,.28);
+          border-radius: 999px;
+          background: rgba(0, 31, 85, .25);
+          box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+        }
+
+        .roulette-waiting span {
+          width: 13px;
+          height: 13px;
+          border-radius: 50%;
+          background: #ff9418;
+          box-shadow: 0 0 0 0 rgba(255,148,24,.55);
+          animation: prizePulse 900ms ease-in-out infinite;
+        }
+
+        .roulette-waiting strong {
+          font-size: 12px;
+          font-weight: 900;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+        }
+
+        .prize-result-card {
+          width: min(90vw, 400px);
+          display: grid;
+          justify-items: center;
+          gap: 10px;
+          padding: clamp(18px, 3vh, 24px);
+          border-top: 8px solid #ff9418;
+          border-radius: 28px;
+          background:
+            linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(238,246,255,.98) 100%);
+          color: #0047ab;
+          box-shadow: 0 22px 48px rgba(0,22,70,.42), inset 0 0 0 2px rgba(255,255,255,.8);
+          animation: prizeCardIn 420ms cubic-bezier(.2,.9,.3,1.18) both;
+        }
+
+        .prize-result-icon {
+          display: grid;
+          place-items: center;
+          width: 62px;
+          height: 62px;
+          margin-top: -36px;
+          border: 5px solid #fff;
+          border-radius: 50%;
+          background: linear-gradient(180deg, #ffbd55 0%, #ff8d0d 100%);
+          box-shadow: 0 12px 22px rgba(255, 148, 24, .35);
+          font-size: 32px;
+        }
+
+        .prize-result-card span {
+          display: block;
+          color: #65758d;
+          font-size: 11px;
+          font-weight: 900;
+          letter-spacing: 2.5px;
+          text-transform: uppercase;
+        }
+
+        .prize-result-card strong {
+          display: block;
+          max-width: 320px;
+          margin-top: 4px;
+          color: #0047ab;
+          font-size: clamp(23px, 6vw, 32px);
+          font-style: italic;
+          font-weight: 900;
+          line-height: 1.04;
+          text-transform: uppercase;
+        }
+
+        .prize-result-details {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 8px;
+          margin-top: 2px;
+        }
+
+        .prize-result-details span {
+          padding: 8px 12px;
+          border-radius: 999px;
+          color: #0047ab;
+          background: #e7f1ff;
+          letter-spacing: 1px;
+          font-size: 12px;
+        }
+
+        .prize-result-details span:last-child {
+          color: #fff;
+          background: #ff9418;
+        }
+
+        .prize-result-card p {
+          max-width: 310px;
+          margin: 2px 0 0;
+          color: #5b6b88;
+          font-size: 12px;
+          font-weight: 800;
+          line-height: 1.25;
+        }
+
+        .roulette-secondary-button {
+          width: 100%;
+          min-height: 56px;
+          margin-top: 4px;
+          border-radius: 18px;
+          background: linear-gradient(180deg, #075fd3 0%, #003b8f 100%);
+          box-shadow: 0 7px 0 #00245d, 0 16px 24px rgba(0,31,85,.24);
+          font-size: 17px;
+        }
+
+        @keyframes prizePulse {
+          0%, 100% { transform: scale(.88); box-shadow: 0 0 0 0 rgba(255,148,24,.55); }
+          50% { transform: scale(1.05); box-shadow: 0 0 0 8px rgba(255,148,24,0); }
+        }
+
+        @keyframes prizeCardIn {
+          from { opacity: 0; transform: translateY(14px) scale(.94); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @media (max-height: 690px) {
+          .prize-roulette-overlay {
+            gap: 8px;
+            padding-top: max(10px, env(safe-area-inset-top));
+            padding-bottom: max(10px, env(safe-area-inset-bottom));
+          }
+
+          .roulette-logo-card {
+            width: min(38vw, 142px);
+            min-height: 45px;
+            padding: 7px 14px;
+            border-radius: 16px;
+          }
+
+          .score-medal {
+            width: min(48vw, 190px);
+            margin: 12px auto 16px;
+          }
+
+          .roulette-primary-button {
+            min-height: 58px;
+          }
+
+          .wheel-frame {
+            width: min(76vw, 320px, 38vh);
+          }
+
+          .prize-result-card {
+            padding: 16px;
+            border-radius: 23px;
+          }
         }
       `}</style>
     </div>
