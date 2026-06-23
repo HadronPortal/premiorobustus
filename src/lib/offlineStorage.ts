@@ -17,6 +17,18 @@ export interface OfflineParticipant {
   prizeCode?: string;
   prizeStatus?: OfflinePrizeStatus;
   prizeDeliveredAt?: string;
+  prize?: string;
+}
+
+export function setOfflinePrize(id: string, prize: string): void {
+  try {
+    const raw = localStorage.getItem(KEY);
+    const list: OfflineParticipant[] = raw ? JSON.parse(raw) : [];
+    const idx = list.findIndex((p) => p.id === id);
+    if (idx === -1) return;
+    list[idx] = { ...list[idx], prize };
+    localStorage.setItem(KEY, JSON.stringify(list));
+  } catch {}
 }
 
 const KEY = "robustus.tabletOffline.participants.v1";
