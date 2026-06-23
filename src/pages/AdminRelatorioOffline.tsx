@@ -312,6 +312,7 @@ export default function AdminRelatorioOffline() {
                   <th style={th}>Último personagem</th>
                   <th style={th}>Última pontuação</th>
                   <th style={th}>Melhor</th>
+                  <th style={th}>Brinde</th>
                   <th style={th}>Última partida</th>
                 </tr>
               </thead>
@@ -325,11 +326,15 @@ export default function AdminRelatorioOffline() {
                     <td style={td}>{petLabel(r.lastPet)}</td>
                     <td style={td}>{r.lastScore}</td>
                     <td style={td}>{r.bestScore}</td>
+                    <td style={td}>
+                      {r.lastPrize || '-'}
+                      {r.lastPrizeCode && <div style={{ fontSize: 11, color: '#64748b' }}>{r.lastPrizeCode}</div>}
+                    </td>
                     <td style={td}>{fmtDateBR(r.lastPlayedAt)}</td>
                   </tr>
                 ))}
                 {!loading && rows.length === 0 && (
-                  <tr><td style={{ ...td, textAlign: 'center', color: '#94a3b8', padding: 24 }} colSpan={8}>Nenhum participante registrado ainda.</td></tr>
+                  <tr><td style={{ ...td, textAlign: 'center', color: '#94a3b8', padding: 24 }} colSpan={9}>Nenhum participante registrado ainda.</td></tr>
                 )}
               </tbody>
             </table>
