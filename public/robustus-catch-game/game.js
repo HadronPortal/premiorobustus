@@ -35,6 +35,9 @@ const CONFIG = {
   logoUrl: "robustus-logo.png"
 };
 
+const QUERY = new URLSearchParams(window.location.search);
+const HIDE_RESULT_SCREEN = QUERY.get("hideResult") === "1";
+
 class ProductAsset {
   constructor(src, name, species = "dog", line = "normal") {
     this.name = name;
@@ -515,12 +518,14 @@ class RobustUSCatchGame {
       "*"
     );
 
-    document.getElementById("result-title").textContent = "Fim de jogo!";
-    document.getElementById("result-message").textContent =
-      "Veja seus pontos e jogue novamente quando quiser.";
-    document.getElementById("final-score").textContent = String(this.score);
-    document.getElementById("result-badge").style.background = "#ff9012";
-    showScreen("result-screen");
+    if (!HIDE_RESULT_SCREEN) {
+      document.getElementById("result-title").textContent = "Fim de jogo!";
+      document.getElementById("result-message").textContent =
+        "Veja seus pontos e jogue novamente quando quiser.";
+      document.getElementById("final-score").textContent = String(this.score);
+      document.getElementById("result-badge").style.background = "#ff9012";
+      showScreen("result-screen");
+    }
   }
 
   basketBounds() {

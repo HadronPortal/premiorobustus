@@ -3,6 +3,7 @@
 // automaticamente quando há conexão. Nunca apaga dados não sincronizados.
 
 import { supabase } from "@/integrations/supabase/client";
+import { isNativeOfflineApp } from "@/lib/runtime";
 
 const DB_NAME = "robustus.mobile.v1";
 const DB_VERSION = 1;
@@ -158,6 +159,7 @@ export function clearCurrentParticipantId() {
 // --------- Sincronização com Supabase ---------
 
 async function trySyncNew(rec: MobileParticipant) {
+  if (isNativeOfflineApp()) return;
   if (!navigator.onLine) return;
   try {
     const { data, error } = await (supabase.rpc as any)(
@@ -183,6 +185,7 @@ async function trySyncNew(rec: MobileParticipant) {
 }
 
 export async function syncAll(): Promise<void> {
+  if (isNativeOfflineApp()) return;
   if (!navigator.onLine) return;
   const pending = await listUnsynced();
   for (const rec of pending) {
@@ -232,6 +235,7 @@ export async function syncAll(): Promise<void> {
 
 let installed = false;
 export function installMobileSync() {
+  if (isNativeOfflineApp()) return;
   if (installed) return;
   installed = true;
   const run = () => void syncAll();

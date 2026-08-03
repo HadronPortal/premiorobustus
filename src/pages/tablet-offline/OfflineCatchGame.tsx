@@ -151,7 +151,7 @@ export default function OfflineCatchGame() {
       <iframe
         ref={iframeRef}
         title="Jogo da Cesta Offline"
-        src={`${OFFLINE_CATCH_GAME_URL}?offline=1&hideHud=1&v=20260622-audio-1`}
+        src={`${OFFLINE_CATCH_GAME_URL}?offline=1&hideHud=1&hideResult=1&v=20260803-apk-1`}
         style={{ width: "100%", height: "100%", border: 0, display: "block" }}
         allow="autoplay; fullscreen"
         onLoad={() => {

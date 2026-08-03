@@ -11,6 +11,7 @@ import {
 } from '@/lib/mobileOfflineDb';
 import { upsertPlay, normalizePhone, getCurrentPlayId, clearCurrentPlayId, getPlay } from '@/lib/cestaMatches';
 import PrizeRouletteOverlay, { PRIZES, type Prize } from '@/components/PrizeRouletteOverlay';
+import { isNativeOfflineApp } from '@/lib/runtime';
 
 function generatePrizeCode() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -137,7 +138,9 @@ export default function JogoCesta() {
               };
               writeRoulette(session);
               setRoulette(session);
-              try { await syncAll(); } catch {}
+              if (!isNativeOfflineApp()) {
+                try { await syncAll(); } catch {}
+              }
               savingRef.current = false;
             })();
           }
@@ -277,7 +280,7 @@ export default function JogoCesta() {
       <iframe
         ref={iframeRef}
         title="Desafio Pet RobustUS"
-        src="/robustus-catch-game/index.html?v=20260622-audio-1"
+        src="/robustus-catch-game/index.html?hideResult=1&v=20260803-apk-1"
         style={{ width: "100%", height: "100%", border: 0, display: "block" }}
         allow="autoplay; fullscreen"
         onLoad={() => {
@@ -299,7 +302,9 @@ export default function JogoCesta() {
             setRoulette(updated);
             try {
               await upsertPlay({ playId: roulette.playId, prize, status: 'finished' } as any);
-              await syncAll();
+              if (!isNativeOfflineApp()) {
+                await syncAll();
+              }
             } catch {}
           }}
           onPlayAgain={() => {
