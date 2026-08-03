@@ -11,6 +11,11 @@ export const PRIZES = [
 export type Prize = (typeof PRIZES)[number];
 
 type Phase = "score" | "spinning" | "result";
+type DragState = {
+  pointerId: number;
+  startAngle: number;
+  startRotation: number;
+};
 
 interface Props {
   score: number;
@@ -105,6 +110,17 @@ function formatPrizeCode(code: string | null) {
   return code.replace("ROBUSTUS-", "ROBUSTUS ");
 }
 
+function normalizeDegrees(value: number) {
+  return ((value % 360) + 360) % 360;
+}
+
+function angleDelta(from: number, to: number) {
+  let delta = to - from;
+  while (delta > 180) delta -= 360;
+  while (delta < -180) delta += 360;
+  return delta;
+}
+
 function isSoundMuted() {
   try {
     return JSON.parse(localStorage.getItem("robustus-sound-muted") || "false") === true;
@@ -195,6 +211,8 @@ export default function PrizeRouletteOverlay({
   const [chosen, setChosen] = useState<Prize | null>(initialPrize);
   const [rotation, setRotation] = useState(0);
   const decidedRef = useRef(Boolean(initialPrize));
+  const rotationRef = useRef(0);
+  const dragRef = useRef<DragState | null>(null);
 
   const segments = useMemo(
     () =>
@@ -217,6 +235,11 @@ export default function PrizeRouletteOverlay({
     []
   );
 
+  const updateRotation = (nextRotation: number) => {
+    rotationRef.current = nextRotation;
+    setRotation(nextRotation);
+  };
+
   const startSpin = () => {
     if (phase !== "score" || decidedRef.current) return;
     decidedRef.current = true;
@@ -224,10 +247,14 @@ export default function PrizeRouletteOverlay({
     const index = Math.floor(Math.random() * PRIZES.length);
     const prize = PRIZES[index];
     const centerAngle = index * SLICE_ANGLE + SLICE_ANGLE / 2;
-    const targetRotation = FULL_SPINS * 360 + (360 - centerAngle);
+    const currentRotation = rotationRef.current;
+    const currentNormalized = normalizeDegrees(currentRotation);
+    const targetNormalized = normalizeDegrees(360 - centerAngle);
+    const extraToTarget = normalizeDegrees(targetNormalized - currentNormalized);
+    const targetRotation = currentRotation + FULL_SPINS * 360 + extraToTarget;
 
     setChosen(null);
-    setRotation(targetRotation);
+    updateRotation(targetRotation);
     setPhase("spinning");
     playRouletteSpinSound();
 
@@ -243,7 +270,42 @@ export default function PrizeRouletteOverlay({
     }, SPIN_MS);
   };
 
+  const getPointerAngle = (event: React.PointerEvent<HTMLDivElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    return (Math.atan2(event.clientY - centerY, event.clientX - centerX) * 180) / Math.PI;
+  };
+
+  const handleWheelPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (phase !== "score" || decidedRef.current) return;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    dragRef.current = {
+      pointerId: event.pointerId,
+      startAngle: getPointerAngle(event),
+      startRotation: rotationRef.current,
+    };
+  };
+
+  const handleWheelPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId || phase !== "score" || decidedRef.current) return;
+    const delta = angleDelta(drag.startAngle, getPointerAngle(event));
+    updateRotation(drag.startRotation + delta);
+  };
+
+  const handleWheelPointerEnd = (event: React.PointerEvent<HTMLDivElement>) => {
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    dragRef.current = null;
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+    startSpin();
+  };
+
   const resultMeta = chosen ? PRIZE_META[chosen] : null;
+  const wheelIsInteractive = phase === "score" && !decidedRef.current;
 
   return (
     <div className="prize-roulette-overlay">
@@ -275,7 +337,26 @@ export default function PrizeRouletteOverlay({
           </div>
 
           {phase !== "result" && (
-            <div className="wheel-frame">
+            <div
+              className={`wheel-frame ${wheelIsInteractive ? "wheel-frame-ready" : ""}`}
+              role={wheelIsInteractive ? "button" : undefined}
+              tabIndex={wheelIsInteractive ? 0 : undefined}
+              aria-label={wheelIsInteractive ? "Arraste a roleta para sortear seu brinde" : undefined}
+              onPointerDown={wheelIsInteractive ? handleWheelPointerDown : undefined}
+              onPointerMove={wheelIsInteractive ? handleWheelPointerMove : undefined}
+              onPointerUp={wheelIsInteractive ? handleWheelPointerEnd : undefined}
+              onPointerCancel={wheelIsInteractive ? handleWheelPointerEnd : undefined}
+              onKeyDown={
+                wheelIsInteractive
+                  ? (event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        startSpin();
+                      }
+                    }
+                  : undefined
+              }
+            >
               <div className="wheel-pointer">
                 <span />
               </div>
@@ -394,11 +475,10 @@ export default function PrizeRouletteOverlay({
 
           {phase === "score" && (
             <div className="roulette-ready-card">
-              <p>Toque no botão para sortear seu brinde.</p>
-              <button className="roulette-primary-button" type="button" onClick={startSpin}>
-                <span>🎁</span>
-                Girar roleta
-              </button>
+              <p>Arraste a roleta com o dedo e solte para sortear seu brinde.</p>
+              <div className="roulette-drag-hint" aria-hidden="true">
+                Puxe e solte
+              </div>
             </div>
           )}
 
@@ -676,6 +756,17 @@ export default function PrizeRouletteOverlay({
           filter: drop-shadow(0 24px 28px rgba(0, 21, 68, .48));
         }
 
+        .wheel-frame-ready {
+          cursor: grab;
+          touch-action: none;
+          animation: wheelInvite 1400ms ease-in-out infinite;
+        }
+
+        .wheel-frame-ready:active {
+          cursor: grabbing;
+          animation: none;
+        }
+
         .roulette-stage-score .wheel-frame {
           width: min(70vw, 320px, 32vh);
         }
@@ -783,10 +874,21 @@ export default function PrizeRouletteOverlay({
           letter-spacing: .5px;
         }
 
-        .roulette-ready-card .roulette-primary-button {
+        .roulette-drag-hint {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 46px;
           width: 100%;
-          min-height: 56px;
-          box-shadow: 0 8px 0 #b85d00, 0 16px 28px rgba(0,0,0,.28);
+          border-radius: 18px;
+          color: #0047ab;
+          background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(230,241,255,.96));
+          box-shadow: inset 0 0 0 2px rgba(255,255,255,.6), 0 7px 0 rgba(0,31,85,.22);
+          font-size: clamp(15px, 4vw, 18px);
+          font-style: italic;
+          font-weight: 900;
+          letter-spacing: 1px;
+          text-transform: uppercase;
         }
 
         .roulette-waiting {
@@ -920,6 +1022,11 @@ export default function PrizeRouletteOverlay({
         @keyframes prizeCardIn {
           from { opacity: 0; transform: translateY(14px) scale(.94); }
           to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes wheelInvite {
+          0%, 100% { transform: rotate(-1.2deg) scale(1); }
+          50% { transform: rotate(1.2deg) scale(1.018); }
         }
 
         @media (max-height: 690px) {
