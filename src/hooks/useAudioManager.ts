@@ -29,7 +29,7 @@ export const useAudioManager = () => {
       // mas aqui deixamos preparado para o arquivo mp3
       bgMusic.current = new Audio('/audio/background.mp3');
       bgMusic.current.loop = true;
-      bgMusic.current.volume = 0.2;
+      bgMusic.current.volume = 0.28;
       bgMusic.current.muted = isMuted;
     }
 

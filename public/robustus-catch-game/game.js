@@ -158,7 +158,7 @@ class RobustUSCatchGame {
     this.logo = new ProductAsset(CONFIG.logoUrl, "Logo RobustUS");
     this.isMuted = false;
     this.audio = {
-      background: this.createAudio(CONFIG.audioUrls.background, 0.12, true),
+      background: this.createAudio(CONFIG.audioUrls.background, 0.28, true),
       error: this.createAudio(CONFIG.audioUrls.error, 0.72),
       fanfare: this.createAudio(CONFIG.audioUrls.fanfare, 0.68),
       bark: this.createAudio(CONFIG.audioUrls.bark, 0.72),
