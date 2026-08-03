@@ -222,7 +222,9 @@ class RobustUSCatchGame {
     const music = this.audio.background;
     music.muted = this.isMuted;
     if (music.paused) {
-      music.currentTime = 0;
+      if (music.ended) {
+        music.currentTime = 0;
+      }
       music.play().catch(() => {});
     }
   }

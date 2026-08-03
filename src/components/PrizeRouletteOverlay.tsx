@@ -337,26 +337,7 @@ export default function PrizeRouletteOverlay({
           </div>
 
           {phase !== "result" && (
-            <div
-              className={`wheel-frame ${wheelIsInteractive ? "wheel-frame-ready" : ""}`}
-              role={wheelIsInteractive ? "button" : undefined}
-              tabIndex={wheelIsInteractive ? 0 : undefined}
-              aria-label={wheelIsInteractive ? "Arraste a roleta para sortear seu brinde" : undefined}
-              onPointerDown={wheelIsInteractive ? handleWheelPointerDown : undefined}
-              onPointerMove={wheelIsInteractive ? handleWheelPointerMove : undefined}
-              onPointerUp={wheelIsInteractive ? handleWheelPointerEnd : undefined}
-              onPointerCancel={wheelIsInteractive ? handleWheelPointerEnd : undefined}
-              onKeyDown={
-                wheelIsInteractive
-                  ? (event) => {
-                      if (event.key === "Enter" || event.key === " ") {
-                        event.preventDefault();
-                        startSpin();
-                      }
-                    }
-                  : undefined
-              }
-            >
+            <div className="wheel-frame">
               <div className="wheel-pointer">
                 <span />
               </div>
@@ -475,10 +456,11 @@ export default function PrizeRouletteOverlay({
 
           {phase === "score" && (
             <div className="roulette-ready-card">
-              <p>Arraste a roleta com o dedo e solte para sortear seu brinde.</p>
-              <div className="roulette-drag-hint" aria-hidden="true">
-                Puxe e solte
-              </div>
+              <p>Toque no botao para sortear seu brinde.</p>
+              <button className="roulette-primary-button" type="button" onClick={startSpin}>
+                <span aria-hidden="true">🎁</span>
+                Girar roleta
+              </button>
             </div>
           )}
 
@@ -874,21 +856,31 @@ export default function PrizeRouletteOverlay({
           letter-spacing: .5px;
         }
 
-        .roulette-drag-hint {
+        .roulette-ready-card .roulette-primary-button {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          min-height: 46px;
+          gap: 10px;
+          min-height: 56px;
           width: 100%;
           border-radius: 18px;
-          color: #0047ab;
-          background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(230,241,255,.96));
-          box-shadow: inset 0 0 0 2px rgba(255,255,255,.6), 0 7px 0 rgba(0,31,85,.22);
+          border: 0;
+          color: #fff;
+          background: linear-gradient(180deg, #ffad2e, #ff9012);
+          box-shadow: 0 8px 0 #b85d00, 0 16px 28px rgba(0,31,85,.28);
           font-size: clamp(15px, 4vw, 18px);
           font-style: italic;
           font-weight: 900;
           letter-spacing: 1px;
           text-transform: uppercase;
+          cursor: pointer;
+          font-family: inherit;
+          text-shadow: 0 2px 0 rgba(0,31,85,.18);
+        }
+
+        .roulette-ready-card .roulette-primary-button:active {
+          transform: translateY(3px);
+          box-shadow: 0 5px 0 #b85d00, 0 10px 18px rgba(0,31,85,.24);
         }
 
         .roulette-waiting {
