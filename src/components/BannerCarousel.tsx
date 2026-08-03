@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const BANNERS = [
-  "https://robustus.com.br/wp-content/uploads/2025/10/site-scaled.jpg",
-  "https://robustus.com.br/wp-content/uploads/2025/10/DASDASDAS-768x633.png",
-  "https://robustus.com.br/wp-content/uploads/2025/10/cao-mini-768x633.png",
-  "https://robustus.com.br/wp-content/uploads/2025/10/cao-ADULTO-768x633.png"
+  "/offline-banners/banner1.jpg",
+  "/offline-banners/banner2.png",
+  "/offline-banners/banner3.png",
+  "/offline-banners/banner4.png"
 ];
 
 export const BannerCarousel = () => {
