@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { User, Phone, CheckCircle2, ChevronRight, X, Briefcase, ChevronDown } from "lucide-react";
 import { createParticipant, type ParticipantType } from "@/lib/mobileOfflineDb";
 import { createCurrentPlayId, upsertParticipant, upsertPlay } from "@/lib/cestaMatches";
+import { formatPhoneBR, isValidPhoneBR, normalizePhoneBR } from "@/lib/phoneValidation";
 
 interface Props {
   game: "cesta" | "memoria";
@@ -11,15 +12,6 @@ interface Props {
 }
 
 type ParticipantTypeOption = "" | ParticipantType;
-
-function formatPhone(value: string) {
-  const raw = value.replace(/\D/g, "").slice(0, 11);
-  if (raw.length <= 2) return raw;
-  if (raw.length <= 6) return `(${raw.slice(0, 2)}) ${raw.slice(2)}`;
-  if (raw.length <= 10)
-    return `(${raw.slice(0, 2)}) ${raw.slice(2, 6)}-${raw.slice(6)}`;
-  return `(${raw.slice(0, 2)}) ${raw.slice(2, 7)}-${raw.slice(7)}`;
-}
 
 export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) => {
   const [name, setName] = useState("");
@@ -35,7 +27,7 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
     participantType !== "outros" || participantTypeOther.trim().length >= 2;
 
   const valid =
-    phone.replace(/\D/g, "").length >= 10 &&
+    isValidPhoneBR(phone) &&
     name.trim().length >= 3 &&
     participantType !== "" &&
     otherValid &&
@@ -45,9 +37,10 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
     e.preventDefault();
     if (busy || savingRef.current) return;
     setError("");
-    const cleanedPhone = phone.replace(/\D/g, "");
+    const cleanedPhone = normalizePhoneBR(phone);
     const cleanedName = name.trim();
     if (cleanedName.length < 3) return setError("Informe seu nome.");
+    if (!isValidPhoneBR(cleanedPhone)) return setError("Informe um telefone brasileiro valido com DDD.");
     if (cleanedPhone.length < 10) return setError("Informe um telefone válido.");
     if (participantType === "") return setError("Selecione seu perfil para continuar.");
     if (participantType === "outros" && participantTypeOther.trim().length < 2)
@@ -144,7 +137,7 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
               inputMode="tel"
               placeholder="TELEFONE"
               value={phone}
-              onChange={(e) => setPhone(formatPhone(e.target.value))}
+              onChange={(e) => setPhone(formatPhoneBR(e.target.value))}
               required
               autoComplete="tel"
               className="w-full bg-slate-100 p-3 pl-12 rounded-xl text-lg font-bold text-[#003380] border-2 border-transparent focus:border-[#f7941d] outline-none placeholder:text-slate-400"

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import { User, Phone, CheckCircle2, ChevronRight, X } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { formatPhoneBR, isValidPhoneBR, normalizePhoneBR } from "@/lib/phoneValidation";
 
 interface Props {
   onStart: (data: any) => void;
@@ -18,20 +19,12 @@ export const AuthScreen: React.FC<Props> = ({ onStart, onClose }) => {
   const [error, setError] = useState('');
   const [isStarting, setIsStarting] = useState(false);
 
-  const formatPhone = (value: string) => {
-    const raw = value.replace(/\D/g, '').slice(0, 11);
-    if (raw.length <= 2) return raw;
-    if (raw.length <= 6) return `(${raw.slice(0, 2)}) ${raw.slice(2)}`;
-    if (raw.length <= 10) return `(${raw.slice(0, 2)}) ${raw.slice(2, 6)}-${raw.slice(6)}`;
-    return `(${raw.slice(0, 2)}) ${raw.slice(2, 7)}-${raw.slice(7)}`;
-  };
-
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, phone: formatPhone(e.target.value) });
+    setFormData({ ...formData, phone: formatPhoneBR(e.target.value) });
   };
 
-  const isFormValid = formData.phone.replace(/\D/g, '').length >= 10 && 
-                      formData.name.trim().length >= 3 && 
+  const isFormValid = isValidPhoneBR(formData.phone) &&
+                      formData.name.trim().length >= 3 &&
                       formData.acceptedTerms;
 
   const handleStartGame = async (event?: React.FormEvent | React.MouseEvent) => {
@@ -42,8 +35,13 @@ export const AuthScreen: React.FC<Props> = ({ onStart, onClose }) => {
     setError("");
 
     const { phone, name, acceptedTerms } = formData;
-    const cleanedPhone = String(phone || "").replace(/\D/g, "");
+    const cleanedPhone = normalizePhoneBR(phone);
     const cleanedName = String(name || "").trim();
+
+    if (!isValidPhoneBR(cleanedPhone)) {
+      setError("Informe um telefone brasileiro valido com DDD.");
+      return;
+    }
 
     if (cleanedPhone.length < 10) {
       setError("Informe um telefone válido.");

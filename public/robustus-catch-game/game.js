@@ -164,6 +164,11 @@ class RobustUSCatchGame {
       bark: this.createAudio(CONFIG.audioUrls.bark, 0.72),
       meow: this.createAudio(CONFIG.audioUrls.meow, 0.72)
     };
+    this.musicContext = null;
+    this.musicGain = null;
+    this.musicBuffer = null;
+    this.musicSource = null;
+    this.musicLoading = null;
     this.selectedSpecies = "dog";
     this.lowPowerMode =
       window.matchMedia("(pointer: coarse)").matches ||
@@ -216,14 +221,68 @@ class RobustUSCatchGame {
     Object.values(this.audio).forEach((audio) => {
       audio.muted = muted;
     });
+    if (this.musicGain) {
+      this.musicGain.gain.value = muted ? 0 : 0.28;
+    }
+  }
+
+  async loadBackgroundBuffer() {
+    if (this.musicBuffer) return this.musicBuffer;
+    if (!this.musicLoading) {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextClass) return null;
+
+      this.musicContext = this.musicContext || new AudioContextClass();
+      this.musicGain = this.musicGain || this.musicContext.createGain();
+      this.musicGain.gain.value = this.isMuted ? 0 : 0.28;
+      this.musicGain.connect(this.musicContext.destination);
+
+      this.musicLoading = fetch(CONFIG.audioUrls.background)
+        .then((response) => response.arrayBuffer())
+        .then((buffer) => this.musicContext.decodeAudioData(buffer))
+        .then((decoded) => {
+          this.musicBuffer = decoded;
+          return decoded;
+        })
+        .catch(() => null);
+    }
+
+    return this.musicLoading;
+  }
+
+  startDecodedBackgroundMusic() {
+    if (!this.musicContext || !this.musicGain || !this.musicBuffer || this.musicSource) return;
+    const source = this.musicContext.createBufferSource();
+    source.buffer = this.musicBuffer;
+    source.loop = true;
+    source.connect(this.musicGain);
+    source.start(0);
+    this.musicSource = source;
+    source.onended = () => {
+      if (this.musicSource === source) {
+        this.musicSource = null;
+      }
+    };
   }
 
   startBackgroundMusic() {
     const music = this.audio.background;
     music.muted = this.isMuted;
-    if (music.paused) {
-      if (music.ended) {
-        music.currentTime = 0;
+
+    this.loadBackgroundBuffer().then((buffer) => {
+      if (!buffer || this.state !== "playing") return;
+      try {
+        if (this.musicContext.state === "suspended") {
+          this.musicContext.resume();
+        }
+        music.pause();
+        this.startDecodedBackgroundMusic();
+      } catch {}
+    });
+
+    if (!this.musicBuffer && music.paused) {
+      if (music.ended || music.currentTime >= Math.max(0, music.duration - 0.25)) {
+        try { music.currentTime = 0; } catch {}
       }
       music.play().catch(() => {});
     }
@@ -233,6 +292,10 @@ class RobustUSCatchGame {
     const music = this.audio.background;
     music.pause();
     music.currentTime = 0;
+    if (this.musicSource) {
+      try { this.musicSource.stop(0); } catch {}
+      this.musicSource = null;
+    }
   }
 
   playSound(type) {

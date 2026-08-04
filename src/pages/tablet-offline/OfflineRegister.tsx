@@ -2,17 +2,9 @@ import React, { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { OfflineLayout, OfflineLogo } from "./OfflineLayout";
 import type { OfflineGame } from "@/lib/offlineStorage";
+import { formatPhoneBR, isValidPhoneBR, normalizePhoneBR } from "@/lib/phoneValidation";
 
 const PARTICIPANT_DRAFT_KEY = "robustus.tabletOffline.draft.v1";
-
-function formatPhone(value: string) {
-  const raw = value.replace(/\D/g, "").slice(0, 11);
-  if (raw.length <= 2) return raw;
-  if (raw.length <= 6) return `(${raw.slice(0, 2)}) ${raw.slice(2)}`;
-  if (raw.length <= 10)
-    return `(${raw.slice(0, 2)}) ${raw.slice(2, 6)}-${raw.slice(6)}`;
-  return `(${raw.slice(0, 2)}) ${raw.slice(2, 7)}-${raw.slice(7)}`;
-}
 
 export default function OfflineRegister() {
   const navigate = useNavigate();
@@ -26,9 +18,13 @@ export default function OfflineRegister() {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    const cleanedPhone = phone.replace(/\D/g, "");
+    const cleanedPhone = normalizePhoneBR(phone);
     if (name.trim().length < 3) {
       setError("Informe o nome completo.");
+      return;
+    }
+    if (!isValidPhoneBR(cleanedPhone)) {
+      setError("Informe um telefone brasileiro valido com DDD.");
       return;
     }
     if (cleanedPhone.length < 10) {
@@ -65,7 +61,7 @@ export default function OfflineRegister() {
             <input
               inputMode="tel"
               value={phone}
-              onChange={(e) => setPhone(formatPhone(e.target.value))}
+              onChange={(e) => setPhone(formatPhoneBR(e.target.value))}
               placeholder="TELEFONE"
               className="w-full bg-slate-100 p-5 rounded-2xl text-2xl font-bold text-[#003380] border-2 border-transparent focus:border-[#f7941d] outline-none placeholder:text-slate-400"
             />
