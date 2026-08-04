@@ -707,6 +707,11 @@ export default function PrizeRouletteOverlay({
           gap: clamp(12px, 1.9vh, 18px);
         }
 
+        .roulette-stage-spinning {
+          justify-content: flex-start;
+          gap: clamp(12px, 1.9vh, 18px);
+        }
+
         .roulette-stage-score .roulette-title-block {
           margin-bottom: clamp(18px, 3vh, 28px);
         }

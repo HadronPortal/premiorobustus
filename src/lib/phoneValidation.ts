@@ -33,6 +33,9 @@ export function formatPhoneBR(value: string) {
 }
 
 export function isValidPhoneBR(value: string) {
+  const digits = String(value || "").replace(/\D/g, "");
+  if (digits.length > 11) return false;
+
   const phone = normalizePhoneBR(value);
   if (phone.length !== 10 && phone.length !== 11) return false;
   if (!VALID_BR_DDDS.has(phone.slice(0, 2))) return false;

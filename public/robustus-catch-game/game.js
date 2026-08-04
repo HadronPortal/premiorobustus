@@ -158,7 +158,7 @@ class RobustUSCatchGame {
     this.logo = new ProductAsset(CONFIG.logoUrl, "Logo RobustUS");
     this.isMuted = false;
     this.audio = {
-      background: this.createAudio(CONFIG.audioUrls.background, 0.28, true),
+      background: this.createAudio(CONFIG.audioUrls.background, 0.28, false),
       error: this.createAudio(CONFIG.audioUrls.error, 0.72),
       fanfare: this.createAudio(CONFIG.audioUrls.fanfare, 0.68),
       bark: this.createAudio(CONFIG.audioUrls.bark, 0.72),
@@ -254,7 +254,7 @@ class RobustUSCatchGame {
     if (!this.musicContext || !this.musicGain || !this.musicBuffer || this.musicSource) return;
     const source = this.musicContext.createBufferSource();
     source.buffer = this.musicBuffer;
-    source.loop = true;
+    source.loop = false;
     source.connect(this.musicGain);
     source.start(0);
     this.musicSource = source;
