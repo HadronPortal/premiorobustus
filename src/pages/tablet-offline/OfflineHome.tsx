@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { PawPrint } from "lucide-react";
-import { OFFLINE_LOGO } from "./offlineAssets";
+import logoAsset from "@/assets/Robustus_Laranja.png.asset.json";
 import { ensureOfflineServiceWorker } from "./registerOfflineSW";
 import { OfflineBannerCarousel } from "./OfflineBannerCarousel";
 
