@@ -471,13 +471,13 @@ const GameContent = () => {
           <motion.div key="start" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 w-full flex flex-col items-center justify-center pt-8 pb-6 px-4 sm:pt-12 sm:px-12 z-10 overflow-hidden gap-[clamp(14px,2vh,24px)]">
             <motion.div initial={{ y: -30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="w-full flex justify-center">
               <div
-                className="bg-white p-3 sm:p-4 rounded-3xl shadow-xl border-3 border-[#f7941d] w-32 h-14 sm:w-48 sm:h-20 flex items-center justify-center"
+                className="bg-white p-3 sm:p-4 rounded-[2.5rem] shadow-xl border-3 border-[#f7941d] w-48 h-20 sm:w-72 sm:h-32 flex items-center justify-center overflow-hidden"
                 onPointerDown={startAdminPress}
                 onPointerUp={cancelAdminPress}
                 onPointerCancel={cancelAdminPress}
                 onPointerLeave={cancelAdminPress}
               >
-                <img src={ASSETS.logo} alt="Logo" className="w-full h-full object-contain" />
+                <img src={logoAsset.url} alt="Logo" className="w-[90%] h-[90%] object-contain" />
               </div>
             </motion.div>
 
