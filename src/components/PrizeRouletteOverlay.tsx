@@ -28,7 +28,6 @@ interface Props {
 }
 
 type PrizeMeta = {
-  icon: string;
   lines: [string] | [string, string];
   colorA: string;
   colorB: string;
@@ -38,37 +37,31 @@ const LOGO_URL = logoAsset.url;
 
 const PRIZE_META: Record<Prize, PrizeMeta> = {
   Copo: {
-    icon: "🥤",
     lines: ["Copo"],
     colorA: "#0a62d9",
     colorB: "#003f9b",
   },
   "Comedouro gato": {
-    icon: "🐱",
     lines: ["Comedouro", "gato"],
     colorA: "#ffad35",
     colorB: "#ff8514",
   },
   "Comedouro cachorro": {
-    icon: "🐶",
     lines: ["Comedouro", "cachorro"],
     colorA: "#0754bd",
     colorB: "#003783",
   },
   "Brinde surpresa": {
-    icon: "🎁",
     lines: ["Brinde", "surpresa"],
     colorA: "#ff9c20",
     colorB: "#f07800",
   },
   "Kit caneta": {
-    icon: "✒️",
     lines: ["Kit", "caneta"],
     colorA: "#0f6ee6",
     colorB: "#004cae",
   },
   "Amostras gato e cachorro": {
-    icon: "📦",
     lines: ["Amostras", "pet"],
     colorA: "#ffbd55",
     colorB: "#ff9118",
@@ -358,7 +351,7 @@ export default function PrizeRouletteOverlay({
     startSpin();
   };
 
-  const resultMeta = chosen ? (PRIZE_META as any)[chosen] || { icon: "🎁", lines: [String(chosen).slice(0, 10)] } : null;
+  const resultMeta = chosen ? (PRIZE_META as any)[chosen] || { lines: [String(chosen).slice(0, 10)] } : null;
   const wheelIsInteractive = phase === "score" && !decidedRef.current;
 
   return (
