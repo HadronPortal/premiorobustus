@@ -304,11 +304,11 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
           <motion.button
             whileTap={!isFormInvalid() ? { scale: 0.98 } : {}}
             type="submit"
-            disabled={busy || isFormInvalid()}
-            className={`w-full py-3 rounded-xl shadow-xl flex items-center justify-center gap-3 border-b-[4px] mt-1 transition-all ${
+            disabled={busy}
+            className={`w-full py-3 rounded-xl shadow-xl flex items-center justify-center gap-3 border-b-[4px] mt-1 transition-all text-white ${
               !isFormInvalid()
-                ? "bg-[var(--robustus-orange)] border-[var(--robustus-orange-hover)] active:border-b-0 cursor-pointer"
-                : "bg-slate-300 border-slate-400 cursor-not-allowed opacity-60"
+                ? "bg-[var(--robustus-orange)] border-[var(--robustus-orange-hover)] active:border-b-0 cursor-pointer opacity-100"
+                : "bg-[var(--robustus-orange)] border-[var(--robustus-orange-hover)] cursor-pointer opacity-55"
             } ${busy ? "opacity-70 grayscale" : ""}`}
           >
             <span className="text-lg font-black text-white tracking-widest uppercase italic">
