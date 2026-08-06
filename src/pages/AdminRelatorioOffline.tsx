@@ -150,7 +150,7 @@ export default function AdminRelatorioOffline() {
     }
   };
 
-  const exportCSV = () => {
+  const exportCSV = async () => {
     const header = 'nome;telefone;perfil;perfil_outro;tentativas;ultimo_personagem;ultima_pontuacao;melhor_pontuacao;ultimo_brinde;codigo_brinde;ultima_partida';
     const lines = rows.map(r => [
       r.name,
@@ -166,10 +166,10 @@ export default function AdminRelatorioOffline() {
       fmtDateBR(r.lastPlayedAt),
     ].map(csvEscape).join(';'));
     const csv = '\uFEFF' + [header, ...lines].join('\r\n');
-    download(`robustus-participantes-${todayStamp()}.csv`, csv, 'text/csv');
+    await handleDownload(`robustus-participantes-${todayStamp()}.csv`, csv, 'text/csv');
   };
 
-  const exportTXT = () => {
+  const exportTXT = async () => {
     const lines: string[] = [];
     lines.push('RELATÓRIO OFFLINE — JOGO DA CESTA RobustUS');
     lines.push('Gerado em: ' + fmtDateBR(new Date().toISOString()));
@@ -192,12 +192,12 @@ export default function AdminRelatorioOffline() {
         `${i+1}. ${r.name || '(sem nome)'} — ${fmtPhoneBR(r.phoneNormalized) || '(sem telefone)'} — ${profileLabel(r.participantType) || '-'}${r.participantTypeOther ? ` (${r.participantTypeOther})` : ''} — Tentativas: ${r.attempts} — Último: ${r.lastPet || '-'} ${r.lastScore} pts — Melhor: ${r.bestScore} pts — Brinde: ${r.lastPrize || '-'}${r.lastPrizeCode ? ` (${r.lastPrizeCode})` : ''} — ${fmtDateBR(r.lastPlayedAt)}`
       );
     });
-    download(`robustus-participantes-${todayStamp()}.txt`, lines.join('\r\n'), 'text/plain');
+    await handleDownload(`robustus-participantes-${todayStamp()}.txt`, lines.join('\r\n'), 'text/plain');
   };
 
   const exportJSON = async () => {
     const payload = await exportBackup();
-    download(`robustus-backup-${todayStamp()}.json`, JSON.stringify(payload, null, 2), 'application/json');
+    await handleDownload(`robustus-backup-${todayStamp()}.json`, JSON.stringify(payload, null, 2), 'application/json');
   };
 
   const onImportFile = async (file: File) => {
