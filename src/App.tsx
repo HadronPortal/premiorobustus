@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { motion, AnimatePresence } from 'framer-motion';
+import logoAsset from "@/assets/Robustus_Laranja.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthScreen } from './components/auth/AuthScreen';
 import { AdminScreen } from './components/admin/AdminScreen';
