@@ -28,7 +28,6 @@ interface Props {
 }
 
 type PrizeMeta = {
-  icon: string;
   lines: [string] | [string, string];
   colorA: string;
   colorB: string;
@@ -38,37 +37,31 @@ const LOGO_URL = logoAsset.url;
 
 const PRIZE_META: Record<Prize, PrizeMeta> = {
   Copo: {
-    icon: "🥤",
     lines: ["Copo"],
     colorA: "#0a62d9",
     colorB: "#003f9b",
   },
   "Comedouro gato": {
-    icon: "🐱",
     lines: ["Comedouro", "gato"],
     colorA: "#ffad35",
     colorB: "#ff8514",
   },
   "Comedouro cachorro": {
-    icon: "🐶",
     lines: ["Comedouro", "cachorro"],
     colorA: "#0754bd",
     colorB: "#003783",
   },
   "Brinde surpresa": {
-    icon: "🎁",
     lines: ["Brinde", "surpresa"],
     colorA: "#ff9c20",
     colorB: "#f07800",
   },
   "Kit caneta": {
-    icon: "✒️",
     lines: ["Kit", "caneta"],
     colorA: "#0f6ee6",
     colorB: "#004cae",
   },
   "Amostras gato e cachorro": {
-    icon: "📦",
     lines: ["Amostras", "pet"],
     colorA: "#ffbd55",
     colorB: "#ff9118",
@@ -225,28 +218,43 @@ export default function PrizeRouletteOverlay({
 
   const segments = useMemo(
     () => {
-      const prizesToUse = activeConfigs.length > 0 ? activeConfigs.map(c => c.name) : PRIZES;
-      const sliceAngle = 360 / prizesToUse.length;
+      const configsToUse = activeConfigs.length > 0 ? activeConfigs : DEFAULT_PRIZES;
+      const sliceAngle = 360 / configsToUse.length;
 
-      return prizesToUse.map((prize, index) => {
+      return configsToUse.map((config, index) => {
+        const prize = config.name;
         const start = index * sliceAngle;
         const end = start + sliceAngle;
         const mid = start + sliceAngle / 2;
-        const label = pointAt(mid, 86);
-        const icon = pointAt(mid, 57);
+        const label = pointAt(mid, 82); // Increased radius slightly to move away from center
+        
+        let meta = (PRIZE_META as any)[prize];
+        if (!meta) {
+          // Automatic lines for custom prizes
+          const words = prize.split(' ');
+          let lines: [string] | [string, string];
+          if (words.length > 1 && prize.length > 8) {
+            const midIndex = Math.ceil(words.length / 2);
+            lines = [words.slice(0, midIndex).join(' '), words.slice(midIndex).join(' ')];
+          } else {
+            lines = [prize];
+          }
+          
+          meta = {
+            icon: "🎁",
+            lines,
+            colorA: index % 2 === 0 ? "#0a62d9" : "#ffad35",
+            colorB: index % 2 === 0 ? "#003f9b" : "#ff8514",
+          };
+        }
+
         return {
           prize,
           index,
           mid,
           label,
-          icon,
           path: slicePath(start, end),
-          meta: (PRIZE_META as any)[prize] || {
-            icon: "🎁",
-            lines: [prize.slice(0, 10)],
-            colorA: index % 2 === 0 ? "#0a62d9" : "#ffad35",
-            colorB: index % 2 === 0 ? "#003f9b" : "#ff8514",
-          },
+          meta,
           sliceAngle
         };
       });
@@ -265,20 +273,26 @@ export default function PrizeRouletteOverlay({
 
     const prizesToUse = activeConfigs.length > 0 ? activeConfigs : DEFAULT_PRIZES;
     
-    // Weighted random
+    // Lógica de sorteio baseada em pesos (chance)
     const random = Math.random() * 100;
     let cumulative = 0;
     let index = 0;
-    for (let i = 0; i < prizesToUse.length; i++) {
-      cumulative += prizesToUse[i].chance;
+    
+    // Filtramos apenas os ativos para o sorteio real
+    const activeOnly = prizesToUse.filter(c => c.enabled);
+    if (activeOnly.length === 0) return; // Segurança
+
+    for (let i = 0; i < activeOnly.length; i++) {
+      cumulative += activeOnly[i].chance;
       if (random <= cumulative) {
         index = i;
         break;
       }
     }
     
-    const prize = prizesToUse[index].name;
-    const sliceAngle = 360 / prizesToUse.length;
+    const prize = activeOnly[index].name;
+    const sliceAngle = 360 / activeOnly.length;
+    // O alvo visual deve ser exatamente o índice do prêmio sorteado na lista que a roleta está exibindo
     const centerAngle = index * sliceAngle + sliceAngle / 2;
     const currentRotation = rotationRef.current;
     const currentNormalized = normalizeDegrees(currentRotation);
@@ -337,7 +351,7 @@ export default function PrizeRouletteOverlay({
     startSpin();
   };
 
-  const resultMeta = chosen ? (PRIZE_META as any)[chosen] || { icon: "🎁", lines: [String(chosen).slice(0, 10)] } : null;
+  const resultMeta = chosen ? (PRIZE_META as any)[chosen] || { lines: [String(chosen).slice(0, 10)] } : null;
   const wheelIsInteractive = phase === "score" && !decidedRef.current;
 
   return (
@@ -412,7 +426,8 @@ export default function PrizeRouletteOverlay({
 
                   {segments.map((segment) => {
                     const hasTwoLines = segment.meta.lines.length === 2;
-                    const labelY = hasTwoLines ? segment.label.y - 5 : segment.label.y + 2;
+                    // Adjusted Y position to center text in the slice since we removed icons
+                    const labelY = hasTwoLines ? segment.label.y - 4 : segment.label.y + 2;
                     return (
                       <g key={`g-${segment.index}-${segment.prize}`}>
                         <path
@@ -422,23 +437,6 @@ export default function PrizeRouletteOverlay({
                           strokeWidth="2.4"
                           filter="url(#slice-shadow)"
                         />
-                        <circle
-                          cx={segment.icon.x}
-                          cy={segment.icon.y}
-                          r="10"
-                          fill="rgba(255,255,255,.86)"
-                          stroke="rgba(247,148,29,.68)"
-                          strokeWidth="1.1"
-                        />
-                        <text
-                          x={segment.icon.x}
-                          y={segment.icon.y + 1}
-                          textAnchor="middle"
-                          dominantBaseline="middle"
-                          fontSize="9.5"
-                        >
-                          {segment.meta.icon}
-                        </text>
                         <text
                           x={segment.label.x}
                           y={labelY}
@@ -446,29 +444,31 @@ export default function PrizeRouletteOverlay({
                           dominantBaseline="middle"
                           fontFamily="Arial, Helvetica, sans-serif"
                           fontWeight="900"
-                          fontSize={hasTwoLines ? "8.4" : "10.6"}
-                          letterSpacing=".35"
+                          fontSize={hasTwoLines ? "8.8" : "11.2"}
+                          letterSpacing=".4"
                           fill="#ffffff"
-                          stroke="rgba(0,31,85,.72)"
-                          strokeWidth="2.2"
+                          stroke="rgba(0,31,85,.85)"
+                          strokeWidth="2.5"
                           paintOrder="stroke"
+                          style={{ textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}
                         >
                           {segment.meta.lines[0].toUpperCase()}
                         </text>
                         {hasTwoLines && (
                           <text
                             x={segment.label.x}
-                            y={segment.label.y + 7}
+                            y={segment.label.y + 8}
                             textAnchor="middle"
                             dominantBaseline="middle"
                             fontFamily="Arial, Helvetica, sans-serif"
                             fontWeight="900"
-                            fontSize="7.4"
-                            letterSpacing=".2"
+                            fontSize="7.8"
+                            letterSpacing=".25"
                             fill="#ffffff"
-                            stroke="rgba(0,31,85,.72)"
-                            strokeWidth="1.9"
+                            stroke="rgba(0,31,85,.85)"
+                            strokeWidth="2.2"
                             paintOrder="stroke"
+                            style={{ textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}
                           >
                             {segment.meta.lines[1].toUpperCase()}
                           </text>
@@ -504,9 +504,9 @@ export default function PrizeRouletteOverlay({
             </div>
           )}
 
-          {phase === "result" && chosen && resultMeta && (
+          {phase === "result" && chosen && (
             <div className="prize-result-card">
-              <div className="prize-result-icon">{resultMeta.icon}</div>
+              <div className="prize-result-icon">🎁</div>
               <div>
                 <span>Voce ganhou</span>
                 <strong>{chosen}</strong>
