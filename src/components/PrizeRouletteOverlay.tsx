@@ -389,7 +389,7 @@ export default function PrizeRouletteOverlay({
                     {segments.map((segment) => (
                       <linearGradient
                         id={`slice-gradient-${segment.index}`}
-                        key={segment.prize}
+                        key={`slice-${segment.index}-${segment.prize}`}
                         x1="-90"
                         y1="-90"
                         x2="90"
@@ -413,7 +413,7 @@ export default function PrizeRouletteOverlay({
                     const hasTwoLines = segment.meta.lines.length === 2;
                     const labelY = hasTwoLines ? segment.label.y - 5 : segment.label.y + 2;
                     return (
-                      <g key={segment.prize}>
+                      <g key={`g-${segment.index}-${segment.prize}`}>
                         <path
                           d={segment.path}
                           fill={`url(#slice-gradient-${segment.index})`}
