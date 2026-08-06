@@ -1,4 +1,5 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useMemo, useRef, useState, useEffect } from "react";
+import { getPrizeSettings, type PrizeConfig } from "@/lib/prizeSettings";
 
 export const PRIZES = [
   "Copo",
@@ -208,18 +209,28 @@ export default function PrizeRouletteOverlay({
 }: Props) {
   const initialPrize = normalizePrize(existingPrize);
   const [phase, setPhase] = useState<Phase>(() => (initialPrize ? "result" : "score"));
-  const [chosen, setChosen] = useState<Prize | null>(initialPrize);
+  const [chosen, setChosen] = useState<Prize | string | null>(initialPrize);
   const [rotation, setRotation] = useState(0);
+  const [activeConfigs, setActiveConfigs] = useState<PrizeConfig[]>([]);
   const decidedRef = useRef(Boolean(initialPrize));
   const rotationRef = useRef(0);
   const dragRef = useRef<DragState | null>(null);
 
+  useEffect(() => {
+    getPrizeSettings().then(configs => {
+      setActiveConfigs(configs.filter(c => c.enabled));
+    });
+  }, []);
+
   const segments = useMemo(
-    () =>
-      PRIZES.map((prize, index) => {
-        const start = index * SLICE_ANGLE;
-        const end = start + SLICE_ANGLE;
-        const mid = start + SLICE_ANGLE / 2;
+    () => {
+      const prizesToUse = activeConfigs.length > 0 ? activeConfigs.map(c => c.name) : PRIZES;
+      const sliceAngle = 360 / prizesToUse.length;
+
+      return prizesToUse.map((prize, index) => {
+        const start = index * sliceAngle;
+        const end = start + sliceAngle;
+        const mid = start + sliceAngle / 2;
         const label = pointAt(mid, 86);
         const icon = pointAt(mid, 57);
         return {
@@ -228,11 +239,18 @@ export default function PrizeRouletteOverlay({
           mid,
           label,
           icon,
-          path: slicePath(start, end),
-          meta: PRIZE_META[prize],
+          path: slicePath(start, end, 360 / prizesToUse.length),
+          meta: (PRIZE_META as any)[prize] || {
+            icon: "🎁",
+            lines: [prize.slice(0, 10)],
+            colorA: index % 2 === 0 ? "#0a62d9" : "#ffad35",
+            colorB: index % 2 === 0 ? "#003f9b" : "#ff8514",
+          },
+          sliceAngle
         };
-      }),
-    []
+      });
+    },
+    [activeConfigs]
   );
 
   const updateRotation = (nextRotation: number) => {
