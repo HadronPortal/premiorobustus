@@ -95,13 +95,13 @@ function pointAt(degreesFromTop: number, radius: number) {
   };
 }
 
-function slicePath(start: number, end: number) {
-  const a = pointAt(start, WHEEL_RADIUS);
-  const b = pointAt(end, WHEEL_RADIUS);
+function slicePath(start: number, end: number, radius = WHEEL_RADIUS) {
+  const a = pointAt(start, radius);
+  const b = pointAt(end, radius);
   return [
     "M 0 0",
     `L ${a.x.toFixed(3)} ${a.y.toFixed(3)}`,
-    `A ${WHEEL_RADIUS} ${WHEEL_RADIUS} 0 0 1 ${b.x.toFixed(3)} ${b.y.toFixed(3)}`,
+    `A ${radius} ${radius} 0 0 1 ${b.x.toFixed(3)} ${b.y.toFixed(3)}`,
     "Z",
   ].join(" ");
 }
@@ -262,9 +262,23 @@ export default function PrizeRouletteOverlay({
     if (phase !== "score" || decidedRef.current) return;
     decidedRef.current = true;
 
-    const index = Math.floor(Math.random() * PRIZES.length);
-    const prize = PRIZES[index];
-    const centerAngle = index * SLICE_ANGLE + SLICE_ANGLE / 2;
+    const prizesToUse = activeConfigs.length > 0 ? activeConfigs : DEFAULT_PRIZES;
+    
+    // Weighted random
+    const random = Math.random() * 100;
+    let cumulative = 0;
+    let index = 0;
+    for (let i = 0; i < prizesToUse.length; i++) {
+      cumulative += prizesToUse[i].chance;
+      if (random <= cumulative) {
+        index = i;
+        break;
+      }
+    }
+    
+    const prize = prizesToUse[index].name;
+    const sliceAngle = 360 / prizesToUse.length;
+    const centerAngle = index * sliceAngle + sliceAngle / 2;
     const currentRotation = rotationRef.current;
     const currentNormalized = normalizeDegrees(currentRotation);
     const targetNormalized = normalizeDegrees(360 - centerAngle);
@@ -281,7 +295,7 @@ export default function PrizeRouletteOverlay({
       setPhase("result");
       playPrizeRevealSound();
       try {
-        void Promise.resolve(onPrizeDecided(prize)).catch(() => {});
+        void Promise.resolve(onPrizeDecided(prize as any)).catch(() => {});
       } catch {
         // Mantem a experiencia do usuario mesmo se a persistencia falhar.
       }
