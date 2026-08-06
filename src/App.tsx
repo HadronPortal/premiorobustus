@@ -108,7 +108,7 @@ const Leaderboard = ({ entries, loading }: { entries: LeaderboardEntry[], loadin
     return (
       <div className="leaderboard-container text-center py-4">
         <h3 className="leaderboard-title">Melhores tempos</h3>
-        <p className="text-[10px] font-bold text-[#f7941d] uppercase tracking-widest mt-2">Seja o primeiro no placar!</p>
+        <p className="text-[10px] font-bold text-[var(--robustus-orange)] uppercase tracking-widest mt-2">Seja o primeiro no placar!</p>
       </div>
     );
   }
