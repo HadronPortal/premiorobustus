@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Download, FileText, Save, Upload, LockKeyhole, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, Download, FileText, Save, Upload, LockKeyhole, ShieldCheck, Settings, X, Plus, Trash2, Check } from 'lucide-react';
 import {
   getReport,
   getReportStats,
@@ -10,6 +10,7 @@ import {
   type ReportStats,
 } from '@/lib/cestaMatches';
 import { hasAdminPin, setAdminPin, verifyAdminPin } from '@/lib/adminPin';
+import { getPrizeSettings, savePrizeSettings, type PrizeConfig, DEFAULT_PRIZES } from '@/lib/prizeSettings';
 
 const AUTH_KEY = 'robustus.admin.relatorio.ok';
 
@@ -75,6 +76,10 @@ export default function AdminRelatorioOffline() {
   const [loading, setLoading] = useState(true);
   const [msg, setMsg] = useState<string>('');
   const fileRef = useRef<HTMLInputElement>(null);
+  const [showSettings, setShowSettings] = useState(false);
+  const [prizeConfigs, setPrizeConfigs] = useState<PrizeConfig[]>([]);
+  const [savingSettings, setSavingSettings] = useState(false);
+  const [settingsMsg, setSettingsMsg] = useState('');
 
   const reload = async () => {
     setLoading(true);
