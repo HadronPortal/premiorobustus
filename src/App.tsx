@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { motion, AnimatePresence } from 'framer-motion';
+import logoAsset from "@/assets/Robustus_Laranja.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthScreen } from './components/auth/AuthScreen';
 import { AdminScreen } from './components/admin/AdminScreen';
@@ -470,23 +471,23 @@ const GameContent = () => {
           <motion.div key="start" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 w-full flex flex-col items-center justify-center pt-8 pb-6 px-4 sm:pt-12 sm:px-12 z-10 overflow-hidden gap-[clamp(14px,2vh,24px)]">
             <motion.div initial={{ y: -30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="w-full flex justify-center">
               <div
-                className="bg-white p-3 sm:p-4 rounded-3xl shadow-xl border-3 border-[#f7941d] w-32 h-14 sm:w-48 sm:h-20 flex items-center justify-center"
+                className="bg-white p-3 sm:p-4 rounded-[2.5rem] shadow-xl border-3 border-[#f7941d] w-48 h-20 sm:w-72 sm:h-32 flex items-center justify-center overflow-hidden"
                 onPointerDown={startAdminPress}
                 onPointerUp={cancelAdminPress}
                 onPointerCancel={cancelAdminPress}
                 onPointerLeave={cancelAdminPress}
               >
-                <img src={ASSETS.logo} alt="Logo" className="w-full h-full object-contain" />
+                <img src={logoAsset.url} alt="RobustUS" className="w-[90%] h-[90%] object-contain" />
               </div>
             </motion.div>
 
-            <div className="flex flex-col items-center text-center">
-              <motion.h1 initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.2 }} className="text-xl sm:text-3xl font-black text-white italic tracking-tighter drop-shadow-lg leading-none uppercase">
+            <div className="flex flex-col items-center text-center mt-2">
+              <motion.h1 initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.2 }} className="text-xl sm:text-4xl font-black text-white italic tracking-tighter drop-shadow-lg leading-none uppercase">
                 DESAFIO <span className="text-[#f7941d]">RobustUS</span>
               </motion.h1>
             </div>
 
-            <div className="w-full max-w-[min(94vw,420px)] grid grid-cols-1 gap-4 mt-1 place-items-center">
+            <div className="w-full max-w-[min(94vw,520px)] grid grid-cols-1 gap-4 mt-1 place-items-center">
               {/* Card Jogo da Cesta */}
               <motion.button 
                 whileHover={{ scale: 1.05, y: -8 }}
@@ -495,7 +496,7 @@ const GameContent = () => {
                   setSelectedGame('cesta');
                   setGameState('AUTH');
                 }}
-                className="group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-all border-4 border-transparent hover:border-[#0047ab] aspect-[31/40] w-full max-w-[min(74vw,340px)] sm:max-w-none"
+                className="group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-all border-4 border-transparent hover:border-[#0047ab] aspect-[31/40] w-full max-w-[min(74vw,420px)] sm:max-w-none"
               >
                 <div className="flex-1 w-full overflow-hidden relative bg-white">
                   <div className="absolute inset-0 flex flex-col items-center justify-center p-1">

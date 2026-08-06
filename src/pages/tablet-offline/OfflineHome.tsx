@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { PawPrint } from "lucide-react";
-import { OFFLINE_LOGO } from "./offlineAssets";
+import logoAsset from "@/assets/Robustus_Laranja.png.asset.json";
 import { ensureOfflineServiceWorker } from "./registerOfflineSW";
 import { OfflineBannerCarousel } from "./OfflineBannerCarousel";
 
@@ -41,11 +41,11 @@ export default function OfflineHome() {
           animate={{ y: 0, opacity: 1 }}
           className="w-full flex justify-center"
         >
-          <div className="bg-white p-3 sm:p-4 rounded-3xl shadow-xl border-[3px] border-[#f7941d] w-40 h-16 sm:w-56 sm:h-24 flex items-center justify-center">
+          <div className="bg-white p-3 sm:p-4 rounded-[2.5rem] shadow-xl border-[3px] border-[#f7941d] w-48 h-20 sm:w-72 sm:h-32 flex items-center justify-center overflow-hidden">
             <img
-              src={OFFLINE_LOGO}
+              src={logoAsset.url}
               alt="RobustUS"
-              className="w-full h-full object-contain"
+              className="w-[90%] h-[90%] object-contain"
             />
           </div>
         </motion.div>

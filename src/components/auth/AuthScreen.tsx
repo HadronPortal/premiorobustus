@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import { User, Phone, CheckCircle2, ChevronRight, X } from 'lucide-react';
 import { motion } from 'framer-motion';
+import logoAsset from "@/assets/Robustus_Laranja.png.asset.json";
 import { formatPhoneBR, isValidPhoneBR, normalizePhoneBR } from "@/lib/phoneValidation";
 
 interface Props {
@@ -119,10 +120,14 @@ export const AuthScreen: React.FC<Props> = ({ onStart, onClose }) => {
           </button>
         )}
 
-        
-        <div className="text-center space-y-1">
-          <h2 className="text-3xl sm:text-4xl font-black text-[#0047ab] uppercase italic tracking-tighter">CADASTRO</h2>
-          <p className="text-base sm:text-lg font-bold text-slate-500 uppercase tracking-widest leading-tight">Preencha para começar!</p>
+        <div className="flex flex-col items-center gap-4">
+          <div className="bg-white rounded-3xl border-2 border-[#f7941d] p-3 w-40 h-16 flex items-center justify-center overflow-hidden shadow-sm">
+            <img src={logoAsset.url} alt="RobustUS" className="w-[90%] h-[90%] object-contain" />
+          </div>
+          <div className="text-center space-y-1">
+            <h2 className="text-3xl sm:text-4xl font-black text-[#0047ab] uppercase italic tracking-tighter">CADASTRO</h2>
+            <p className="text-base sm:text-lg font-bold text-slate-500 uppercase tracking-widest leading-tight">Preencha para começar!</p>
+          </div>
         </div>
 
         <form className="flex flex-col gap-4 w-full" onSubmit={handleStartGame}>
