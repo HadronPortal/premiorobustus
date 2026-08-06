@@ -196,6 +196,27 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
                   if (errors.phone) setErrors(prev => ({ ...prev, phone: "" }));
                 }}
                 autoComplete="tel"
+                onBlur={() => {
+                  const cleaned = normalizePhoneBR(phone);
+                  if (cleaned.length > 0 && cleaned.length < 10) {
+                    setErrors(prev => ({ ...prev, phone: "Telefone incompleto. Digite DDD + número." }));
+                  } else if (cleaned.length === 0) {
+                    setErrors(prev => ({ ...prev, phone: "Informe seu telefone." }));
+                  }
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    const cleaned = normalizePhoneBR(phone);
+                    if (cleaned.length < 10) {
+                      e.preventDefault();
+                      if (cleaned.length === 0) {
+                        setErrors(prev => ({ ...prev, phone: "Informe seu telefone." }));
+                      } else {
+                        setErrors(prev => ({ ...prev, phone: "Telefone incompleto. Digite DDD + número." }));
+                      }
+                    }
+                  }
+                }}
                 className={inputClass("phone")}
               />
             </div>
@@ -304,11 +325,11 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
           <motion.button
             whileTap={!isFormInvalid() ? { scale: 0.98 } : {}}
             type="submit"
-            disabled={busy || isFormInvalid()}
-            className={`w-full py-3 rounded-xl shadow-xl flex items-center justify-center gap-3 border-b-[4px] mt-1 transition-all ${
+            disabled={busy}
+            className={`w-full py-3 rounded-xl shadow-xl flex items-center justify-center gap-3 border-b-[4px] mt-1 transition-all text-white ${
               !isFormInvalid()
-                ? "bg-[var(--robustus-orange)] border-[var(--robustus-orange-hover)] active:border-b-0 cursor-pointer"
-                : "bg-slate-300 border-slate-400 cursor-not-allowed opacity-60"
+                ? "bg-[var(--robustus-orange)] border-[var(--robustus-orange-hover)] active:border-b-0 cursor-pointer opacity-100"
+                : "bg-[var(--robustus-orange)] border-[var(--robustus-orange-hover)] cursor-pointer opacity-55"
             } ${busy ? "opacity-70 grayscale" : ""}`}
           >
             <span className="text-lg font-black text-white tracking-widest uppercase italic">
