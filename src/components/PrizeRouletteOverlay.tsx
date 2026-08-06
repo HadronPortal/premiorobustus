@@ -280,20 +280,26 @@ export default function PrizeRouletteOverlay({
 
     const prizesToUse = activeConfigs.length > 0 ? activeConfigs : DEFAULT_PRIZES;
     
-    // Weighted random
+    // Lógica de sorteio baseada em pesos (chance)
     const random = Math.random() * 100;
     let cumulative = 0;
     let index = 0;
-    for (let i = 0; i < prizesToUse.length; i++) {
-      cumulative += prizesToUse[i].chance;
+    
+    // Filtramos apenas os ativos para o sorteio real
+    const activeOnly = prizesToUse.filter(c => c.enabled);
+    if (activeOnly.length === 0) return; // Segurança
+
+    for (let i = 0; i < activeOnly.length; i++) {
+      cumulative += activeOnly[i].chance;
       if (random <= cumulative) {
         index = i;
         break;
       }
     }
     
-    const prize = prizesToUse[index].name;
-    const sliceAngle = 360 / prizesToUse.length;
+    const prize = activeOnly[index].name;
+    const sliceAngle = 360 / activeOnly.length;
+    // O alvo visual deve ser exatamente o índice do prêmio sorteado na lista que a roleta está exibindo
     const centerAngle = index * sliceAngle + sliceAngle / 2;
     const currentRotation = rotationRef.current;
     const currentNormalized = normalizeDegrees(currentRotation);
