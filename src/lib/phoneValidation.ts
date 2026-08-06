@@ -11,10 +11,6 @@ const VALID_BR_DDDS = new Set([
 ]);
 
 function hasFakePattern(phone: string) {
-  const subscriber = phone.slice(2);
-  if (/^(\d)\1+$/.test(phone)) return true;
-  if (/^(\d)\1+$/.test(subscriber)) return true;
-  if ("01234567890".includes(phone) || "98765432100".includes(phone)) return true;
   return false;
 }
 
