@@ -226,7 +226,8 @@ export default function PrizeRouletteOverlay({
         const start = index * sliceAngle;
         const end = start + sliceAngle;
         const mid = start + sliceAngle / 2;
-        const label = pointAt(mid, 82); // Increased radius slightly to move away from center
+        const labelRadius = 78; // Slightly closer to center to avoid touching edges
+        const label = pointAt(mid, labelRadius);
         
         let meta = (PRIZE_META as any)[prize];
         if (!meta) {
@@ -241,7 +242,6 @@ export default function PrizeRouletteOverlay({
           }
           
           meta = {
-            icon: "🎁",
             lines,
             colorA: index % 2 === 0 ? "#0a62d9" : "#ffad35",
             colorB: index % 2 === 0 ? "#003f9b" : "#ff8514",
@@ -355,13 +355,17 @@ export default function PrizeRouletteOverlay({
   const wheelIsInteractive = phase === "score" && !decidedRef.current;
 
   return (
-    <div className="prize-roulette-overlay">
-      <div className="roulette-light roulette-light-a" />
-      <div className="roulette-light roulette-light-b" />
+    <div className="prize-roulette-overlay relative overflow-hidden">
       <div className="roulette-pattern" />
 
-      <div className="roulette-logo-card" aria-label="RobustUS">
-        <img src={LOGO_URL} alt="RobustUS" />
+      <div className="absolute bottom-6 right-6 w-24 sm:w-32 z-[60] opacity-80 pointer-events-none safe-area-bottom">
+        <img 
+          src={LOGO_URL} 
+          alt="RobustUS" 
+          className="w-full h-auto object-contain"
+          style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))' }}
+          draggable={false}
+        />
       </div>
 
       {(phase === "score" || phase === "spinning" || phase === "result") && (
@@ -444,31 +448,31 @@ export default function PrizeRouletteOverlay({
                           dominantBaseline="middle"
                           fontFamily="Arial, Helvetica, sans-serif"
                           fontWeight="900"
-                          fontSize={hasTwoLines ? "8.8" : "11.2"}
+                          fontSize={hasTwoLines ? "7.5" : "9.5"}
                           letterSpacing=".4"
                           fill="#ffffff"
                           stroke="rgba(0,31,85,.85)"
-                          strokeWidth="2.5"
+                          strokeWidth="2.2"
                           paintOrder="stroke"
-                          style={{ textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}
+                          style={{ textShadow: '0 1px 2px rgba(0,0,0,0.3)', pointerEvents: 'none' }}
                         >
                           {segment.meta.lines[0].toUpperCase()}
                         </text>
                         {hasTwoLines && (
                           <text
                             x={segment.label.x}
-                            y={segment.label.y + 8}
+                            y={segment.label.y + 7.5}
                             textAnchor="middle"
                             dominantBaseline="middle"
                             fontFamily="Arial, Helvetica, sans-serif"
                             fontWeight="900"
-                            fontSize="7.8"
+                            fontSize="6.8"
                             letterSpacing=".25"
                             fill="#ffffff"
                             stroke="rgba(0,31,85,.85)"
-                            strokeWidth="2.2"
+                            strokeWidth="1.8"
                             paintOrder="stroke"
-                            style={{ textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}
+                            style={{ textShadow: '0 1px 2px rgba(0,0,0,0.3)', pointerEvents: 'none' }}
                           >
                             {segment.meta.lines[1].toUpperCase()}
                           </text>

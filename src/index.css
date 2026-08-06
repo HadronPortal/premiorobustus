@@ -161,6 +161,10 @@
   flex-direction: column;
 }
 
+.prize-roulette-overlay .roulette-light {
+  display: none !important;
+}
+
 .game-screen {
   padding: 8px 10px;
   box-sizing: border-box;
