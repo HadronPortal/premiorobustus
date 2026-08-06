@@ -336,7 +336,7 @@ export default function PrizeRouletteOverlay({
     startSpin();
   };
 
-  const resultMeta = chosen ? PRIZE_META[chosen] : null;
+  const resultMeta = chosen ? (PRIZE_META as any)[chosen] || { icon: "🎁", lines: [String(chosen).slice(0, 10)] } : null;
   const wheelIsInteractive = phase === "score" && !decidedRef.current;
 
   return (
