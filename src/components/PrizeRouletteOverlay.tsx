@@ -486,9 +486,15 @@ export default function PrizeRouletteOverlay({
 
                   <circle r="14" fill="#ffffff" stroke="var(--robustus-orange)" strokeWidth="4" />
                   <circle r="9" fill="#f4f8ff" stroke="#d7e6fb" strokeWidth="1.2" />
-                  <text x="0" y="0.7" textAnchor="middle" dominantBaseline="middle" fontSize="10.5">
-                    🎁
-                  </text>
+                  <image 
+                    href={LOGO_URL} 
+                    x="-10" 
+                    y="-10" 
+                    width="20" 
+                    height="20" 
+                    preserveAspectRatio="xMidYMid峰 contain"
+                    style={{ pointerEvents: 'none' }}
+                  />
                 </svg>
               </div>
             </div>
