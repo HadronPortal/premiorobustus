@@ -37,9 +37,7 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
     if (phone.length === 0) {
       newErrors.phone = "Informe seu telefone.";
     } else if (cleanedPhone.length < 10) {
-      newErrors.phone = "Telefone incompleto. Digite DDD + número.";
-    } else if (!isValidPhoneBR(cleanedPhone)) {
-      newErrors.phone = "Digite um telefone brasileiro válido.";
+      newErrors.phone = "Telefone incompleto. Digite pelo menos 10 números.";
     }
 
     if (participantType === "") {
@@ -63,7 +61,6 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
     return (
       name.trim().length < 3 ||
       cleanedPhone.length < 10 ||
-      !isValidPhoneBR(cleanedPhone) ||
       participantType === "" ||
       (participantType === "outros" && participantTypeOther.trim().length < 2) ||
       !accepted
@@ -199,7 +196,7 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
                 onBlur={() => {
                   const cleaned = normalizePhoneBR(phone);
                   if (cleaned.length > 0 && cleaned.length < 10) {
-                    setErrors(prev => ({ ...prev, phone: "Telefone incompleto. Digite DDD + número." }));
+                    setErrors(prev => ({ ...prev, phone: "Telefone incompleto. Digite pelo menos 10 números." }));
                   } else if (cleaned.length === 0) {
                     setErrors(prev => ({ ...prev, phone: "Informe seu telefone." }));
                   }
@@ -212,7 +209,7 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
                       if (cleaned.length === 0) {
                         setErrors(prev => ({ ...prev, phone: "Informe seu telefone." }));
                       } else {
-                        setErrors(prev => ({ ...prev, phone: "Telefone incompleto. Digite DDD + número." }));
+                        setErrors(prev => ({ ...prev, phone: "Telefone incompleto. Digite pelo menos 10 números." }));
                       }
                     }
                   }
@@ -326,10 +323,10 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
             whileTap={!isFormInvalid() ? { scale: 0.98 } : {}}
             type="submit"
             disabled={busy}
-            className={`w-full py-3 rounded-xl shadow-xl flex items-center justify-center gap-3 border-b-[4px] mt-1 transition-all text-white bg-[var(--robustus-orange)] border-[#c96f00] ${
+            className={`w-full py-3 rounded-xl shadow-xl flex items-center justify-center gap-3 border-b-[6px] border-[#c96f00] mt-1 transition-all text-white bg-[var(--robustus-orange)] disabled:bg-[var(--robustus-orange)] disabled:text-white disabled:opacity-60 disabled:cursor-not-allowed ${
               !isFormInvalid()
                 ? "active:border-b-0 cursor-pointer opacity-100"
-                : "cursor-pointer opacity-55"
+                : ""
             } ${busy ? "opacity-70 grayscale" : ""}`}
           >
             <span className="text-lg font-black text-white tracking-widest uppercase italic">
