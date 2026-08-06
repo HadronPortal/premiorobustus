@@ -307,7 +307,7 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
             disabled={busy || isFormInvalid()}
             className={`w-full py-3 rounded-xl shadow-xl flex items-center justify-center gap-3 border-b-[4px] mt-1 transition-all ${
               !isFormInvalid()
-                ? "bg-[#f7941d] border-[#d47a00] active:border-b-0 cursor-pointer"
+                ? "bg-[var(--robustus-orange)] border-[var(--robustus-orange-hover)] active:border-b-0 cursor-pointer"
                 : "bg-slate-300 border-slate-400 cursor-not-allowed opacity-60"
             } ${busy ? "opacity-70 grayscale" : ""}`}
           >
