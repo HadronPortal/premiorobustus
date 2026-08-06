@@ -1,6 +1,6 @@
 import React, { useMemo, useRef, useState, useEffect } from "react";
 import { getPrizeSettings, type PrizeConfig, DEFAULT_PRIZES } from "@/lib/prizeSettings";
-import logoAsset from "@/assets/Robustus_Laranja.png.asset.json";
+import logoAsset from "@/assets/logo-branco.png.asset.json";
 
 export const PRIZES = [
   "Copo",
@@ -358,14 +358,17 @@ export default function PrizeRouletteOverlay({
     <div className="prize-roulette-overlay relative overflow-hidden">
       <div className="roulette-pattern" />
 
-      <div className="absolute bottom-6 right-6 w-24 sm:w-32 z-[60] opacity-80 pointer-events-none safe-area-bottom">
+      <div className="absolute bottom-6 right-6 flex flex-col items-center z-[60] opacity-80 pointer-events-none safe-area-bottom">
         <img 
           src={LOGO_URL} 
-          alt="RobustUS" 
-          className="w-full h-auto object-contain"
+          alt="Logo" 
+          className="w-24 sm:w-32 h-auto object-contain"
           style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))' }}
           draggable={false}
         />
+        <span className="text-white text-[10px] sm:text-xs mt-1 font-medium tracking-wider opacity-90">
+          www.procion.com
+        </span>
       </div>
 
       {(phase === "score" || phase === "spinning" || phase === "result") && (
@@ -483,9 +486,15 @@ export default function PrizeRouletteOverlay({
 
                   <circle r="14" fill="#ffffff" stroke="var(--robustus-orange)" strokeWidth="4" />
                   <circle r="9" fill="#f4f8ff" stroke="#d7e6fb" strokeWidth="1.2" />
-                  <text x="0" y="0.7" textAnchor="middle" dominantBaseline="middle" fontSize="10.5">
-                    🎁
-                  </text>
+                  <image 
+                    href={LOGO_URL} 
+                    x="-8.5" 
+                    y="-8.5" 
+                    width="17" 
+                    height="17" 
+                    preserveAspectRatio="xMidYMid meet"
+                    style={{ pointerEvents: 'none' }}
+                  />
                 </svg>
               </div>
             </div>
