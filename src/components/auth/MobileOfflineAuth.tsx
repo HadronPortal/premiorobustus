@@ -196,7 +196,7 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
                 onBlur={() => {
                   const cleaned = normalizePhoneBR(phone);
                   if (cleaned.length > 0 && cleaned.length < 10) {
-                    setErrors(prev => ({ ...prev, phone: "Telefone incompleto. Digite DDD + número." }));
+                    setErrors(prev => ({ ...prev, phone: "Telefone incompleto. Digite pelo menos 10 números." }));
                   } else if (cleaned.length === 0) {
                     setErrors(prev => ({ ...prev, phone: "Informe seu telefone." }));
                   }
@@ -209,7 +209,7 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
                       if (cleaned.length === 0) {
                         setErrors(prev => ({ ...prev, phone: "Informe seu telefone." }));
                       } else {
-                        setErrors(prev => ({ ...prev, phone: "Telefone incompleto. Digite DDD + número." }));
+                        setErrors(prev => ({ ...prev, phone: "Telefone incompleto. Digite pelo menos 10 números." }));
                       }
                     }
                   }
