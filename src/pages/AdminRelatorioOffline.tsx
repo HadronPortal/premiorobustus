@@ -29,12 +29,29 @@ function csvEscape(v: string) {
   const s = (v ?? '').toString().replace(/\r?\n/g, ' ').replace(/"/g, '""');
   return /[";]/.test(s) ? `"${s}"` : s;
 }
-function download(name: string, content: string, mime: string) {
-  const blob = new Blob([content], { type: mime + ';charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = name; document.body.appendChild(a);
-  a.click(); a.remove(); URL.revokeObjectURL(url);
+async function handleDownload(name: string, content: string, mime: string) {
+  try {
+    const blob = new Blob([content], { type: mime + ';charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 100);
+  } catch (err) {
+    console.error('Download error:', err);
+    // Fallback: Copy to clipboard
+    try {
+      await navigator.clipboard.writeText(content);
+      alert('Não foi possível iniciar o download automático neste dispositivo. O conteúdo foi copiado para sua área de transferência.');
+    } catch (clipErr) {
+      alert('Erro ao exportar dados. Por favor, tente em outro navegador.');
+    }
+  }
 }
 function profileLabel(p: string) {
   if (p === 'lojista') return 'Lojista';
