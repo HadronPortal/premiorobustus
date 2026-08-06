@@ -1,6 +1,6 @@
 import React, { useMemo, useRef, useState, useEffect } from "react";
 import { getPrizeSettings, type PrizeConfig, DEFAULT_PRIZES } from "@/lib/prizeSettings";
-import logoAsset from "@/assets/Robustus_Laranja.png.asset.json";
+import logoAsset from "@/assets/logo-branco.png.asset.json";
 
 export const PRIZES = [
   "Copo",
