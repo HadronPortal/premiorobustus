@@ -28,26 +28,51 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
   const otherValid =
     participantType !== "outros" || participantTypeOther.trim().length >= 2;
 
-  const valid =
-    isValidPhoneBR(phone) &&
-    name.trim().length >= 3 &&
-    participantType !== "" &&
-    otherValid &&
-    accepted;
+  const validateForm = () => {
+    setError("");
+    const cleanedPhone = normalizePhoneBR(phone);
+    const cleanedName = name.trim();
+
+    if (cleanedName.length < 3) {
+      setError("Informe seu nome completo.");
+      return false;
+    }
+    if (phone.length === 0) {
+      setError("Informe seu telefone.");
+      return false;
+    }
+    if (!isValidPhoneBR(cleanedPhone)) {
+      if (cleanedPhone.length < 10) {
+        setError("Digite um telefone válido com DDD.");
+      } else {
+        setError("Informe um telefone brasileiro válido com DDD.");
+      }
+      return false;
+    }
+    if (participantType === "") {
+      setError("Selecione seu perfil.");
+      return false;
+    }
+    if (participantType === "outros" && participantTypeOther.trim().length < 2) {
+      setError("Informe qual é o seu perfil.");
+      return false;
+    }
+    if (!accepted) {
+      setError("Aceite os termos para continuar.");
+      return false;
+    }
+    return true;
+  };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (busy || savingRef.current) return;
-    setError("");
+    
+    if (!validateForm()) return;
+
     const cleanedPhone = normalizePhoneBR(phone);
     const cleanedName = name.trim();
-    if (cleanedName.length < 3) return setError("Informe seu nome.");
-    if (!isValidPhoneBR(cleanedPhone)) return setError("Informe um telefone brasileiro valido com DDD.");
-    if (cleanedPhone.length < 10) return setError("Informe um telefone válido.");
-    if (participantType === "") return setError("Selecione seu perfil para continuar.");
-    if (participantType === "outros" && participantTypeOther.trim().length < 2)
-      return setError("Diga qual é o seu perfil.");
-    if (!accepted) return setError("Aceite a participação para continuar.");
+    
     savingRef.current = true;
     setBusy(true);
     try {
@@ -62,7 +87,6 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
           participantType === "outros" ? participantTypeOther.trim() : "",
       });
       if (game === "cesta") {
-        // 1) UMA pessoa por telefone (upsert no store `participants`).
         await upsertParticipant({
           phone: cleanedPhone,
           name: cleanedName,
@@ -70,7 +94,6 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
           participantTypeOther:
             participantType === "outros" ? participantTypeOther.trim() : "",
         });
-        // 2) Uma nova tentativa em `plays` (status registered).
         await upsertPlay({
           playId,
           phone: cleanedPhone,
@@ -194,6 +217,14 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
                   placeholder="QUAL? (EX: TUTOR, ADESTRADOR...)"
                   value={participantTypeOther}
                   onChange={(e) => setParticipantTypeOther(e.target.value.toUpperCase())}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      otherInputRef.current?.blur();
+                      document.getElementById('terms-checkbox')?.focus();
+                    }
+                  }}
+                  enterKeyHint="next"
                   required
                   maxLength={60}
                   className="w-full bg-slate-100 p-3 px-4 rounded-xl text-lg font-bold text-[#003380] border-2 border-transparent focus:border-[#f7941d] outline-none placeholder:text-slate-400 uppercase"
@@ -207,11 +238,12 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
             <label className="flex items-start gap-3 cursor-pointer">
               <div className="relative mt-1 flex-shrink-0">
                 <input
+                  id="terms-checkbox"
                   type="checkbox"
                   checked={accepted}
                   onChange={(e) => setAccepted(e.target.checked)}
                   required
-                  className="peer appearance-none w-6 h-6 border-2 border-[#0047ab] rounded-lg checked:bg-[#0047ab] cursor-pointer"
+                  className="peer appearance-none w-6 h-6 border-2 border-[#0047ab] rounded-lg checked:bg-[#0047ab] cursor-pointer outline-none focus:ring-2 focus:ring-[#f7941d]"
                 />
                 <CheckCircle2 className="absolute top-0 left-0 w-6 h-6 text-white scale-0 peer-checked:scale-100 pointer-events-none" />
               </div>
@@ -231,14 +263,12 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
           )}
 
           <motion.button
-            whileTap={valid ? { scale: 0.98 } : {}}
+            whileTap={{ scale: 0.98 }}
             type="submit"
-            disabled={busy || !valid}
-            className={`w-full py-3 rounded-xl shadow-xl flex items-center justify-center gap-3 border-b-[4px] mt-1 ${
-              valid
-                ? "bg-[#f7941d] border-[#d47a00] active:border-b-0"
-                : "bg-slate-300 border-slate-400 cursor-not-allowed opacity-60"
-            } ${busy ? "opacity-70 grayscale" : ""}`}
+            disabled={busy}
+            className={`w-full py-3 rounded-xl shadow-xl flex items-center justify-center gap-3 border-b-[4px] mt-1 bg-[#f7941d] border-[#d47a00] active:border-b-0 ${
+              busy ? "opacity-70 grayscale" : ""
+            }`}
           >
             <span className="text-lg font-black text-white tracking-widest uppercase italic">
               {busy ? "INICIANDO..." : "COMEÇAR"}
