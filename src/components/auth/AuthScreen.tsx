@@ -22,9 +22,10 @@ export const AuthScreen: React.FC<Props> = ({ onStart, onClose }) => {
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, phone: formatPhoneBR(e.target.value) });
+    if (error) setError("");
   };
 
-  const isFormValid = isValidPhoneBR(formData.phone) &&
+  const isFormValid = normalizePhoneBR(formData.phone).length === 11 &&
                       formData.name.trim().length >= 3 &&
                       formData.acceptedTerms;
 
@@ -38,23 +39,24 @@ export const AuthScreen: React.FC<Props> = ({ onStart, onClose }) => {
     const { phone, name, acceptedTerms } = formData;
     const cleanedPhone = normalizePhoneBR(phone);
     const cleanedName = String(name || "").trim();
-    if (!cleanedPhone) {
+    
+    if (cleanedName.length < 3) {
+      setError("Informe seu nome completo.");
+      return;
+    }
+
+    if (cleanedPhone.length === 0) {
       setError("Informe seu telefone.");
       return;
     }
 
-    if (!isValidPhoneBR(cleanedPhone)) {
-      setError("Telefone incompleto. Digite todos os numeros.");
-      return;
-    }
-
-    if (!cleanedName) {
-      setError("Informe seu nome.");
+    if (cleanedPhone.length < 11) {
+      setError("Telefone incompleto. Digite todos os números.");
       return;
     }
 
     if (!acceptedTerms) {
-      setError("Aceite as regras para participar.");
+      setError("Aceite os termos para participar.");
       return;
     }
 
@@ -162,7 +164,14 @@ export const AuthScreen: React.FC<Props> = ({ onStart, onClose }) => {
                 inputMode="tel"
                 placeholder="TELEFONE"
                 value={formData.phone}
+                maxLength={15}
                 onChange={handlePhoneChange}
+                onPaste={(e) => {
+                  e.preventDefault();
+                  const pasted = e.clipboardData.getData('text');
+                  const cleaned = normalizePhoneBR(pasted);
+                  setFormData({ ...formData, phone: formatPhoneBR(cleaned) });
+                }}
                 required
                 autoComplete="tel"
                 onFocus={(e) => {
