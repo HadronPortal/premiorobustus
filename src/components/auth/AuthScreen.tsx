@@ -164,7 +164,14 @@ export const AuthScreen: React.FC<Props> = ({ onStart, onClose }) => {
                 inputMode="tel"
                 placeholder="TELEFONE"
                 value={formData.phone}
+                maxLength={15}
                 onChange={handlePhoneChange}
+                onPaste={(e) => {
+                  e.preventDefault();
+                  const pasted = e.clipboardData.getData('text');
+                  const cleaned = normalizePhoneBR(pasted);
+                  setFormData({ ...formData, phone: formatPhoneBR(cleaned) });
+                }}
                 required
                 autoComplete="tel"
                 onFocus={(e) => {
