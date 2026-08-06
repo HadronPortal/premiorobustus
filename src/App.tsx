@@ -45,7 +45,7 @@ const isMobileView = () =>
 const BRAND = {
   name: "RobustUS",
   primary: "#0047ab",
-  orange: "#f7941d",
+  orange: "var(--robustus-orange)",
   white: "#ffffff",
   darkBlue: "#003380",
 };
