@@ -37,9 +37,7 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
     if (phone.length === 0) {
       newErrors.phone = "Informe seu telefone.";
     } else if (cleanedPhone.length < 10) {
-      newErrors.phone = "Telefone incompleto. Digite DDD + número.";
-    } else if (!isValidPhoneBR(cleanedPhone)) {
-      newErrors.phone = "Digite um telefone brasileiro válido.";
+      newErrors.phone = "Telefone incompleto. Digite pelo menos 10 números.";
     }
 
     if (participantType === "") {
