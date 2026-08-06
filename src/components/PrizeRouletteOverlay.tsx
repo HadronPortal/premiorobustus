@@ -504,9 +504,9 @@ export default function PrizeRouletteOverlay({
             </div>
           )}
 
-          {phase === "result" && chosen && resultMeta && (
+          {phase === "result" && chosen && (
             <div className="prize-result-card">
-              <div className="prize-result-icon">{resultMeta.icon}</div>
+              <div className="prize-result-icon">🎁</div>
               <div>
                 <span>Voce ganhou</span>
                 <strong>{chosen}</strong>
