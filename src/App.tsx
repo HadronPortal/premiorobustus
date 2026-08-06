@@ -45,7 +45,7 @@ const isMobileView = () =>
 const BRAND = {
   name: "RobustUS",
   primary: "#0047ab",
-  orange: "#f7941d",
+  orange: "var(--robustus-orange)",
   white: "#ffffff",
   darkBlue: "#003380",
 };
@@ -108,7 +108,7 @@ const Leaderboard = ({ entries, loading }: { entries: LeaderboardEntry[], loadin
     return (
       <div className="leaderboard-container text-center py-4">
         <h3 className="leaderboard-title">Melhores tempos</h3>
-        <p className="text-[10px] font-bold text-[#f7941d] uppercase tracking-widest mt-2">Seja o primeiro no placar!</p>
+        <p className="text-[10px] font-bold text-[var(--robustus-orange)] uppercase tracking-widest mt-2">Seja o primeiro no placar!</p>
       </div>
     );
   }
@@ -444,7 +444,7 @@ const GameContent = () => {
 
   return (
     <div className="totem-wrapper">
-      <div className={`totem-container flex flex-col items-center justify-start relative select-none shadow-2xl overflow-x-hidden ${gameState === 'PLAYING' ? 'overflow-hidden' : 'overflow-y-auto'}`}>
+      <div className={`totem-container flex flex-col items-center justify-start relative select-none shadow-2xl overflow-x-hidden ${gameState === 'PLAYING' ? 'overflow-hidden' : 'overflow-y-auto'}`} style={{ '--robustus-orange': BRAND.orange } as any}>
       
       {/* Background Container */}
       <div className="absolute inset-0 z-0">

@@ -406,7 +406,7 @@ export default function PrizeRouletteOverlay({
                   </defs>
 
                   <circle r="122" fill="#ffffff" />
-                  <circle r="116" fill="#ff9418" />
+                  <circle r="116" fill="var(--robustus-orange)" />
                   <circle r="112" fill="#ffffff" />
 
                   {segments.map((segment) => {
@@ -426,7 +426,7 @@ export default function PrizeRouletteOverlay({
                           cy={segment.icon.y}
                           r="10"
                           fill="rgba(255,255,255,.86)"
-                          stroke="rgba(255,148,24,.68)"
+                          stroke="rgba(247,148,29,.68)"
                           strokeWidth="1.1"
                         />
                         <text
@@ -476,7 +476,7 @@ export default function PrizeRouletteOverlay({
                     );
                   })}
 
-                  <circle r="14" fill="#ffffff" stroke="#ff9418" strokeWidth="4" />
+                  <circle r="14" fill="#ffffff" stroke="var(--robustus-orange)" strokeWidth="4" />
                   <circle r="9" fill="#f4f8ff" stroke="#d7e6fb" strokeWidth="1.2" />
                   <text x="0" y="0.7" textAnchor="middle" dominantBaseline="middle" fontSize="10.5">
                     🎁
