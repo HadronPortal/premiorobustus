@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState, useEffect } from "react";
-import { getPrizeSettings, type PrizeConfig } from "@/lib/prizeSettings";
+import { getPrizeSettings, type PrizeConfig, DEFAULT_PRIZES } from "@/lib/prizeSettings";
 
 export const PRIZES = [
   "Copo",
