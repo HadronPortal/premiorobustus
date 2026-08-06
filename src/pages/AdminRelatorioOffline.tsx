@@ -352,9 +352,167 @@ export default function AdminRelatorioOffline() {
           </div>
         </section>
       </div>
+      </div>
+
+      {showSettings && (
+        <div style={modalOverlay}>
+          <div style={modalContent}>
+            <div style={modalHeader}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <Settings size={20} color="#0047ab" />
+                <h2 style={{ margin: 0, fontSize: 18, fontWeight: 800 }}>Configurações da Roleta</h2>
+              </div>
+              <button onClick={() => setShowSettings(false)} style={closeBtn}><X size={20} /></button>
+            </div>
+
+            <div style={modalBody}>
+              <p style={{ fontSize: 13, color: '#64748b', marginBottom: 16 }}>
+                Configure os brindes e suas chances de sorteio. A soma das porcentagens deve ser exatamente 100%.
+              </p>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                {prizeConfigs.map((cfg, idx) => (
+                  <div key={idx} style={{ 
+                    display: 'flex', gap: 8, alignItems: 'center', background: '#f8fafc', 
+                    padding: 8, borderRadius: 8, border: '1px solid #e2e8f0',
+                    opacity: cfg.enabled ? 1 : 0.6
+                  }}>
+                    <input 
+                      type="text" value={cfg.name} 
+                      onChange={(e) => {
+                        const newConfigs = [...prizeConfigs];
+                        newConfigs[idx].name = e.target.value;
+                        setPrizeConfigs(newConfigs);
+                      }}
+                      placeholder="Nome do brinde"
+                      style={{ ...inputStyle, flex: 1 }}
+                    />
+                    <div style={{ position: 'relative', width: 80 }}>
+                      <input 
+                        type="number" value={cfg.chance} 
+                        onChange={(e) => {
+                          const newConfigs = [...prizeConfigs];
+                          newConfigs[idx].chance = Number(e.target.value) || 0;
+                          setPrizeConfigs(newConfigs);
+                        }}
+                        style={{ ...inputStyle, width: '100%', paddingRight: 20 }}
+                      />
+                      <span style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', fontSize: 12, color: '#94a3b8' }}>%</span>
+                    </div>
+                    <button 
+                      onClick={() => {
+                        const newConfigs = [...prizeConfigs];
+                        newConfigs[idx].enabled = !newConfigs[idx].enabled;
+                        setPrizeConfigs(newConfigs);
+                      }}
+                      style={{ ...iconBtn, color: cfg.enabled ? '#059669' : '#94a3b8' }}
+                      title={cfg.enabled ? 'Ativo' : 'Inativo'}
+                    >
+                      <Check size={18} />
+                    </button>
+                    <button 
+                      onClick={() => {
+                        setPrizeConfigs(prizeConfigs.filter((_, i) => i !== idx));
+                      }}
+                      style={{ ...iconBtn, color: '#dc2626' }}
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              <button 
+                onClick={() => setPrizeConfigs([...prizeConfigs, { name: '', chance: 0, enabled: true }])}
+                style={{ ...btnSecondary, marginTop: 16, width: '100%', justifyContent: 'center' }}
+              >
+                <Plus size={16} /> Adicionar Brinde
+              </button>
+
+              <div style={{ 
+                marginTop: 20, padding: 12, borderRadius: 10, 
+                background: prizeConfigs.reduce((acc, c) => acc + (c.enabled ? c.chance : 0), 0) === 100 ? '#f0fdf4' : '#fef2f2',
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center'
+              }}>
+                <span style={{ fontSize: 14, fontWeight: 700 }}>Total (Ativos):</span>
+                <span style={{ 
+                  fontSize: 16, fontWeight: 900, 
+                  color: prizeConfigs.reduce((acc, c) => acc + (c.enabled ? c.chance : 0), 0) === 100 ? '#16a34a' : '#dc2626' 
+                }}>
+                  {prizeConfigs.reduce((acc, c) => acc + (c.enabled ? c.chance : 0), 0)}%
+                </span>
+              </div>
+
+              {settingsMsg && (
+                <div style={{ marginTop: 12, padding: 10, borderRadius: 8, fontSize: 13, background: '#fef2f2', color: '#991b1b', border: '1px solid #fecaca' }}>
+                  {settingsMsg}
+                </div>
+              )}
+            </div>
+
+            <div style={{ padding: 16, borderTop: '1px solid #e2e8f0', display: 'flex', gap: 10 }}>
+              <button 
+                onClick={() => setShowSettings(false)}
+                style={{ ...btnSecondary, flex: 1, justifyContent: 'center' }}
+              >
+                Cancelar
+              </button>
+              <button 
+                onClick={async () => {
+                  const total = prizeConfigs.reduce((acc, c) => acc + (c.enabled ? c.chance : 0), 0);
+                  if (total !== 100) {
+                    setSettingsMsg('A soma das porcentagens dos itens ativos deve ser exatamente 100%.');
+                    return;
+                  }
+                  setSavingSettings(true);
+                  try {
+                    await savePrizeSettings(prizeConfigs);
+                    setSettingsMsg('');
+                    setShowSettings(false);
+                  } catch (e) {
+                    setSettingsMsg('Erro ao salvar configurações.');
+                  } finally {
+                    setSavingSettings(false);
+                  }
+                }}
+                disabled={savingSettings}
+                style={{ ...btnPrimary, flex: 1, justifyContent: 'center' }}
+              >
+                {savingSettings ? 'Salvando...' : 'Salvar Alterações'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
+
+const modalOverlay: React.CSSProperties = {
+  position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', 
+  display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, padding: 16
+};
+const modalContent: React.CSSProperties = {
+  background: 'white', borderRadius: 16, width: '100%', maxWidth: 500, 
+  maxHeight: '90dvh', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)'
+};
+const modalHeader: React.CSSProperties = {
+  padding: 16, borderBottom: '1px solid #e2e8f0', display: 'flex', 
+  justifyContent: 'space-between', alignItems: 'center'
+};
+const modalBody: React.CSSProperties = {
+  padding: 16, overflowY: 'auto', flex: 1
+};
+const closeBtn: React.CSSProperties = {
+  background: 'transparent', border: 0, color: '#64748b', cursor: 'pointer', padding: 4
+};
+const inputStyle: React.CSSProperties = {
+  padding: '8px 10px', borderRadius: 6, border: '1px solid #cbd5e1', outline: 'none', fontSize: 14
+};
+const iconBtn: React.CSSProperties = {
+  background: 'white', border: '1px solid #e2e8f0', borderRadius: 6, 
+  padding: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'
+};
 
 const btnPrimary: React.CSSProperties = { display: 'inline-flex', alignItems: 'center', gap: 6, background: '#0047ab', color: 'white', border: 0, padding: '10px 14px', borderRadius: 10, fontWeight: 700, cursor: 'pointer' };
 const btnSecondary: React.CSSProperties = { display: 'inline-flex', alignItems: 'center', gap: 6, background: 'white', color: '#0f172a', border: '1px solid #cbd5e1', padding: '10px 14px', borderRadius: 10, fontWeight: 700, cursor: 'pointer' };
