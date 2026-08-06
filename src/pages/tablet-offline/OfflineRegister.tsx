@@ -28,11 +28,11 @@ export default function OfflineRegister() {
       return;
     }
     if (!isValidPhoneBR(cleanedPhone)) {
-      setError("Telefone incompleto. Digite pelo menos 10 numeros.");
+      setError("Telefone incompleto. Digite todos os numeros.");
       return;
     }
-    if (cleanedPhone.length < 10) {
-      setError("Informe um telefone válido.");
+    if (cleanedPhone.length < 11) {
+      setError("Telefone incompleto. Digite todos os numeros.");
       return;
     }
     // guarda rascunho para a tela do jogo recuperar

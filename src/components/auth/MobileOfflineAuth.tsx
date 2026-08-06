@@ -36,8 +36,8 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
     
     if (cleanedPhone.length === 0) {
       newErrors.phone = "Informe seu telefone.";
-    } else if (cleanedPhone.length < 10) {
-      newErrors.phone = "Telefone incompleto. Digite pelo menos 10 números.";
+    } else if (cleanedPhone.length < 11) {
+      newErrors.phone = "Telefone incompleto. Digite todos os números.";
     }
 
     if (participantType === "") {
@@ -60,7 +60,7 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
     const cleanedPhone = normalizePhoneBR(phone);
     return (
       name.trim().length < 3 ||
-      cleanedPhone.length < 10 ||
+      cleanedPhone.length < 11 ||
       participantType === "" ||
       (participantType === "outros" && participantTypeOther.trim().length < 2) ||
       !accepted
@@ -195,8 +195,8 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
                 autoComplete="tel"
                 onBlur={() => {
                   const cleaned = normalizePhoneBR(phone);
-                  if (cleaned.length > 0 && cleaned.length < 10) {
-                    setErrors(prev => ({ ...prev, phone: "Telefone incompleto. Digite pelo menos 10 números." }));
+                  if (cleaned.length > 0 && cleaned.length < 11) {
+                    setErrors(prev => ({ ...prev, phone: "Telefone incompleto. Digite todos os números." }));
                   } else if (cleaned.length === 0) {
                     setErrors(prev => ({ ...prev, phone: "Informe seu telefone." }));
                   }
@@ -204,12 +204,12 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
                     const cleaned = normalizePhoneBR(phone);
-                    if (cleaned.length < 10) {
+                    if (cleaned.length < 11) {
                       e.preventDefault();
                       if (cleaned.length === 0) {
                         setErrors(prev => ({ ...prev, phone: "Informe seu telefone." }));
                       } else {
-                        setErrors(prev => ({ ...prev, phone: "Telefone incompleto. Digite pelo menos 10 números." }));
+                        setErrors(prev => ({ ...prev, phone: "Telefone incompleto. Digite todos os números." }));
                       }
                     }
                   }
@@ -329,7 +329,7 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
               borderBottomColor: "var(--robustus-orange-hover)",
               opacity: busy ? 0.7 : isFormInvalid() ? 0.88 : 1,
             }}
-            className={`w-full py-3 rounded-xl shadow-xl flex items-center justify-center gap-3 border-b-[6px] mt-1 transition-all text-white ${
+            className={`robustus-submit-button w-full py-3 rounded-xl shadow-xl flex items-center justify-center gap-3 border-b-[6px] mt-1 transition-all text-white ${
               !isFormInvalid()
                 ? "active:border-b-0 cursor-pointer opacity-100"
                 : "cursor-pointer"

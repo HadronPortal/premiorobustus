@@ -44,7 +44,7 @@ export const AuthScreen: React.FC<Props> = ({ onStart, onClose }) => {
     }
 
     if (!isValidPhoneBR(cleanedPhone)) {
-      setError("Telefone incompleto. Digite pelo menos 10 numeros.");
+      setError("Telefone incompleto. Digite todos os numeros.");
       return;
     }
 
@@ -81,7 +81,7 @@ export const AuthScreen: React.FC<Props> = ({ onStart, onClose }) => {
 
       if (!data?.ok) {
         if (data?.status === "invalid_phone") {
-          setError("Informe um telefone válido.");
+          setError("Telefone incompleto. Digite todos os numeros.");
         } else if (data?.status === "invalid_name") {
           setError("Informe seu nome.");
         } else if (data?.status === "event_inactive") {
@@ -214,7 +214,7 @@ export const AuthScreen: React.FC<Props> = ({ onStart, onClose }) => {
               borderBottomColor: "var(--robustus-orange-hover)",
               opacity: isStarting ? 0.7 : !isFormValid ? 0.88 : 1,
             }}
-            className={`w-full py-3 sm:py-4 rounded-xl sm:rounded-2xl shadow-xl flex items-center justify-center gap-3 border-b-[4px] sm:border-b-[6px] transition-all mt-1 text-white active:border-b-0
+            className={`robustus-submit-button w-full py-3 sm:py-4 rounded-xl sm:rounded-2xl shadow-xl flex items-center justify-center gap-3 border-b-[4px] sm:border-b-[6px] transition-all mt-1 text-white active:border-b-0
               ${!isFormValid ? 'cursor-pointer' : ''}
               ${isStarting ? 'grayscale cursor-not-allowed' : ''}
             `}

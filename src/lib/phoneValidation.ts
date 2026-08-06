@@ -16,5 +16,5 @@ export function formatPhoneBR(value: string) {
 }
 
 export function isValidPhoneBR(value: string) {
-  return normalizePhoneBR(value).length >= 10;
+  return normalizePhoneBR(value).length >= 11;
 }

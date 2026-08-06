@@ -116,6 +116,20 @@
   word-break: break-all;
 }
 
+.robustus-submit-button,
+.robustus-submit-button[aria-disabled="true"],
+.robustus-submit-button:disabled {
+  background: #f7941d !important;
+  background-color: #f7941d !important;
+  border-bottom-color: #c96f00 !important;
+  color: #ffffff !important;
+}
+
+.robustus-submit-button span,
+.robustus-submit-button svg {
+  color: #ffffff !important;
+}
+
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
