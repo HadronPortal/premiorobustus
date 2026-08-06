@@ -61,7 +61,6 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
     return (
       name.trim().length < 3 ||
       cleanedPhone.length < 10 ||
-      !isValidPhoneBR(cleanedPhone) ||
       participantType === "" ||
       (participantType === "outros" && participantTypeOther.trim().length < 2) ||
       !accepted
