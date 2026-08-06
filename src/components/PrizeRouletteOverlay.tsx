@@ -32,7 +32,7 @@ type PrizeMeta = {
   colorB: string;
 };
 
-const LOGO_URL = "/brand/procion-logo-branco.png";
+const LOGO_URL = "/brand/procion-logo-branco-crop.png";
 
 const PRIZE_META: Record<Prize, PrizeMeta> = {
   Copo: {
@@ -357,15 +357,15 @@ export default function PrizeRouletteOverlay({
     <div className="prize-roulette-overlay relative overflow-hidden">
       <div className="roulette-pattern" />
 
-      <div className="absolute bottom-3 right-5 flex flex-col items-center z-[60] opacity-90 pointer-events-none safe-area-bottom">
+      <div className="absolute bottom-2 right-5 flex flex-col items-center z-[60] opacity-95 pointer-events-none safe-area-bottom">
         <img 
           src={LOGO_URL} 
           alt="Logo" 
-          className="w-36 sm:w-44 h-auto object-contain"
+          className="w-48 sm:w-56 h-auto object-contain"
           style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))' }}
           draggable={false}
         />
-        <span className="text-white text-[11px] sm:text-sm mt-0 font-medium tracking-wider opacity-95">
+        <span className="text-white text-[11px] sm:text-sm -mt-0.5 font-medium tracking-wider opacity-95">
           www.procion.com
         </span>
       </div>
