@@ -488,11 +488,11 @@ export default function PrizeRouletteOverlay({
                   <circle r="9" fill="#f4f8ff" stroke="#d7e6fb" strokeWidth="1.2" />
                   <image 
                     href={LOGO_URL} 
-                    x="-10" 
-                    y="-10" 
-                    width="20" 
-                    height="20" 
-                    preserveAspectRatio="xMidYMid峰 contain"
+                    x="-8.5" 
+                    y="-8.5" 
+                    width="17" 
+                    height="17" 
+                    preserveAspectRatio="xMidYMid meet"
                     style={{ pointerEvents: 'none' }}
                   />
                 </svg>
