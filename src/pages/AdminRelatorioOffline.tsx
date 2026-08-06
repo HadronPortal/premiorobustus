@@ -477,7 +477,7 @@ export default function AdminRelatorioOffline() {
                 onClick={async () => {
                   const total = prizeConfigs.reduce((acc, c) => acc + (c.enabled ? c.chance : 0), 0);
                   if (total !== 100) {
-                    setSettingsMsg('A soma das porcentagens dos itens ativos deve ser exatamente 100%.');
+                    setSettingsMsg(`Erro: A soma das porcentagens (itens ativos) é ${total}%. Deve ser exatamente 100%.`);
                     return;
                   }
                   setSavingSettings(true);
