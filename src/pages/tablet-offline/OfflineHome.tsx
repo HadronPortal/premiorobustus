@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { PawPrint } from "lucide-react";
 import logoAsset from "@/assets/Robustus_Laranja.png.asset.json";
+import cestaCardAsset from "@/assets/cesta-final.png.asset.json";
 import { ensureOfflineServiceWorker } from "./registerOfflineSW";
 import { OfflineBannerCarousel } from "./OfflineBannerCarousel";
 
@@ -71,7 +72,7 @@ export default function OfflineHome() {
             <div className="flex-1 w-full overflow-hidden relative bg-white">
               <div className="absolute inset-0 flex items-center justify-center p-1">
                 <img
-                  src="/cesta-final.png"
+                  src={cestaCardAsset.url}
                   alt="Jogo da Cesta"
                   className="w-full h-full object-contain"
                 />
