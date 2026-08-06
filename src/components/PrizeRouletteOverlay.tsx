@@ -225,28 +225,43 @@ export default function PrizeRouletteOverlay({
 
   const segments = useMemo(
     () => {
-      const prizesToUse = activeConfigs.length > 0 ? activeConfigs.map(c => c.name) : PRIZES;
-      const sliceAngle = 360 / prizesToUse.length;
+      const configsToUse = activeConfigs.length > 0 ? activeConfigs : DEFAULT_PRIZES;
+      const sliceAngle = 360 / configsToUse.length;
 
-      return prizesToUse.map((prize, index) => {
+      return configsToUse.map((config, index) => {
+        const prize = config.name;
         const start = index * sliceAngle;
         const end = start + sliceAngle;
         const mid = start + sliceAngle / 2;
-        const label = pointAt(mid, 86);
-        const icon = pointAt(mid, 57);
+        const label = pointAt(mid, 82); // Increased radius slightly to move away from center
+        
+        let meta = (PRIZE_META as any)[prize];
+        if (!meta) {
+          // Automatic lines for custom prizes
+          const words = prize.split(' ');
+          let lines: [string] | [string, string];
+          if (words.length > 1 && prize.length > 8) {
+            const midIndex = Math.ceil(words.length / 2);
+            lines = [words.slice(0, midIndex).join(' '), words.slice(midIndex).join(' ')];
+          } else {
+            lines = [prize];
+          }
+          
+          meta = {
+            icon: "🎁",
+            lines,
+            colorA: index % 2 === 0 ? "#0a62d9" : "#ffad35",
+            colorB: index % 2 === 0 ? "#003f9b" : "#ff8514",
+          };
+        }
+
         return {
           prize,
           index,
           mid,
           label,
-          icon,
           path: slicePath(start, end),
-          meta: (PRIZE_META as any)[prize] || {
-            icon: "🎁",
-            lines: [prize.slice(0, 10)],
-            colorA: index % 2 === 0 ? "#0a62d9" : "#ffad35",
-            colorB: index % 2 === 0 ? "#003f9b" : "#ff8514",
-          },
+          meta,
           sliceAngle
         };
       });
