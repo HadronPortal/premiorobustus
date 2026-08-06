@@ -477,7 +477,7 @@ const GameContent = () => {
                 onPointerCancel={cancelAdminPress}
                 onPointerLeave={cancelAdminPress}
               >
-                <img src={logoAsset.url} alt="Logo" className="w-[90%] h-[90%] object-contain" />
+                <img src={logoAsset.url} alt="RobustUS" className="w-[90%] h-[90%] object-contain" />
               </div>
             </motion.div>
 
