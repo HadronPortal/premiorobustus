@@ -487,7 +487,7 @@ const GameContent = () => {
               </motion.h1>
             </div>
 
-            <div className="w-full max-w-[min(94vw,420px)] grid grid-cols-1 gap-4 mt-1 place-items-center">
+            <div className="w-full max-w-[min(94vw,520px)] grid grid-cols-1 gap-4 mt-1 place-items-center">
               {/* Card Jogo da Cesta */}
               <motion.button 
                 whileHover={{ scale: 1.05, y: -8 }}
@@ -496,7 +496,7 @@ const GameContent = () => {
                   setSelectedGame('cesta');
                   setGameState('AUTH');
                 }}
-                className="group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-all border-4 border-transparent hover:border-[#0047ab] aspect-[31/40] w-full max-w-[min(74vw,340px)] sm:max-w-none"
+                className="group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-all border-4 border-transparent hover:border-[#0047ab] aspect-[31/40] w-full max-w-[min(74vw,420px)] sm:max-w-none"
               >
                 <div className="flex-1 w-full overflow-hidden relative bg-white">
                   <div className="absolute inset-0 flex flex-col items-center justify-center p-1">
