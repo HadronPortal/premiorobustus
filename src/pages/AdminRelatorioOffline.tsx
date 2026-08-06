@@ -318,7 +318,7 @@ export default function AdminRelatorioOffline() {
           <button onClick={exportCSV} style={btnPrimary}><Download size={16}/> Exportar CSV</button>
           <button onClick={exportTXT} style={btnPrimary}><FileText size={16}/> Exportar TXT</button>
           <button onClick={exportJSON} style={btnSecondary}><Save size={16}/> Backup JSON</button>
-          <button onClick={() => setShowSettings(true)} style={btnSecondary} title="Configurações da Roleta"><Settings size={16}/> Roleta</button>
+          <button onClick={() => setShowSettings(true)} style={btnSecondary} title="Configurações da roleta"><Settings size={16}/></button>
           <button onClick={() => fileRef.current?.click()} style={btnSecondary}><Upload size={16}/> Importar JSON</button>
           <input ref={fileRef} type="file" accept="application/json,.json" style={{ display: 'none' }}
             onChange={(e) => { const f = e.target.files?.[0]; if (f) onImportFile(f); }} />
@@ -405,15 +405,29 @@ export default function AdminRelatorioOffline() {
                     />
                     <div style={{ position: 'relative', width: 80 }}>
                       <input 
-                        type="number" value={cfg.chance} 
+                        type="text" 
+                        inputMode="numeric"
+                        value={cfg.chance === 0 ? '' : cfg.chance} 
+                        onFocus={(e) => {
+                          if (cfg.chance === 0) e.target.value = '';
+                        }}
                         onChange={(e) => {
+                          const val = e.target.value.replace(/\D/g, '');
+                          const num = val === '' ? 0 : Math.min(100, Math.max(0, parseInt(val, 10)));
                           const newConfigs = [...prizeConfigs];
-                          newConfigs[idx].chance = Number(e.target.value) || 0;
+                          newConfigs[idx].chance = num;
                           setPrizeConfigs(newConfigs);
+                        }}
+                        onBlur={(e) => {
+                          if (e.target.value === '') {
+                            const newConfigs = [...prizeConfigs];
+                            newConfigs[idx].chance = 0;
+                            setPrizeConfigs(newConfigs);
+                          }
                         }}
                         style={{ ...inputStyle, width: '100%', paddingRight: 20 }}
                       />
-                      <span style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', fontSize: 12, color: '#94a3b8' }}>%</span>
+                      <span style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', fontSize: 12, color: '#94a3b8', pointerEvents: 'none' }}>%</span>
                     </div>
                     <button 
                       onClick={() => {
