@@ -18,6 +18,7 @@ import {
 import confetti from 'canvas-confetti';
 import { motion, AnimatePresence } from 'framer-motion';
 import logoAsset from "@/assets/Robustus_Laranja.png.asset.json";
+import cestaCardAsset from "@/assets/cesta-final.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthScreen } from './components/auth/AuthScreen';
 import { AdminScreen } from './components/admin/AdminScreen';
@@ -505,7 +506,7 @@ const GameContent = () => {
               >
                 <div className="flex-1 w-full overflow-hidden relative bg-white">
                   <div className="absolute inset-0 flex flex-col items-center justify-center p-1">
-                     <img src="/cesta-final.png" alt="Jogo da Cesta" className="w-full h-full object-contain" />
+                     <img src={cestaCardAsset.url} alt="Jogo da Cesta" className="w-full h-full object-contain" />
                   </div>
                 </div>
               </motion.button>
