@@ -23,8 +23,12 @@ export default function OfflineRegister() {
       setError("Informe o nome completo.");
       return;
     }
+    if (!cleanedPhone) {
+      setError("Informe seu telefone.");
+      return;
+    }
     if (!isValidPhoneBR(cleanedPhone)) {
-      setError("Informe um telefone brasileiro valido com DDD.");
+      setError("Telefone incompleto. Digite pelo menos 10 numeros.");
       return;
     }
     if (cleanedPhone.length < 10) {

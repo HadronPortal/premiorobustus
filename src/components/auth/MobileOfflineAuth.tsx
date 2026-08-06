@@ -75,7 +75,7 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
 
     const cleanedPhone = normalizePhoneBR(phone);
     const cleanedName = name.trim();
-    
+
     savingRef.current = true;
     setBusy(true);
     try {
@@ -323,6 +323,7 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
             whileTap={!isFormInvalid() ? { scale: 0.98 } : {}}
             type="submit"
             disabled={busy}
+            aria-disabled={isFormInvalid()}
             className={`w-full py-3 rounded-xl shadow-xl flex items-center justify-center gap-3 border-b-[6px] border-[#c96f00] mt-1 transition-all text-white bg-[var(--robustus-orange)] disabled:bg-[var(--robustus-orange)] disabled:text-white disabled:opacity-60 disabled:cursor-not-allowed ${
               !isFormInvalid()
                 ? "active:border-b-0 cursor-pointer opacity-100"

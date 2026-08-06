@@ -38,14 +38,13 @@ export const AuthScreen: React.FC<Props> = ({ onStart, onClose }) => {
     const { phone, name, acceptedTerms } = formData;
     const cleanedPhone = normalizePhoneBR(phone);
     const cleanedName = String(name || "").trim();
-
-    if (!isValidPhoneBR(cleanedPhone)) {
-      setError("Informe um telefone brasileiro valido com DDD.");
+    if (!cleanedPhone) {
+      setError("Informe seu telefone.");
       return;
     }
 
-    if (cleanedPhone.length < 10) {
-      setError("Informe um telefone válido.");
+    if (!isValidPhoneBR(cleanedPhone)) {
+      setError("Telefone incompleto. Digite pelo menos 10 numeros.");
       return;
     }
 
@@ -130,7 +129,7 @@ export const AuthScreen: React.FC<Props> = ({ onStart, onClose }) => {
           </div>
         </div>
 
-        <form className="flex flex-col gap-4 w-full" onSubmit={handleStartGame}>
+        <form className="flex flex-col gap-4 w-full" onSubmit={handleStartGame} noValidate>
           
           <div className="flex flex-col gap-3 sm:gap-4">
             <div className="relative">
@@ -208,11 +207,10 @@ export const AuthScreen: React.FC<Props> = ({ onStart, onClose }) => {
           <motion.button 
             whileTap={isFormValid ? { scale: 0.98 } : {}}
             type="submit"
-            disabled={isStarting || !isFormValid}
-            className={`w-full py-3 sm:py-4 rounded-xl sm:rounded-2xl shadow-xl flex items-center justify-center gap-3 border-b-[4px] sm:border-b-[6px] transition-all mt-1
-              ${isFormValid 
-                ? 'bg-[#f7941d] border-[#d47a00] active:border-b-0' 
-                : 'bg-slate-300 border-slate-400 cursor-not-allowed opacity-60'}
+            disabled={isStarting}
+            aria-disabled={!isFormValid}
+            className={`w-full py-3 sm:py-4 rounded-xl sm:rounded-2xl shadow-xl flex items-center justify-center gap-3 border-b-[4px] sm:border-b-[6px] transition-all mt-1 bg-[#f7941d] border-[#d47a00] text-white active:border-b-0
+              ${!isFormValid ? 'opacity-60 cursor-not-allowed' : ''}
               ${isStarting ? 'opacity-70 grayscale' : ''}
             `}
           >
