@@ -297,7 +297,7 @@ export default function JogoCesta() {
           score={roulette.score}
           prizeCode={roulette.prizeCode}
           existingPrize={roulette.prize}
-          onPrizeDecided={async (prize) => {
+          onPrizeDecided={async (prize: any) => {
             const updated = { ...roulette, prize };
             writeRoulette(updated);
             setRoulette(updated);

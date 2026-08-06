@@ -167,7 +167,7 @@ export default function OfflineCatchGame() {
           score={done.score}
           prizeCode={done.prizeCode ?? null}
           existingPrize={done.prize ?? null}
-          onPrizeDecided={(prize: Prize) => {
+          onPrizeDecided={(prize: any) => {
             setOfflinePrize(done.id, prize);
             setDone({ ...done, prize });
           }}
