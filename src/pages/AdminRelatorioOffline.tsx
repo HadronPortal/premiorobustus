@@ -91,7 +91,12 @@ export default function AdminRelatorioOffline() {
     setLoading(false);
   };
 
-  useEffect(() => { if (authed) reload(); }, [authed]);
+  useEffect(() => { 
+    if (authed) {
+      reload();
+      getPrizeSettings().then(setPrizeConfigs);
+    } 
+  }, [authed]);
 
   useEffect(() => {
     if (authed) return;
@@ -296,6 +301,7 @@ export default function AdminRelatorioOffline() {
           <button onClick={exportCSV} style={btnPrimary}><Download size={16}/> Exportar CSV</button>
           <button onClick={exportTXT} style={btnPrimary}><FileText size={16}/> Exportar TXT</button>
           <button onClick={exportJSON} style={btnSecondary}><Save size={16}/> Backup JSON</button>
+          <button onClick={() => setShowSettings(true)} style={btnSecondary} title="Configurações da Roleta"><Settings size={16}/> Roleta</button>
           <button onClick={() => fileRef.current?.click()} style={btnSecondary}><Upload size={16}/> Importar JSON</button>
           <input ref={fileRef} type="file" accept="application/json,.json" style={{ display: 'none' }}
             onChange={(e) => { const f = e.target.files?.[0]; if (f) onImportFile(f); }} />
