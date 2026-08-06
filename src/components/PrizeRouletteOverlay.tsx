@@ -412,7 +412,8 @@ export default function PrizeRouletteOverlay({
 
                   {segments.map((segment) => {
                     const hasTwoLines = segment.meta.lines.length === 2;
-                    const labelY = hasTwoLines ? segment.label.y - 5 : segment.label.y + 2;
+                    // Adjusted Y position to center text in the slice since we removed icons
+                    const labelY = hasTwoLines ? segment.label.y - 4 : segment.label.y + 2;
                     return (
                       <g key={`g-${segment.index}-${segment.prize}`}>
                         <path
@@ -422,23 +423,6 @@ export default function PrizeRouletteOverlay({
                           strokeWidth="2.4"
                           filter="url(#slice-shadow)"
                         />
-                        <circle
-                          cx={segment.icon.x}
-                          cy={segment.icon.y}
-                          r="10"
-                          fill="rgba(255,255,255,.86)"
-                          stroke="rgba(247,148,29,.68)"
-                          strokeWidth="1.1"
-                        />
-                        <text
-                          x={segment.icon.x}
-                          y={segment.icon.y + 1}
-                          textAnchor="middle"
-                          dominantBaseline="middle"
-                          fontSize="9.5"
-                        >
-                          {segment.meta.icon}
-                        </text>
                         <text
                           x={segment.label.x}
                           y={labelY}
@@ -446,29 +430,31 @@ export default function PrizeRouletteOverlay({
                           dominantBaseline="middle"
                           fontFamily="Arial, Helvetica, sans-serif"
                           fontWeight="900"
-                          fontSize={hasTwoLines ? "8.4" : "10.6"}
-                          letterSpacing=".35"
+                          fontSize={hasTwoLines ? "8.8" : "11.2"}
+                          letterSpacing=".4"
                           fill="#ffffff"
-                          stroke="rgba(0,31,85,.72)"
-                          strokeWidth="2.2"
+                          stroke="rgba(0,31,85,.85)"
+                          strokeWidth="2.5"
                           paintOrder="stroke"
+                          style={{ textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}
                         >
                           {segment.meta.lines[0].toUpperCase()}
                         </text>
                         {hasTwoLines && (
                           <text
                             x={segment.label.x}
-                            y={segment.label.y + 7}
+                            y={segment.label.y + 8}
                             textAnchor="middle"
                             dominantBaseline="middle"
                             fontFamily="Arial, Helvetica, sans-serif"
                             fontWeight="900"
-                            fontSize="7.4"
-                            letterSpacing=".2"
+                            fontSize="7.8"
+                            letterSpacing=".25"
                             fill="#ffffff"
-                            stroke="rgba(0,31,85,.72)"
-                            strokeWidth="1.9"
+                            stroke="rgba(0,31,85,.85)"
+                            strokeWidth="2.2"
                             paintOrder="stroke"
+                            style={{ textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}
                           >
                             {segment.meta.lines[1].toUpperCase()}
                           </text>
