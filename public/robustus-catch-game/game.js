@@ -32,7 +32,7 @@ const CONFIG = {
   },
   // Sprites nativos olham para a ESQUERDA. Inverter quando direcao = +1.
   nativeFacing: -1,
-  logoUrl: "robustus-logo.png"
+  logoUrl: "/__l5e/assets-v1/c8fbb8db-df28-4f37-9625-32d0e5e69129/Robustus_Laranja.png"
 };
 
 const QUERY = new URLSearchParams(window.location.search);

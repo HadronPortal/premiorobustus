@@ -34,7 +34,7 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
       newErrors.name = "Informe seu nome completo.";
     }
     
-    if (phone.length === 0) {
+    if (cleanedPhone.length === 0) {
       newErrors.phone = "Informe seu telefone.";
     } else if (cleanedPhone.length < 10) {
       newErrors.phone = "Telefone incompleto. Digite pelo menos 10 números.";
@@ -324,11 +324,16 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
             type="submit"
             disabled={busy}
             aria-disabled={isFormInvalid()}
-            className={`w-full py-3 rounded-xl shadow-xl flex items-center justify-center gap-3 border-b-[6px] border-[#c96f00] mt-1 transition-all text-white bg-[var(--robustus-orange)] disabled:bg-[var(--robustus-orange)] disabled:text-white disabled:opacity-60 disabled:cursor-not-allowed ${
+            style={{
+              backgroundColor: "var(--robustus-orange)",
+              borderBottomColor: "var(--robustus-orange-hover)",
+              opacity: busy ? 0.7 : isFormInvalid() ? 0.88 : 1,
+            }}
+            className={`w-full py-3 rounded-xl shadow-xl flex items-center justify-center gap-3 border-b-[6px] mt-1 transition-all text-white ${
               !isFormInvalid()
                 ? "active:border-b-0 cursor-pointer opacity-100"
-                : ""
-            } ${busy ? "opacity-70 grayscale" : ""}`}
+                : "cursor-pointer"
+            } ${busy ? "grayscale cursor-not-allowed" : ""}`}
           >
             <span className="text-lg font-black text-white tracking-widest uppercase italic">
               {busy ? "INICIANDO..." : "COMEÇAR"}

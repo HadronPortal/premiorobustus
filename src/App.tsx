@@ -52,8 +52,8 @@ const BRAND = {
 
 const ASSETS = {
   bgHero: "/cesta-final.png",
-  logo: "/robustus-catch-game/robustus-logo.png",
-  paw: "/robustus-catch-game/robustus-logo.png",
+  logo: logoAsset.url,
+  paw: logoAsset.url,
 };
 
 const PRODUCTS = [

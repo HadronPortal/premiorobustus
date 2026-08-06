@@ -1,5 +1,6 @@
 import React, { useMemo, useRef, useState, useEffect } from "react";
 import { getPrizeSettings, type PrizeConfig, DEFAULT_PRIZES } from "@/lib/prizeSettings";
+import logoAsset from "@/assets/Robustus_Laranja.png.asset.json";
 
 export const PRIZES = [
   "Copo",
@@ -33,7 +34,7 @@ type PrizeMeta = {
   colorB: string;
 };
 
-const LOGO_URL = "/robustus-catch-game/robustus-logo.png";
+const LOGO_URL = logoAsset.url;
 
 const PRIZE_META: Record<Prize, PrizeMeta> = {
   Copo: {

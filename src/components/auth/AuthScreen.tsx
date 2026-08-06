@@ -209,9 +209,14 @@ export const AuthScreen: React.FC<Props> = ({ onStart, onClose }) => {
             type="submit"
             disabled={isStarting}
             aria-disabled={!isFormValid}
-            className={`w-full py-3 sm:py-4 rounded-xl sm:rounded-2xl shadow-xl flex items-center justify-center gap-3 border-b-[4px] sm:border-b-[6px] transition-all mt-1 bg-[#f7941d] border-[#d47a00] text-white active:border-b-0
-              ${!isFormValid ? 'opacity-60 cursor-not-allowed' : ''}
-              ${isStarting ? 'opacity-70 grayscale' : ''}
+            style={{
+              backgroundColor: "var(--robustus-orange)",
+              borderBottomColor: "var(--robustus-orange-hover)",
+              opacity: isStarting ? 0.7 : !isFormValid ? 0.88 : 1,
+            }}
+            className={`w-full py-3 sm:py-4 rounded-xl sm:rounded-2xl shadow-xl flex items-center justify-center gap-3 border-b-[4px] sm:border-b-[6px] transition-all mt-1 text-white active:border-b-0
+              ${!isFormValid ? 'cursor-pointer' : ''}
+              ${isStarting ? 'grayscale cursor-not-allowed' : ''}
             `}
           >
             <span className="text-lg sm:text-xl font-black text-white tracking-widest uppercase italic">
