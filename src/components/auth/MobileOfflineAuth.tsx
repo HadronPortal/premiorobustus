@@ -19,6 +19,7 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
   const [phone, setPhone] = useState("");
   const [participantType, setParticipantType] = useState<ParticipantTypeOption>("");
   const [participantTypeOther, setParticipantTypeOther] = useState("");
+  const otherInputRef = useRef<HTMLInputElement>(null);
   const [accepted, setAccepted] = useState(false);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -162,7 +163,16 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
               <select
                 aria-label="Qual é o seu perfil?"
                 value={participantType}
-                onChange={(e) => setParticipantType(e.target.value as ParticipantTypeOption)}
+                onChange={(e) => {
+                  const val = e.target.value as ParticipantTypeOption;
+                  setParticipantType(val);
+                  if (val === "outros") {
+                    setTimeout(() => {
+                      otherInputRef.current?.focus();
+                      otherInputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 100);
+                  }
+                }}
                 required
                 className={`w-full appearance-none bg-slate-100 p-3 pl-12 pr-12 rounded-xl text-lg font-bold border-2 border-transparent focus:border-[#f7941d] outline-none uppercase h-[56px] ${
                   participantType === "" ? "text-slate-400" : "text-[#003380]"
@@ -171,6 +181,7 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
                 <option value="" disabled>SELECIONE UMA OPÇÃO</option>
                 <option value="lojista">LOJISTA</option>
                 <option value="veterinario">VETERINÁRIO</option>
+                <option value="estudante">ESTUDANTE</option>
                 <option value="outros">OUTROS</option>
               </select>
             </div>
@@ -178,6 +189,7 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
             {participantType === "outros" && (
               <div className="relative">
                 <input
+                  ref={otherInputRef}
                   type="text"
                   placeholder="QUAL? (EX: TUTOR, ADESTRADOR...)"
                   value={participantTypeOther}
