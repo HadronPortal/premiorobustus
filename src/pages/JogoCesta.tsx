@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Volume2, VolumeX, RotateCcw } from 'lucide-react';
-import logoAsset from "@/assets/Robustus_Laranja.png.asset.json";
 import { useAudioManager } from '../hooks/useAudioManager';
 import {
   getCurrentParticipantId,
@@ -199,7 +198,7 @@ export default function JogoCesta() {
             alignItems: 'center'
           }}>
             <img 
-              src={logoAsset.url} 
+              src="/brand/robustus-laranja.png"
               alt="RobustUS" 
               className="catch-logo" 
               style={{ justifySelf: 'start', width: '92px', maxHeight: '34px', objectFit: 'contain' }}

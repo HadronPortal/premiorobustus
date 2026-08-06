@@ -1,6 +1,5 @@
 import React, { useMemo, useRef, useState, useEffect } from "react";
 import { getPrizeSettings, type PrizeConfig, DEFAULT_PRIZES } from "@/lib/prizeSettings";
-import logoAsset from "@/assets/logo-branco.png.asset.json";
 
 export const PRIZES = [
   "Copo",
@@ -33,7 +32,7 @@ type PrizeMeta = {
   colorB: string;
 };
 
-const LOGO_URL = logoAsset.url;
+const LOGO_URL = "/brand/procion-logo-branco.png";
 
 const PRIZE_META: Record<Prize, PrizeMeta> = {
   Copo: {

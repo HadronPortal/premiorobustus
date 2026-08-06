@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import logoAsset from "@/assets/Robustus_Laranja.png.asset.json";
 import { ensureOfflineServiceWorker } from "./registerOfflineSW";
 
 interface Props {
@@ -48,7 +47,7 @@ export const OfflineLogo: React.FC<{ className?: string }> = ({
     style={{ width: 280, height: 120 }}
   >
     <img
-      src={logoAsset.url}
+      src="/brand/robustus-laranja.png"
       alt="RobustUS"
       className="w-[90%] h-[90%] object-contain"
     />

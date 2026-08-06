@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import { User, Phone, CheckCircle2, ChevronRight, X, Briefcase, ChevronDown } from "lucide-react";
 import { createParticipant, type ParticipantType } from "@/lib/mobileOfflineDb";
 import { createCurrentPlayId, upsertParticipant, upsertPlay } from "@/lib/cestaMatches";
-import logoAsset from "@/assets/Robustus_Laranja.png.asset.json";
 import { formatPhoneBR, isValidPhoneBR, normalizePhoneBR } from "@/lib/phoneValidation";
 
 interface Props {
@@ -143,7 +142,7 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
 
         <div className="flex flex-col items-center gap-4">
           <div className="bg-white rounded-2xl border-2 border-[#f7941d] p-2 w-36 h-14 flex items-center justify-center overflow-hidden shadow-sm">
-            <img src={logoAsset.url} alt="RobustUS" className="w-[90%] h-[90%] object-contain" />
+            <img src="/brand/robustus-laranja.png" alt="RobustUS" className="w-[90%] h-[90%] object-contain" />
           </div>
           <div className="text-center space-y-1">
             <h2 className="text-3xl font-black text-[#0047ab] uppercase italic tracking-tighter">

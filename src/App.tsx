@@ -17,8 +17,6 @@ import {
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { motion, AnimatePresence } from 'framer-motion';
-import logoAsset from "@/assets/Robustus_Laranja.png.asset.json";
-import cestaCardAsset from "@/assets/cesta-final.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthScreen } from './components/auth/AuthScreen';
 import { AdminScreen } from './components/admin/AdminScreen';
@@ -52,9 +50,9 @@ const BRAND = {
 };
 
 const ASSETS = {
-  bgHero: "/cesta-final.png",
-  logo: logoAsset.url,
-  paw: logoAsset.url,
+  bgHero: "/brand/cesta-capa.png",
+  logo: "/brand/robustus-laranja.png",
+  paw: "/brand/robustus-laranja.png",
 };
 
 const PRODUCTS = [
@@ -479,7 +477,7 @@ const GameContent = () => {
                 onPointerLeave={cancelAdminPress}
               >
                 <img 
-                  src={logoAsset.url} 
+                  src="/brand/robustus-laranja.png"
                   alt="RobustUS" 
                   className="w-[90%] h-[90%] object-contain pointer-events-none select-none" 
                   draggable={false}
@@ -506,7 +504,7 @@ const GameContent = () => {
               >
                 <div className="flex-1 w-full overflow-hidden relative bg-white">
                   <div className="absolute inset-0 flex flex-col items-center justify-center p-1">
-                     <img src={cestaCardAsset.url} alt="Jogo da Cesta" className="w-full h-full object-contain" />
+                     <img src="/brand/cesta-capa.png" alt="Jogo da Cesta" className="w-full h-full object-contain" />
                   </div>
                 </div>
               </motion.button>

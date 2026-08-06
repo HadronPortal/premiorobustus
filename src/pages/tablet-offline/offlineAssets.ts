@@ -1,7 +1,7 @@
 // Todos os assets usados na versão offline ficam dentro de /public.
 // Nada de URLs externas (robustus.com.br etc).
 
-export const OFFLINE_LOGO = "/__l5e/assets-v1/c8fbb8db-df28-4f37-9625-32d0e5e69129/Robustus_Laranja.png";
+export const OFFLINE_LOGO = "/brand/robustus-laranja.png";
 
 export const OFFLINE_MEMORY_PRODUCTS = [
   {

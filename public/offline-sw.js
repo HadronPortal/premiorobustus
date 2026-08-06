@@ -2,7 +2,7 @@
 // IMPORTANTE: trocar o nome do cache a cada release para forçar atualização
 // no tablet quando ele abrir com internet.
 
-const CACHE_NAME = "robustus-tablet-offline-v2026-08-06-new-card";
+const CACHE_NAME = "robustus-tablet-offline-v2026-08-06-local-brand-assets";
 
 const ASSETS_TO_CACHE = [
   // Rotas da SPA (todas resolvem para o index.html da SPA via fallback)
@@ -15,6 +15,9 @@ const ASSETS_TO_CACHE = [
   "/favicon.ico",
   "/cesta-final.png",
   "/cesta-preview.png",
+  "/brand/cesta-capa.png",
+  "/brand/robustus-laranja.png",
+  "/brand/procion-logo-branco.png",
 
   // Banners do carrossel offline
   "/offline-banners/banner1.jpg",

@@ -2,8 +2,6 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { PawPrint } from "lucide-react";
-import logoAsset from "@/assets/Robustus_Laranja.png.asset.json";
-import cestaCardAsset from "@/assets/cesta-final.png.asset.json";
 import { ensureOfflineServiceWorker } from "./registerOfflineSW";
 import { OfflineBannerCarousel } from "./OfflineBannerCarousel";
 
@@ -44,7 +42,7 @@ export default function OfflineHome() {
         >
           <div className="bg-white p-3 sm:p-4 rounded-[2.5rem] shadow-xl border-[3px] border-[#f7941d] w-48 h-20 sm:w-72 sm:h-32 flex items-center justify-center overflow-hidden">
             <img
-              src={logoAsset.url}
+              src="/brand/robustus-laranja.png"
               alt="RobustUS"
               className="w-[90%] h-[90%] object-contain"
             />
@@ -72,7 +70,7 @@ export default function OfflineHome() {
             <div className="flex-1 w-full overflow-hidden relative bg-white">
               <div className="absolute inset-0 flex items-center justify-center p-1">
                 <img
-                  src={cestaCardAsset.url}
+                  src="/brand/cesta-capa.png"
                   alt="Jogo da Cesta"
                   className="w-full h-full object-contain"
                 />
