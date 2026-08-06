@@ -239,7 +239,7 @@ export default function PrizeRouletteOverlay({
           mid,
           label,
           icon,
-          path: slicePath(start, end, 360 / prizesToUse.length),
+          path: slicePath(start, end),
           meta: (PRIZE_META as any)[prize] || {
             icon: "🎁",
             lines: [prize.slice(0, 10)],
