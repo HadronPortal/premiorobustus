@@ -204,6 +204,19 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
                     setErrors(prev => ({ ...prev, phone: "Informe seu telefone." }));
                   }
                 }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    const cleaned = normalizePhoneBR(phone);
+                    if (cleaned.length < 10) {
+                      e.preventDefault();
+                      if (cleaned.length === 0) {
+                        setErrors(prev => ({ ...prev, phone: "Informe seu telefone." }));
+                      } else {
+                        setErrors(prev => ({ ...prev, phone: "Telefone incompleto. Digite DDD + número." }));
+                      }
+                    }
+                  }
+                }}
                 className={inputClass("phone")}
               />
             </div>
