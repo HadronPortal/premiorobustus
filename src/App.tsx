@@ -481,8 +481,8 @@ const GameContent = () => {
               </div>
             </motion.div>
 
-            <div className="flex flex-col items-center text-center">
-              <motion.h1 initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.2 }} className="text-xl sm:text-3xl font-black text-white italic tracking-tighter drop-shadow-lg leading-none uppercase">
+            <div className="flex flex-col items-center text-center mt-2">
+              <motion.h1 initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.2 }} className="text-xl sm:text-4xl font-black text-white italic tracking-tighter drop-shadow-lg leading-none uppercase">
                 DESAFIO <span className="text-[#f7941d]">RobustUS</span>
               </motion.h1>
             </div>
