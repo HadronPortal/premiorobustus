@@ -406,7 +406,7 @@ export default function PrizeRouletteOverlay({
                   </defs>
 
                   <circle r="122" fill="#ffffff" />
-                  <circle r="116" fill="#ff9418" />
+                  <circle r="116" fill="var(--robustus-orange)" />
                   <circle r="112" fill="#ffffff" />
 
                   {segments.map((segment) => {
