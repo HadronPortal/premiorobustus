@@ -352,7 +352,6 @@ export default function AdminRelatorioOffline() {
           </div>
         </section>
       </div>
-      </div>
 
       {showSettings && (
         <div style={modalOverlay}>
