@@ -188,11 +188,19 @@ export const MobileOfflineAuth: React.FC<Props> = ({ game, onStart, onClose }) =
                 inputMode="tel"
                 placeholder="TELEFONE"
                 value={phone}
+                maxLength={15} // (99) 99999-9999
                 onChange={(e) => {
-                  setPhone(formatPhoneBR(e.target.value));
+                  const formatted = formatPhoneBR(e.target.value);
+                  setPhone(formatted);
                   if (errors.phone) setErrors(prev => ({ ...prev, phone: "" }));
                 }}
                 autoComplete="tel"
+                onPaste={(e) => {
+                  e.preventDefault();
+                  const pasted = e.clipboardData.getData('text');
+                  const cleaned = normalizePhoneBR(pasted);
+                  setPhone(formatPhoneBR(cleaned));
+                }}
                 onBlur={() => {
                   const cleaned = normalizePhoneBR(phone);
                   if (cleaned.length > 0 && cleaned.length < 11) {
