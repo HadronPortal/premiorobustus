@@ -6,7 +6,7 @@ import { ensureOfflineServiceWorker } from "./registerOfflineSW";
 import { OfflineBannerCarousel } from "./OfflineBannerCarousel";
 import bgHeroAsset from "@/assets/bg-home.jpg.asset.json";
 import fixedBannerAsset from "@/assets/banner-promo.png.asset.json";
-import gameCardAsset from "@/assets/game-card.png.asset.json";
+import gameCardAsset from "@/assets/cesta-final.png.asset.json";
 
 export default function OfflineHome() {
   const navigate = useNavigate();
