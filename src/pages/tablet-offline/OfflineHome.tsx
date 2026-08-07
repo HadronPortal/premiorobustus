@@ -30,16 +30,16 @@ export default function OfflineHome() {
       </div>
 
       <div className="relative z-10 w-full h-full flex flex-col items-center justify-center pt-[10vh] px-6 overflow-y-auto">
-        {/* Container Rodapé: JOGAR e Logo Admin alinhados e centralizados */}
+        {/* Container: JOGAR e Logo Admin alinhados e centralizados */}
         <div 
-          className="fixed left-1/2 -translate-x-1/2 z-50 flex items-center justify-center gap-8 pb-[env(safe-area-inset-bottom,12px)]"
-          style={{ bottom: '-4px' }}
+          className="absolute left-1/2 -translate-x-1/2 z-50 flex items-center justify-center gap-8 pointer-events-none"
+          style={{ top: '72%' }}
         >
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={() => navigate("/tablet-offline/cadastro?game=cesta")}
-            className="text-white text-base font-black italic tracking-widest uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] transition-all cursor-pointer px-4 py-2"
+            className="text-white text-base font-black italic tracking-widest uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] transition-all cursor-pointer px-4 py-2 pointer-events-auto"
           >
             JOGAR
           </motion.button>
@@ -51,7 +51,7 @@ export default function OfflineHome() {
             onPointerUp={() => clearTimeout((window as any).adminTimer)}
             onPointerCancel={() => clearTimeout((window as any).adminTimer)}
             onPointerLeave={() => clearTimeout((window as any).adminTimer)}
-            className="w-20 sm:w-28 hover:scale-105 transition-transform cursor-pointer"
+            className="w-20 sm:w-28 hover:scale-105 transition-transform cursor-pointer pointer-events-auto"
           >
             <img
               src="/brand/robustus-laranja.png"
