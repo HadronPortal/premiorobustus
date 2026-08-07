@@ -30,19 +30,20 @@ export default function OfflineHome() {
       </div>
 
       <div className="relative z-10 w-full h-full flex flex-col items-center justify-center pt-[10vh] px-6 overflow-y-auto">
-        {/* Botao JOGAR no espaco entre a faixa laranja e as racoes */}
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => navigate("/tablet-offline/cadastro?game=cesta")}
-          className="absolute left-1/2 bottom-4 -translate-x-1/2 bg-transparent px-5 py-1 text-white text-[clamp(1rem,2.4vw,1.55rem)] font-black italic leading-none tracking-wide uppercase drop-shadow-[0_3px_0_rgba(0,0,0,0.35)] transition-all z-20"
-          aria-label="Iniciar Jogo da Cesta"
-        >
-          JOGAR
-        </motion.button>
+        {/* Botão JOGAR discreto no rodapé, alinhado com o logo admin */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-50 flex items-center justify-center">
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => navigate("/tablet-offline/cadastro?game=cesta")}
+            className="text-white text-base font-black italic tracking-widest uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] transition-all cursor-pointer px-4 py-2"
+          >
+            JOGAR
+          </motion.button>
+        </div>
 
-        {/* Logo Admin Discreto no Rodape */}
-        <div className="absolute bottom-4 right-8 z-50">
+        {/* Logo RobustUS inferior (Admin) */}
+        <div className="absolute bottom-8 right-8 z-50">
           <div
             onPointerDown={() => {
               const timer = setTimeout(() => navigate("/admin/relatorio-offline"), 2200);
