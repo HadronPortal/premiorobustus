@@ -1,13 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { PawPrint } from "lucide-react";
 import { ensureOfflineServiceWorker } from "./registerOfflineSW";
-import { OfflineBannerCarousel } from "./OfflineBannerCarousel";
 import bgHeroAsset from "@/assets/bg-home-v2.jpg.asset.json";
-import fixedBannerAsset from "@/assets/banner-promo.png.asset.json";
-import gameCardAsset from "@/assets/game-card-v3.png.asset.json";
-import { PRODUCT_ASSETS } from "@/lib/productAssets";
 
 export default function OfflineHome() {
   const navigate = useNavigate();
@@ -18,7 +13,7 @@ export default function OfflineHome() {
 
   return (
     <div className="fixed inset-0 overflow-hidden select-none">
-      {/* Background igual ao mobile */}
+      {/* Background */}
       <div className="absolute inset-0 z-0">
         <div className="w-full h-full relative overflow-hidden">
           <img
@@ -27,9 +22,7 @@ export default function OfflineHome() {
             className="absolute inset-0 w-full h-full object-cover object-center"
             draggable={false}
           />
-          <div className="absolute inset-0 bg-[#0047ab]/20" />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#00348c]/25 via-transparent to-[#00348c]/80" />
-          <div className="absolute inset-0 backdrop-blur-[0.5px]" />
+          <div className="absolute inset-0 bg-black/20" />
         </div>
       </div>
 
@@ -55,17 +48,13 @@ export default function OfflineHome() {
         {/* Logo Admin Discreto no Rodapé */}
         <div className="absolute bottom-8 right-8 z-50">
           <div
-            onMouseDown={() => {
+            onPointerDown={() => {
               const timer = setTimeout(() => navigate('/admin/relatorio-offline'), 2200);
               (window as any).adminTimer = timer;
             }}
-            onMouseUp={() => clearTimeout((window as any).adminTimer)}
-            onMouseLeave={() => clearTimeout((window as any).adminTimer)}
-            onTouchStart={() => {
-              const timer = setTimeout(() => navigate('/admin/relatorio-offline'), 2200);
-              (window as any).adminTimer = timer;
-            }}
-            onTouchEnd={() => clearTimeout((window as any).adminTimer)}
+            onPointerUp={() => clearTimeout((window as any).adminTimer)}
+            onPointerCancel={() => clearTimeout((window as any).adminTimer)}
+            onPointerLeave={() => clearTimeout((window as any).adminTimer)}
             className="w-24 sm:w-32 opacity-60 hover:opacity-100 transition-opacity cursor-pointer"
           >
             <img
@@ -76,7 +65,6 @@ export default function OfflineHome() {
             />
           </div>
         </div>
-      </div>
       </div>
     </div>
   );
