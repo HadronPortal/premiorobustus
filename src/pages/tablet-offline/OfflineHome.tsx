@@ -75,6 +75,7 @@ export default function OfflineHome() {
               <img 
                 src={gameCardAsset.url} 
                 className="w-full h-full object-cover pointer-events-none" 
+                style={{ objectPosition: 'center 0%' }}
                 alt="Jogo da Cesta" 
               />
             </div>
