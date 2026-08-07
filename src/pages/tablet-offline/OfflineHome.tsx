@@ -22,7 +22,7 @@ export default function OfflineHome() {
             className="absolute inset-0 w-full h-full object-cover object-center"
             draggable={false}
           />
-          <div className="absolute inset-0 bg-black/20" />
+          
         </div>
       </div>
 
@@ -31,7 +31,7 @@ export default function OfflineHome() {
         Modo Tablet Offline
       </div>
 
-      <div className="relative z-10 w-full h-full flex flex-col items-center justify-center px-6 sm:px-12 py-8 overflow-y-auto">
+      <div className="relative z-10 w-full h-full flex flex-col items-center justify-end px-6 pb-32 overflow-y-auto">
         {/* Botão Jogar Principal */}
         <motion.button
           initial={{ scale: 0.9, opacity: 0 }}

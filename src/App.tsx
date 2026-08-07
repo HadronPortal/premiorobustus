@@ -460,9 +460,6 @@ const GameContent = () => {
               className="absolute inset-0 w-full h-full object-cover object-center" 
               draggable={false}
             />
-            <div className="absolute inset-0 bg-[#0047ab]/20"></div>
-            <div className="absolute inset-0 bg-gradient-to-b from-[#00348c]/25 via-transparent to-[#00348c]/80"></div>
-            <div className="absolute inset-0 backdrop-blur-[0.5px]"></div>
           </div>
         ) : (
           <div className="absolute inset-0 bg-[#0047ab]">
@@ -477,7 +474,7 @@ const GameContent = () => {
 
       <AnimatePresence mode="wait">
         {gameState === 'START' && (
-          <motion.div key="start" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 w-full flex flex-col items-center justify-center pt-8 pb-6 px-4 sm:pt-12 sm:px-12 z-10 overflow-hidden gap-12">
+          <motion.div key="start" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 w-full flex flex-col items-center justify-end pb-32 px-4 z-10 overflow-hidden">
             
             {/* Botão Jogar Principal */}
             <motion.button
