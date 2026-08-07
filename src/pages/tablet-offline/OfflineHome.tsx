@@ -32,17 +32,28 @@ export default function OfflineHome() {
       </div>
 
       <div className="relative z-10 w-full h-full flex flex-col items-center justify-end px-6 pb-32 overflow-y-auto">
-        {/* Botão Jogar Principal */}
+        {/* Ícone de Jogar */}
         <motion.button
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.2 }}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
           onClick={() => navigate("/tablet-offline/cadastro?game=cesta")}
-          className="px-16 py-6 bg-[#f7941d] text-white text-3xl font-black rounded-full shadow-[0_12px_24px_rgba(247,148,29,0.4)] border-b-8 border-[#c96f00] uppercase tracking-wider transition-all"
+          className="group flex flex-col items-center gap-2 mb-8"
         >
-          JOGAR
+          <div className="w-24 h-24 bg-[#f7941d] rounded-full flex items-center justify-center shadow-[0_12px_24px_rgba(247,148,29,0.4)] border-b-8 border-[#c96f00] group-active:border-b-0 group-active:translate-y-1 transition-all">
+            <svg 
+              viewBox="0 0 24 24" 
+              className="w-12 h-12 text-white fill-current ml-2"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          </div>
+          <span className="text-white font-black text-xl uppercase tracking-widest drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
+            JOGAR
+          </span>
         </motion.button>
 
         {/* Logo Admin Discreto no Rodapé */}
@@ -55,7 +66,7 @@ export default function OfflineHome() {
             onPointerUp={() => clearTimeout((window as any).adminTimer)}
             onPointerCancel={() => clearTimeout((window as any).adminTimer)}
             onPointerLeave={() => clearTimeout((window as any).adminTimer)}
-            className="w-24 sm:w-32 opacity-60 hover:opacity-100 transition-opacity cursor-pointer"
+            className="w-24 sm:w-32 hover:scale-105 transition-transform cursor-pointer"
           >
             <img
               src="/brand/robustus-laranja.png"

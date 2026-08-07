@@ -476,21 +476,26 @@ const GameContent = () => {
         {gameState === 'START' && (
           <motion.div key="start" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 w-full flex flex-col items-center justify-end pb-32 px-4 z-10 overflow-hidden">
             
-            {/* Botão Jogar Principal */}
+            {/* Ícone de Jogar */}
             <motion.button
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.2 }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
               onClick={() => {
                 setSelectedGame('cesta');
                 setGameState('AUTH');
                 initAudio();
               }}
-              className="px-16 py-6 bg-[var(--robustus-orange)] text-white text-3xl font-black rounded-full shadow-[0_12px_24px_rgba(247,148,29,0.4)] border-b-8 border-[#c96f00] uppercase tracking-wider transition-all"
+              className="group flex flex-col items-center gap-2 mb-8"
             >
-              JOGAR
+              <div className="w-24 h-24 bg-[var(--robustus-orange)] rounded-full flex items-center justify-center shadow-[0_12px_24px_rgba(247,148,29,0.4)] border-b-8 border-[#c96f00] group-active:border-b-0 group-active:translate-y-1 transition-all">
+                <Play className="w-12 h-12 text-white fill-current ml-2" />
+              </div>
+              <span className="text-white font-black text-xl uppercase tracking-widest drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
+                JOGAR
+              </span>
             </motion.button>
 
             {/* Logo Admin Discreto no Rodapé */}
@@ -500,7 +505,7 @@ const GameContent = () => {
                 onPointerUp={cancelAdminPress}
                 onPointerCancel={cancelAdminPress}
                 onPointerLeave={cancelAdminPress}
-                className="w-24 sm:w-32 opacity-60 hover:opacity-100 transition-opacity cursor-pointer"
+                className="w-24 sm:w-32 hover:scale-105 transition-transform cursor-pointer"
               >
                 <img
                   src={ASSETS.logo}
