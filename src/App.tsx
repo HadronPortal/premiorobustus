@@ -513,8 +513,6 @@ const GameContent = () => {
                 />
               </div>
             </div>
-          </motion.div>
-        )}
 
             <AnimatePresence>
               {loadingLeaderboard || leaderboard.length > 0 ? (
