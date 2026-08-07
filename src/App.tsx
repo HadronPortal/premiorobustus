@@ -474,23 +474,23 @@ const GameContent = () => {
 
       <AnimatePresence mode="wait">
         {gameState === 'START' && (
-          <motion.div key="start" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 w-full flex flex-col items-center justify-start z-10 overflow-hidden relative">
+          <motion.div key="start" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 w-full flex flex-col items-center justify-center pt-[10vh] px-4 z-10 overflow-hidden relative">
             
-            {/* Área clicável sobre a faixa "JOGO DA CESTA" */}
-            <motion.div
-              whileTap={{ 
-                scale: 0.98, 
-                backgroundColor: "rgba(255, 255, 255, 0.1)",
-                boxShadow: "0 0 40px rgba(255, 148, 29, 0.4)"
-              }}
+            {/* Botão JOGAR centralizado no espaço */}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => {
                 setSelectedGame('cesta');
                 setGameState('AUTH');
                 initAudio();
               }}
-              className="absolute top-[18%] left-[5%] w-[90%] h-[24%] cursor-pointer z-20 rounded-[2rem] transition-all duration-150"
+              className="px-12 py-4 bg-[var(--robustus-orange)] text-white text-2xl font-black rounded-full shadow-[0_12px_24px_rgba(247,148,29,0.4)] border-b-4 border-[#c96f00] flex items-center gap-3 uppercase tracking-wider transition-all z-20"
               aria-label="Iniciar Jogo da Cesta"
-            />
+            >
+              <Play className="w-6 h-6 fill-current" />
+              JOGAR
+            </motion.button>
 
             {/* Logo Admin Discreto no Rodapé */}
             <div className="absolute bottom-8 right-8 z-50">
