@@ -274,11 +274,17 @@ export default function AdminRelatorioOffline() {
       setMsg('Digite APAGAR para confirmar a exclusão dos dados salvos.');
       return;
     }
-    await clearCestaData();
-    setDangerConfirm('');
-    setRows([]);
-    setStats(EMPTY_STATS);
-    setMsg('Dados salvos apagados deste aparelho.');
+    setBusy(true);
+    try {
+      await clearCestaData();
+      setDangerConfirm('');
+      setMsg('Todos os dados foram apagados.');
+      await reload();
+    } catch (err) {
+      setMsg('Falha ao apagar dados.');
+    } finally {
+      setBusy(false);
+    }
   };
 
   const deleteRow = async (row: ParticipantReport) => {

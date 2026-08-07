@@ -498,11 +498,16 @@ export async function importBackup(raw: any): Promise<{ participants: number; pl
 
 export async function clearCestaData(): Promise<void> {
   try { sessionStorage.removeItem(CURRENT_PLAY_ID_KEY); } catch {}
-  await new Promise<void>((resolve, reject) => {
-    const req = indexedDB.deleteDatabase(DB_NAME);
-    req.onsuccess = () => resolve();
-    req.onerror = () => reject(req.error);
-    req.onblocked = () => reject(new Error("Feche e abra o app para apagar os dados."));
+  const db = await openDB();
+  return new Promise<void>((resolve, reject) => {
+    const t = db.transaction([PARTICIPANTS, PLAYS], "readwrite");
+    t.objectStore(PARTICIPANTS).clear();
+    t.objectStore(PLAYS).clear();
+    t.oncomplete = () => {
+      db.close();
+      resolve();
+    };
+    t.onerror = () => reject(t.error);
   });
 }
 
