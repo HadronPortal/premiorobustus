@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Download, FileText, Save, Upload, LockKeyhole, ShieldCheck, Settings, X, Plus, Trash2, Check } from 'lucide-react';
+import { Directory, Encoding, Filesystem } from '@capacitor/filesystem';
 import {
   getReport,
   getReportStats,
@@ -11,6 +12,7 @@ import {
 } from '@/lib/cestaMatches';
 import { hasAdminPin, setAdminPin, verifyAdminPin } from '@/lib/adminPin';
 import { getPrizeSettings, savePrizeSettings, type PrizeConfig, DEFAULT_PRIZES } from '@/lib/prizeSettings';
+import { isNativeOfflineApp } from '@/lib/runtime';
 
 function pad(n: number) { return String(n).padStart(2, '0'); }
 function fmtDateBR(iso: string) {
@@ -27,14 +29,25 @@ function csvEscape(v: string) {
   const s = (v ?? '').toString().replace(/\r?\n/g, ' ').replace(/"/g, '""');
   return /[";]/.test(s) ? `"${s}"` : s;
 }
-async function handleDownload(name: string, content: string, mime: string) {
+async function handleDownload(name: string, content: string, mime: string): Promise<{ native: boolean; uri?: string }> {
   try {
+    if (isNativeOfflineApp()) {
+      const result = await Filesystem.writeFile({
+        path: name,
+        data: content,
+        directory: Directory.Documents,
+        encoding: Encoding.UTF8,
+        recursive: true,
+      });
+      return { native: true, uri: result.uri };
+    }
+
     const blob = new Blob([content], { type: mime + ';charset=utf-8' });
     
     // Tentativa de download nativo (funciona em navegadores modernos)
     if (window.navigator && (window.navigator as any).msSaveOrOpenBlob) {
       (window.navigator as any).msSaveOrOpenBlob(blob, name);
-      return;
+      return { native: false };
     }
 
     const url = URL.createObjectURL(blob);
@@ -49,8 +62,10 @@ async function handleDownload(name: string, content: string, mime: string) {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     }, 5000);
+    return { native: false };
   } catch (err) {
     console.error('Download error:', err);
+    throw err;
   }
 }
 
@@ -164,8 +179,8 @@ export default function AdminRelatorioOffline() {
     ].map(csvEscape).join(';'));
     const csv = '\uFEFF' + [header, ...lines].join('\r\n');
     const name = `robustus-participantes-${todayStamp()}.csv`;
-    await handleDownload(name, csv, 'text/csv');
-    setMsg(`Download gerado: ${name}`);
+    const result = await handleDownload(name, csv, 'text/csv');
+    setMsg(result.native ? `Arquivo salvo no aparelho: ${name}` : `Download gerado: ${name}`);
   };
 
   const exportTXT = async () => {
@@ -193,16 +208,16 @@ export default function AdminRelatorioOffline() {
     });
     const txt = lines.join('\r\n');
     const name = `robustus-participantes-${todayStamp()}.txt`;
-    await handleDownload(name, txt, 'text/plain');
-    setMsg(`Download gerado: ${name}`);
+    const result = await handleDownload(name, txt, 'text/plain');
+    setMsg(result.native ? `Arquivo salvo no aparelho: ${name}` : `Download gerado: ${name}`);
   };
 
   const exportJSON = async () => {
     const payload = await exportBackup();
     const json = JSON.stringify(payload, null, 2);
     const name = `robustus-backup-${todayStamp()}.json`;
-    await handleDownload(name, json, 'application/json');
-    setMsg(`Download gerado: ${name}`);
+    const result = await handleDownload(name, json, 'application/json');
+    setMsg(result.native ? `Arquivo salvo no aparelho: ${name}` : `Download gerado: ${name}`);
   };
 
   const onImportFile = async (file: File) => {
