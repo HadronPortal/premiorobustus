@@ -30,6 +30,7 @@ import JogoCesta from './pages/JogoCesta';
 import { Toaster } from 'sonner';
 import { useAudioManager } from './hooks/useAudioManager';
 import { BannerCarousel } from './components/BannerCarousel';
+import { PRODUCT_ASSETS } from './lib/productAssets';
 import OfflineHome from './pages/tablet-offline/OfflineHome';
 import OfflineRegister from './pages/tablet-offline/OfflineRegister';
 
@@ -522,18 +523,32 @@ const GameContent = () => {
               </motion.button>
             </div>
 
+            {/* Banner de Produtos 3D */}
             <motion.div 
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="mt-2"
+              transition={{ delay: 0.5, type: "spring", stiffness: 100 }}
+              className="w-full flex justify-center items-end px-4 mt-2 mb-4 h-[clamp(80px,12vh,150px)]"
             >
-              <img 
-                src={ASSETS.logo} 
-                alt="RobustUS" 
-                className="w-24 sm:w-32 h-auto object-contain opacity-80" 
-                draggable={false}
-              />
+              <div className="flex items-end justify-center -space-x-4 sm:-space-x-8 w-full max-w-2xl">
+                {PRODUCT_ASSETS.map((asset, index) => (
+                  <motion.div
+                    key={asset.id}
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.6 + (index * 0.1) }}
+                    className="relative z-[index]"
+                    style={{ zIndex: 10 - Math.abs(2 - index) }}
+                  >
+                    <img
+                      src={asset.url}
+                      alt="Produto"
+                      className="h-[clamp(70px,10vh,130px)] sm:h-[clamp(100px,14vh,180px)] w-auto object-contain drop-shadow-[0_10px_15px_rgba(0,0,0,0.5)] transition-transform hover:scale-110"
+                      draggable={false}
+                    />
+                  </motion.div>
+                ))}
+              </div>
             </motion.div>
 
             <AnimatePresence>
