@@ -15,7 +15,6 @@ import {
   LayoutGrid,
   ShoppingBasket
 } from 'lucide-react';
-import bgHeroAsset from "@/assets/bg-home-v2.jpg.asset.json";
 import fixedBannerAsset from "@/assets/banner-promo.png.asset.json";
 import confetti from 'canvas-confetti';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -53,7 +52,7 @@ const BRAND = {
 };
 
 const ASSETS = {
-  bgHero: bgHeroAsset.url,
+  bgHero: "/brand/bg-home-v2.jpg",
   logo: "/brand/robustus-laranja.png",
   banner: fixedBannerAsset.url,
   paw: "/brand/robustus-laranja.png",

@@ -2,7 +2,6 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ensureOfflineServiceWorker } from "./registerOfflineSW";
-import bgHeroAsset from "@/assets/bg-home-v2.jpg.asset.json";
 
 export default function OfflineHome() {
   const navigate = useNavigate();
@@ -17,7 +16,7 @@ export default function OfflineHome() {
       <div className="absolute inset-0 z-0">
         <div className="w-full h-full relative overflow-hidden">
           <img
-            src={bgHeroAsset.url}
+            src="/brand/bg-home-v2.jpg"
             alt=""
             className="absolute inset-0 w-full h-full object-cover object-center"
             draggable={false}

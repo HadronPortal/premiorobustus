@@ -1,4 +1,4 @@
-const CACHE_NAME = "robustus-cesta-v2026-08-07-product-banner";
+const CACHE_NAME = "robustus-cesta-v2026-08-07-local-bg";
 
 const ASSETS_TO_CACHE = [
   "/",
@@ -6,6 +6,7 @@ const ASSETS_TO_CACHE = [
   "/offline-sw.js",
   "/manifest.json",
   "/brand/robustus-laranja.png",
+  "/brand/bg-home-v2.jpg",
   "/brand/procion-logo-branco-crop.png",
   "/brand/cesta-bg.png",
   "/brand/game-card-v3.png",
