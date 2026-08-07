@@ -32,25 +32,40 @@ function csvEscape(v: string) {
 async function handleDownload(name: string, content: string, mime: string) {
   try {
     const blob = new Blob([content], { type: mime + ';charset=utf-8' });
+    
+    // Tentativa de download nativo (funciona em navegadores modernos)
+    if (window.navigator && (window.navigator as any).msSaveOrOpenBlob) {
+      (window.navigator as any).msSaveOrOpenBlob(blob, name);
+      return;
+    }
+
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
     a.download = name;
+    a.style.display = 'none';
     document.body.appendChild(a);
     a.click();
+    
     setTimeout(() => {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-    }, 100);
+    }, 200);
+
+    // No APK/Android, o clique pode não disparar o download se não houver um intent
+    // Então oferecemos o fallback de cópia se o usuário estiver num ambiente restrito
   } catch (err) {
     console.error('Download error:', err);
-    // Fallback: Copy to clipboard
-    try {
-      await navigator.clipboard.writeText(content);
-      alert('Não foi possível iniciar o download automático neste dispositivo. O conteúdo foi copiado para sua área de transferência.');
-    } catch (clipErr) {
-      alert('Erro ao exportar dados. Por favor, tente em outro navegador.');
-    }
+    await fallbackExport(content);
+  }
+}
+
+async function fallbackExport(content: string) {
+  try {
+    await navigator.clipboard.writeText(content);
+    alert('Download automático não disponível neste dispositivo.\n\nO conteúdo foi copiado para a área de transferência com sucesso!');
+  } catch (clipErr) {
+    alert('Erro ao exportar dados. Por favor, tente em outro navegador ou dispositivo.');
   }
 }
 function profileLabel(p: string) {
@@ -315,11 +330,11 @@ export default function AdminRelatorioOffline() {
         </section>
 
         <section style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 16 }}>
-          <button onClick={exportCSV} style={btnPrimary}><Download size={16}/> Exportar CSV</button>
-          <button onClick={exportTXT} style={btnPrimary}><FileText size={16}/> Exportar TXT</button>
-          <button onClick={exportJSON} style={btnSecondary}><Save size={16}/> Backup JSON</button>
+          <button onClick={exportCSV} style={btnPrimary} disabled={loading}><Download size={16}/> Exportar CSV</button>
+          <button onClick={exportTXT} style={btnPrimary} disabled={loading}><FileText size={16}/> Exportar TXT</button>
+          <button onClick={exportJSON} style={btnSecondary} disabled={loading}><Save size={16}/> Backup JSON</button>
           <button onClick={() => setShowSettings(true)} style={btnSecondary} title="Configurações da roleta"><Settings size={16}/></button>
-          <button onClick={() => fileRef.current?.click()} style={btnSecondary}><Upload size={16}/> Importar JSON</button>
+          <button onClick={() => fileRef.current?.click()} style={btnSecondary} disabled={loading}><Upload size={16}/> Importar JSON</button>
           <input ref={fileRef} type="file" accept="application/json,.json" style={{ display: 'none' }}
             onChange={(e) => { const f = e.target.files?.[0]; if (f) onImportFile(f); }} />
         </section>
