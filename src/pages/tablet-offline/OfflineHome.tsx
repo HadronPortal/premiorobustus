@@ -32,8 +32,8 @@ export default function OfflineHome() {
       <div className="relative z-10 w-full h-full flex flex-col items-center justify-center pt-[10vh] px-6 overflow-y-auto">
         {/* Container: JOGAR e Logo Admin alinhados e centralizados */}
         <div 
-          className="absolute z-50 flex items-center justify-center gap-[32px] pointer-events-none"
-          style={{ left: '47%', top: '72%', transform: 'translateX(-50%)' }}
+          className="absolute z-50 flex items-center justify-center gap-[80px] pointer-events-none"
+          style={{ left: '49%', top: '72%', transform: 'translateX(-50%)' }}
         >
           <motion.button
             whileHover={{ scale: 1.1 }}
