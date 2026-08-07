@@ -474,10 +474,10 @@ const GameContent = () => {
         {gameState === 'START' && (
           <motion.div key="start" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 w-full flex flex-col items-center justify-center pt-[10vh] px-4 z-10 overflow-hidden relative">
             
-            {/* Container Rodapé: JOGAR e Logo Admin alinhados */}
+            {/* Container Rodapé: JOGAR e Logo Admin alinhados e centralizados */}
             <div 
-              className="fixed left-0 right-0 z-50 flex items-center justify-end gap-6 px-6 pb-[env(safe-area-inset-bottom,24px)] mb-2"
-              style={{ bottom: 0 }}
+              className="fixed left-1/2 -translate-x-1/2 z-50 flex items-center justify-center gap-8 pb-[env(safe-area-inset-bottom,12px)]"
+              style={{ bottom: '-4px' }}
             >
               <motion.button
                 whileHover={{ scale: 1.1 }}
