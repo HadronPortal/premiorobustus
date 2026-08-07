@@ -18,13 +18,14 @@ export default function OfflineHome() {
       <div className="absolute inset-0 z-0">
         <div className="w-full h-full relative overflow-hidden">
           <img
-            src="https://robustus.com.br/wp-content/uploads/2025/10/site-scaled.jpg"
+            src="/brand/cesta-bg.png"
             alt=""
-            className="absolute inset-0 w-full h-full object-cover object-[center_30%]"
+            className="absolute inset-0 w-full h-full object-cover object-center"
+            draggable={false}
           />
-          <div className="absolute inset-0 bg-[#0047ab]/40" />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#00348c]/35 via-transparent to-[#00348c]/90" />
-          <div className="absolute inset-0 backdrop-blur-[1px]" />
+          <div className="absolute inset-0 bg-[#0047ab]/30" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#00348c]/25 via-transparent to-[#00348c]/80" />
+          <div className="absolute inset-0 backdrop-blur-[0.5px]" />
         </div>
       </div>
 
@@ -65,14 +66,15 @@ export default function OfflineHome() {
             whileHover={{ scale: 1.05, y: -8 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate("/tablet-offline/cadastro?game=cesta")}
-            className="group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-all border-4 border-transparent hover:border-[#0047ab] aspect-[31/40] w-full max-w-[min(74vw,360px)]"
+            className="group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-all border-4 border-transparent hover:border-[#0047ab] aspect-[9/16] w-full max-w-[min(70vw,360px)]"
           >
             <div className="flex-1 w-full overflow-hidden relative bg-white">
-              <div className="absolute inset-0 flex items-center justify-center p-1">
+              <div className="absolute inset-0 flex items-center justify-center">
                 <img
-                  src="/brand/cesta-capa.png"
+                  src="/brand/cesta-bg.png"
                   alt="Jogo da Cesta"
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-contain pointer-events-none"
+                  draggable={false}
                 />
               </div>
             </div>

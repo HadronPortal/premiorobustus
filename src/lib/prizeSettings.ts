@@ -10,12 +10,10 @@ export interface PrizeConfig {
 }
 
 export const DEFAULT_PRIZES: PrizeConfig[] = [
-  { name: "Copo", chance: 15, enabled: true },
-  { name: "Comedouro gato", chance: 15, enabled: true },
-  { name: "Comedouro cachorro", chance: 15, enabled: true },
-  { name: "Brinde surpresa", chance: 10, enabled: true },
-  { name: "Kit caneta", chance: 20, enabled: true },
-  { name: "Amostras gato e cachorro", chance: 25, enabled: true },
+  { name: "Copo", chance: 25, enabled: true },
+  { name: "Comedouro gato", chance: 25, enabled: true },
+  { name: "Comedouro cachorro", chance: 25, enabled: true },
+  { name: "Brinde surpresa", chance: 25, enabled: true },
 ];
 
 function openDB(): Promise<IDBDatabase> {
