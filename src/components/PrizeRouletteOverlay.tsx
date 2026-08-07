@@ -366,7 +366,7 @@ export default function PrizeRouletteOverlay({
           draggable={false}
         />
         <span className="text-white text-[9px] sm:text-xs -mt-0.5 font-medium tracking-wider opacity-90">
-          www.procion.com
+          procion.com
         </span>
       </div>
 
