@@ -8,6 +8,7 @@ import {
   exportBackup,
   importBackup,
   clearCestaData,
+  deleteParticipantData,
   type ParticipantReport,
   type ReportStats,
 } from '@/lib/cestaMatches';
@@ -280,6 +281,14 @@ export default function AdminRelatorioOffline() {
     setMsg('Dados salvos apagados deste aparelho.');
   };
 
+  const deleteRow = async (row: ParticipantReport) => {
+    const ok = window.confirm(`Apagar os dados de ${row.name || fmtPhoneBR(row.phoneNormalized)}?`);
+    if (!ok) return;
+    await deleteParticipantData(row.phoneNormalized);
+    setMsg('Participante apagado.');
+    await reload();
+  };
+
   if (!authed) {
     const creating = pinExists === false;
     const checking = pinExists === null;
@@ -437,6 +446,7 @@ export default function AdminRelatorioOffline() {
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
               <thead style={{ background: '#f8fafc', color: '#475569', textAlign: 'left' }}>
                 <tr>
+                  <th style={th}>Excluir</th>
                   <th style={th}>Nome</th>
                   <th style={th}>Telefone</th>
                   <th style={th}>Perfil</th>
@@ -451,6 +461,15 @@ export default function AdminRelatorioOffline() {
               <tbody>
                 {rows.map(r => (
                   <tr key={r.phoneNormalized} style={{ borderTop: '1px solid #f1f5f9' }}>
+                    <td style={td}>
+                      <button
+                        onClick={() => deleteRow(r)}
+                        title="Apagar este participante"
+                        style={deleteRowBtn}
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </td>
                     <td style={td}>{r.name || '-'}</td>
                     <td style={td}>{fmtPhoneBR(r.phoneNormalized) || '-'}</td>
                     <td style={td}>{profileLabel(r.participantType) || '-'}{r.participantTypeOther ? ` (${r.participantTypeOther})` : ''}</td>
@@ -466,7 +485,7 @@ export default function AdminRelatorioOffline() {
                   </tr>
                 ))}
                 {!loading && rows.length === 0 && (
-                  <tr><td style={{ ...td, textAlign: 'center', color: '#94a3b8', padding: 24 }} colSpan={9}>Nenhum participante registrado ainda.</td></tr>
+                  <tr><td style={{ ...td, textAlign: 'center', color: '#94a3b8', padding: 24 }} colSpan={10}>Nenhum participante registrado ainda.</td></tr>
                 )}
               </tbody>
             </table>
@@ -652,6 +671,18 @@ const inputStyle: React.CSSProperties = {
 const iconBtn: React.CSSProperties = {
   background: 'white', border: '1px solid #e2e8f0', borderRadius: 6, 
   padding: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'
+};
+const deleteRowBtn: React.CSSProperties = {
+  background: '#fef2f2',
+  color: '#dc2626',
+  border: '1px solid #fecaca',
+  borderRadius: 8,
+  width: 34,
+  height: 34,
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  cursor: 'pointer',
 };
 
 const btnPrimary: React.CSSProperties = { display: 'inline-flex', alignItems: 'center', gap: 6, background: '#0047ab', color: 'white', border: 0, padding: '10px 14px', borderRadius: 10, fontWeight: 700, cursor: 'pointer' };

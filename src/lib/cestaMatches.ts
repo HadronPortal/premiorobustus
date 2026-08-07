@@ -505,3 +505,26 @@ export async function clearCestaData(): Promise<void> {
     req.onblocked = () => reject(new Error("Feche e abra o app para apagar os dados."));
   });
 }
+
+export async function deleteParticipantData(phone: string): Promise<void> {
+  const phoneNormalized = normalizePhone(phone);
+  if (!phoneNormalized) return;
+  const db = await openDB();
+  await new Promise<void>((resolve, reject) => {
+    const t = db.transaction([PARTICIPANTS, PLAYS], "readwrite");
+    t.objectStore(PARTICIPANTS).delete(phoneNormalized);
+
+    const playsStore = t.objectStore(PLAYS);
+    const idx = playsStore.index("phoneNormalized");
+    const req = idx.openCursor(IDBKeyRange.only(phoneNormalized));
+    req.onsuccess = () => {
+      const cursor = req.result;
+      if (!cursor) return;
+      cursor.delete();
+      cursor.continue();
+    };
+
+    t.oncomplete = () => resolve();
+    t.onerror = () => reject(t.error);
+  });
+}
