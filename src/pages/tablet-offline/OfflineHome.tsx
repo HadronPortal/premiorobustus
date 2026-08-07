@@ -74,7 +74,7 @@ export default function OfflineHome() {
             <div className="absolute inset-0 w-full h-full overflow-hidden">
               <img 
                 src={gameCardAsset.url} 
-                className="w-full h-full object-cover pointer-events-none" 
+                className="w-full h-[112%] object-cover object-top pointer-events-none" 
                 alt="Jogo da Cesta" 
               />
             </div>
