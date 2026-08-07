@@ -94,7 +94,7 @@ export default function OfflineHome() {
           <img 
             src={fixedBannerAsset.url} 
             alt="RobustUS Products" 
-            className="w-full h-auto min-h-[100px] sm:min-h-[160px] object-cover" 
+            className="w-full h-auto min-h-[100px] sm:min-h-[160px] object-contain bg-black" 
             draggable={false}
           />
         </motion.div>
