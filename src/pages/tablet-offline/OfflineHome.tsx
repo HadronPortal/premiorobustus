@@ -22,7 +22,6 @@ export default function OfflineHome() {
             className="absolute inset-0 w-full h-full object-cover object-center"
             draggable={false}
           />
-          
         </div>
       </div>
 
@@ -32,29 +31,22 @@ export default function OfflineHome() {
       </div>
 
       <div className="relative z-10 w-full h-full flex flex-col items-center justify-center pt-[10vh] px-6 overflow-y-auto">
-        {/* Botão JOGAR centralizado no espaço */}
+        {/* Botao JOGAR no espaco entre a faixa laranja e as racoes */}
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => navigate("/tablet-offline/cadastro?game=cesta")}
-          className="px-12 py-4 bg-[#f7941d] text-white text-2xl font-black rounded-full shadow-[0_12px_24px_rgba(247,148,29,0.4)] border-b-4 border-[#c96f00] flex items-center gap-3 uppercase tracking-wider transition-all z-20"
+          className="absolute left-1/2 bottom-[20%] -translate-x-1/2 bg-transparent px-8 py-2 text-white text-[clamp(1.7rem,7vw,3rem)] font-black italic leading-none tracking-wide uppercase drop-shadow-[0_5px_0_rgba(0,0,0,0.35)] transition-all z-20"
           aria-label="Iniciar Jogo da Cesta"
         >
-          <svg 
-            viewBox="0 0 24 24" 
-            className="w-6 h-6 text-white fill-current"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path d="M8 5v14l11-7z" />
-          </svg>
           JOGAR
         </motion.button>
 
-        {/* Logo Admin Discreto no Rodapé */}
+        {/* Logo Admin Discreto no Rodape */}
         <div className="absolute bottom-8 right-8 z-50">
           <div
             onPointerDown={() => {
-              const timer = setTimeout(() => navigate('/admin/relatorio-offline'), 2200);
+              const timer = setTimeout(() => navigate("/admin/relatorio-offline"), 2200);
               (window as any).adminTimer = timer;
             }}
             onPointerUp={() => clearTimeout((window as any).adminTimer)}
