@@ -474,8 +474,11 @@ const GameContent = () => {
         {gameState === 'START' && (
           <motion.div key="start" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 w-full flex flex-col items-center justify-center pt-[10vh] px-4 z-10 overflow-hidden relative">
             
-            {/* Botão JOGAR discreto no rodapé, alinhado com o logo admin */}
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center justify-center">
+            {/* Container Rodapé: JOGAR e Logo Admin alinhados */}
+            <div 
+              className="fixed left-0 right-0 z-50 flex items-center justify-end gap-6 px-6 pb-[env(safe-area-inset-bottom,24px)] mb-2"
+              style={{ bottom: 0 }}
+            >
               <motion.button
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
@@ -488,10 +491,7 @@ const GameContent = () => {
               >
                 JOGAR
               </motion.button>
-            </div>
 
-            {/* Logo RobustUS inferior (Admin) */}
-            <div className="absolute bottom-6 right-6 z-50">
               <div
                 onPointerDown={startAdminPress}
                 onPointerUp={cancelAdminPress}
