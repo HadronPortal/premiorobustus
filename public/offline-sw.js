@@ -1,4 +1,4 @@
-const CACHE_NAME = 'robustus-cesta-v2026-08-07-ui-refine';
+const CACHE_NAME = 'robustus-cesta-v2026-08-07-full-cover';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
