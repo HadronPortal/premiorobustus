@@ -1,4 +1,4 @@
-const CACHE_NAME = 'robustus-cesta-v2026-08-07-bg-fix';
+const CACHE_NAME = 'robustus-cesta-v2026-08-07-bg-new';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',

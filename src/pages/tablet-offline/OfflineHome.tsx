@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { PawPrint } from "lucide-react";
 import { ensureOfflineServiceWorker } from "./registerOfflineSW";
 import { OfflineBannerCarousel } from "./OfflineBannerCarousel";
+import bgHeroAsset from "@/assets/bg-home.jpg.asset.json";
 
 export default function OfflineHome() {
   const navigate = useNavigate();
@@ -18,12 +19,12 @@ export default function OfflineHome() {
       <div className="absolute inset-0 z-0">
         <div className="w-full h-full relative overflow-hidden">
           <img
-            src="/brand/cesta-bg.png"
+            src={bgHeroAsset.url}
             alt=""
             className="absolute inset-0 w-full h-full object-cover object-center"
             draggable={false}
           />
-          <div className="absolute inset-0 bg-[#0047ab]/30" />
+          <div className="absolute inset-0 bg-[#0047ab]/20" />
           <div className="absolute inset-0 bg-gradient-to-b from-[#00348c]/25 via-transparent to-[#00348c]/80" />
           <div className="absolute inset-0 backdrop-blur-[0.5px]" />
         </div>
