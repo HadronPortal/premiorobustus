@@ -12,8 +12,6 @@ import {
 import { hasAdminPin, setAdminPin, verifyAdminPin } from '@/lib/adminPin';
 import { getPrizeSettings, savePrizeSettings, type PrizeConfig, DEFAULT_PRIZES } from '@/lib/prizeSettings';
 
-const AUTH_KEY = 'robustus.admin.relatorio.ok';
-
 function pad(n: number) { return String(n).padStart(2, '0'); }
 function fmtDateBR(iso: string) {
   if (!iso) return '-';
@@ -95,9 +93,7 @@ const EMPTY_STATS: ReportStats = {
 
 export default function AdminRelatorioOffline() {
   const navigate = useNavigate();
-  const [authed, setAuthed] = useState<boolean>(() => {
-    try { return sessionStorage.getItem(AUTH_KEY) === '1'; } catch { return false; }
-  });
+  const [authed, setAuthed] = useState<boolean>(false);
   const [pinExists, setPinExists] = useState<boolean | null>(null);
   const [pin, setPin] = useState('');
   const [pinConfirm, setPinConfirm] = useState('');
@@ -147,7 +143,6 @@ export default function AdminRelatorioOffline() {
       setBusy(true);
       try {
         await setAdminPin(value);
-        try { sessionStorage.setItem(AUTH_KEY, '1'); } catch {}
         setAuthed(true);
       } catch (err: any) {
         setPinErr(err?.message || 'Falha ao salvar o PIN.');
@@ -158,7 +153,6 @@ export default function AdminRelatorioOffline() {
       try {
         const ok = await verifyAdminPin(value);
         if (ok) {
-          try { sessionStorage.setItem(AUTH_KEY, '1'); } catch {}
           setAuthed(true);
         } else setPinErr('PIN incorreto.');
       } finally { setBusy(false); }
@@ -182,6 +176,8 @@ export default function AdminRelatorioOffline() {
     ].map(csvEscape).join(';'));
     const csv = '\uFEFF' + [header, ...lines].join('\r\n');
     await handleDownload(`robustus-participantes-${todayStamp()}.csv`, csv, 'text/csv');
+    await fallbackExport(csv);
+    setMsg('CSV gerado. Se o APK nao abrir o download, o conteudo foi copiado para a area de transferencia.');
   };
 
   const exportTXT = async () => {
@@ -207,12 +203,18 @@ export default function AdminRelatorioOffline() {
         `${i+1}. ${r.name || '(sem nome)'} — ${fmtPhoneBR(r.phoneNormalized) || '(sem telefone)'} — ${profileLabel(r.participantType) || '-'}${r.participantTypeOther ? ` (${r.participantTypeOther})` : ''} — Tentativas: ${r.attempts} — Último: ${r.lastPet || '-'} ${r.lastScore} pts — Melhor: ${r.bestScore} pts — Brinde: ${r.lastPrize || '-'}${r.lastPrizeCode ? ` (${r.lastPrizeCode})` : ''} — ${fmtDateBR(r.lastPlayedAt)}`
       );
     });
-    await handleDownload(`robustus-participantes-${todayStamp()}.txt`, lines.join('\r\n'), 'text/plain');
+    const txt = lines.join('\r\n');
+    await handleDownload(`robustus-participantes-${todayStamp()}.txt`, txt, 'text/plain');
+    await fallbackExport(txt);
+    setMsg('TXT gerado. Se o APK nao abrir o download, o conteudo foi copiado para a area de transferencia.');
   };
 
   const exportJSON = async () => {
     const payload = await exportBackup();
-    await handleDownload(`robustus-backup-${todayStamp()}.json`, JSON.stringify(payload, null, 2), 'application/json');
+    const json = JSON.stringify(payload, null, 2);
+    await handleDownload(`robustus-backup-${todayStamp()}.json`, json, 'application/json');
+    await fallbackExport(json);
+    setMsg('Backup JSON gerado. Se o APK nao abrir o download, o conteudo foi copiado para a area de transferencia.');
   };
 
   const onImportFile = async (file: File) => {
