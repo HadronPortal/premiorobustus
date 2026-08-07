@@ -84,14 +84,14 @@ export default function OfflineHome() {
         </div>
 
 
-        {/* Banner de Produtos 3D */}
+        {/* Banner de Produtos 3D Agrupados */}
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, type: "spring", stiffness: 100 }}
-          className="w-full flex justify-center items-end px-4 mt-2 mb-4 h-[clamp(100px,15vh,180px)]"
+          className="w-full flex justify-center items-end px-4 mt-2 mb-8 h-[clamp(140px,20vh,280px)]"
         >
-          <div className="flex items-end justify-center -space-x-8 sm:-space-x-12 w-full max-w-3xl">
+          <div className="flex items-end justify-center -space-x-12 sm:-space-x-20 w-full max-w-4xl relative">
             {PRODUCT_ASSETS.map((asset, index) => (
               <motion.div
                 key={asset.id}
@@ -99,12 +99,15 @@ export default function OfflineHome() {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.6 + (index * 0.1) }}
                 className="relative"
-                style={{ zIndex: 10 - Math.abs(2 - index) }}
+                style={{ 
+                  zIndex: index === 2 ? 20 : 10 - Math.abs(2 - index),
+                  transform: `scale(${index === 2 ? 1.15 : 1}) translateY(${index === 2 ? '-5%' : '0'})`,
+                }}
               >
                 <img
                   src={asset.url}
-                  alt="Produto"
-                  className="h-[clamp(90px,13vh,160px)] sm:h-[clamp(130px,18vh,220px)] w-auto object-contain drop-shadow-[0_15px_20px_rgba(0,0,0,0.6)] transition-transform hover:scale-110"
+                  alt="Produto RobustUS"
+                  className="h-[clamp(120px,18vh,240px)] sm:h-[clamp(180px,25vh,350px)] w-auto object-contain drop-shadow-[0_25px_30px_rgba(0,0,0,0.8)]"
                   draggable={false}
                 />
               </motion.div>
