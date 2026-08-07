@@ -483,11 +483,6 @@ const GameContent = () => {
                 initAudio();
               }}
             />
-                className="text-white text-base font-black italic tracking-widest uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] transition-all cursor-pointer px-4 py-2"
-              >
-                JOGAR
-              </motion.button>
-            </div>
 
             {/* Logo RobustUS inferior (Admin) */}
             <div className="absolute bottom-[4px] right-8 z-50">
