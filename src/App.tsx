@@ -505,11 +505,11 @@ const GameContent = () => {
                   setSelectedGame('cesta');
                   setGameState('AUTH');
                 }}
-                className="group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-all border-4 border-transparent hover:border-[#0047ab] aspect-[31/40] w-full max-w-[min(74vw,420px)] sm:max-w-none"
+                className="group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-all border-4 border-transparent hover:border-[#0047ab] aspect-[9/16] w-full max-w-[min(70vw,360px)] sm:max-w-none"
               >
                 <div className="flex-1 w-full overflow-hidden relative bg-white">
-                  <div className="absolute inset-0 flex flex-col items-center justify-center p-1">
-                     <img src="/brand/cesta-capa.png" alt="Jogo da Cesta" className="w-full h-full object-contain" />
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                     <img src="/brand/cesta-bg.png" alt="Jogo da Cesta" className="w-full h-full object-contain pointer-events-none" draggable={false} />
                   </div>
                 </div>
               </motion.button>
