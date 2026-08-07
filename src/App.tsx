@@ -475,7 +475,7 @@ const GameContent = () => {
           <motion.div key="start" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 w-full flex flex-col items-center justify-center pt-[10vh] px-4 z-10 overflow-hidden relative">
             
             {/* Botão JOGAR discreto no rodapé, alinhado com o logo admin */}
-            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-50 flex items-center justify-center">
+            <div className="absolute bottom-[4px] left-1/2 -translate-x-1/2 z-50 flex items-center justify-center">
               <motion.button
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
@@ -491,7 +491,7 @@ const GameContent = () => {
             </div>
 
             {/* Logo RobustUS inferior (Admin) */}
-            <div className="absolute bottom-2 right-8 z-50">
+            <div className="absolute bottom-[4px] right-8 z-50">
               <div
                 onPointerDown={startAdminPress}
                 onPointerUp={cancelAdminPress}
