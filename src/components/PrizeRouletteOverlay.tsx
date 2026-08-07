@@ -547,8 +547,7 @@ export default function PrizeRouletteOverlay({
           align-items: center;
           gap: clamp(10px, 1.9vh, 18px);
           padding: max(16px, env(safe-area-inset-top)) 16px max(18px, env(safe-area-inset-bottom));
-          overflow-y: auto;
-          overflow-x: hidden;
+          overflow: hidden;
           color: #fff;
           text-align: center;
           font-family: Arial, Helvetica, sans-serif;
