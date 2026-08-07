@@ -497,7 +497,7 @@ const GameContent = () => {
                 onPointerUp={cancelAdminPress}
                 onPointerCancel={cancelAdminPress}
                 onPointerLeave={cancelAdminPress}
-                className="w-20 sm:w-28 hover:scale-105 transition-transform cursor-pointer pointer-events-auto"
+                className="w-20 sm:w-28 hover:scale-105 transition-transform cursor-pointer pointer-events-auto mt-[6px]"
               >
                 <img
                   src={ASSETS.logo}
