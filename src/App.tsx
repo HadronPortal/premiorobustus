@@ -476,8 +476,8 @@ const GameContent = () => {
             
             {/* Container: JOGAR e Logo Admin alinhados e centralizados */}
             <div 
-              className="absolute left-1/2 -translate-x-1/2 z-50 flex items-center justify-center gap-[32px] pointer-events-none"
-              style={{ top: '75%' }}
+              className="absolute z-50 flex items-center justify-center gap-[32px] pointer-events-none"
+              style={{ left: '47%', top: '72%', transform: 'translateX(-50%)' }}
             >
               <motion.button
                 whileHover={{ scale: 1.1 }}
