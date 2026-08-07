@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import bgHeroAsset from "@/assets/bg-home.jpg.asset.json";
 import fixedBannerAsset from "@/assets/banner-promo.png.asset.json";
-import gameCardAsset from "@/assets/game-card.png.asset.json";
+import gameCardAsset from "@/assets/cesta-final.png.asset.json";
 import confetti from 'canvas-confetti';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from "@/integrations/supabase/client";
