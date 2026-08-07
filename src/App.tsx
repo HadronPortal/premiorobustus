@@ -511,9 +511,17 @@ const GameContent = () => {
                 }}
                 className="group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-all border-4 border-transparent hover:border-[#0047ab] aspect-[9/16] w-full max-w-[min(70vw,360px)] sm:max-w-none"
               >
-                <div className="flex-1 w-full overflow-hidden relative bg-white">
-                  <div className="absolute inset-0 flex flex-col items-center justify-center">
-                     <img src={gameCardAsset.url} alt="Jogo da Cesta" className="w-full h-full object-contain pointer-events-none" draggable={false} />
+                <div className="flex-1 w-full overflow-hidden relative">
+                  {/* Background do card com baixa opacidade */}
+                  <img 
+                    src={ASSETS.bgHero} 
+                    className="absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none" 
+                    alt="" 
+                  />
+                  <div className="absolute inset-0 bg-white/40 pointer-events-none" />
+                  
+                  <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
+                     <img src={gameCardAsset.url} alt="Jogo da Cesta" className="w-full h-full object-contain pointer-events-none relative z-10" draggable={false} />
                   </div>
                 </div>
               </motion.button>
@@ -523,12 +531,12 @@ const GameContent = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="w-full max-w-[min(94vw,620px)] overflow-hidden rounded-[1.5rem] sm:rounded-[2rem] shadow-xl border border-white/20"
+              className="w-full max-w-[min(94vw,620px)] overflow-hidden"
             >
               <img 
                 src={ASSETS.banner} 
                 alt="RobustUS Products" 
-                className="w-full h-auto min-h-[100px] sm:min-h-[160px] object-contain bg-black" 
+                className="w-full h-auto min-h-[80px] sm:min-h-[140px] object-contain rounded-2xl sm:rounded-3xl" 
                 draggable={false}
               />
             </motion.div>
