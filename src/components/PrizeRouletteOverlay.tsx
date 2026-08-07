@@ -751,11 +751,13 @@ export default function PrizeRouletteOverlay({
         .roulette-stage-score {
           justify-content: flex-start;
           gap: clamp(12px, 1.9vh, 18px);
+          transform: translateY(clamp(34px, 5.5vh, 72px));
         }
 
         .roulette-stage-spinning {
           justify-content: flex-start;
           gap: clamp(12px, 1.9vh, 18px);
+          transform: translateY(clamp(34px, 5.5vh, 72px));
         }
 
         .roulette-stage-score .roulette-title-block {
@@ -1110,6 +1112,11 @@ export default function PrizeRouletteOverlay({
           .roulette-stage-score .roulette-title-block,
           .roulette-stage-spinning .roulette-title-block {
             margin-bottom: 24px;
+          }
+
+          .roulette-stage-score,
+          .roulette-stage-spinning {
+            transform: translateY(28px);
           }
 
           .roulette-ready-card {

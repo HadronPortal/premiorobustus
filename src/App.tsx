@@ -490,7 +490,7 @@ const GameContent = () => {
             </motion.button>
 
             {/* Logo Admin Discreto no Rodapé */}
-            <div className="absolute bottom-8 right-8 z-50">
+            <div className="absolute bottom-4 right-8 z-50">
               <div
                 onPointerDown={startAdminPress}
                 onPointerUp={cancelAdminPress}

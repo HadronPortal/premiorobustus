@@ -42,7 +42,7 @@ export default function OfflineHome() {
         </motion.button>
 
         {/* Logo Admin Discreto no Rodape */}
-        <div className="absolute bottom-8 right-8 z-50">
+        <div className="absolute bottom-4 right-8 z-50">
           <div
             onPointerDown={() => {
               const timer = setTimeout(() => navigate("/admin/relatorio-offline"), 2200);
