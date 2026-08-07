@@ -15,7 +15,7 @@ import {
   LayoutGrid,
   ShoppingBasket
 } from 'lucide-react';
-import bgHeroAsset from "@/assets/bg-home.jpg.asset.json";
+import bgHeroAsset from "@/assets/bg-home-v2.jpg.asset.json";
 import fixedBannerAsset from "@/assets/banner-promo.png.asset.json";
 import gameCardAsset from "@/assets/game-card-v3.png.asset.json";
 import confetti from 'canvas-confetti';

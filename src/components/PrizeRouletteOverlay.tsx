@@ -361,11 +361,11 @@ export default function PrizeRouletteOverlay({
         <img 
           src={LOGO_URL} 
           alt="Logo" 
-          className="w-48 sm:w-56 h-auto object-contain"
+          className="w-36 sm:w-44 h-auto object-contain"
           style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))' }}
           draggable={false}
         />
-        <span className="text-white text-[11px] sm:text-sm -mt-0.5 font-medium tracking-wider opacity-95">
+        <span className="text-white text-[9px] sm:text-xs -mt-0.5 font-medium tracking-wider opacity-90">
           www.procion.com
         </span>
       </div>
