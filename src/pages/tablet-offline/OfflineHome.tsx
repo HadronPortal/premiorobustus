@@ -87,22 +87,15 @@ export default function OfflineHome() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="w-full max-w-[min(94vw,620px)] overflow-hidden"
+          className="mt-2"
         >
           <img 
-            src={fixedBannerAsset.url} 
-            alt="RobustUS Products" 
-            className="w-full h-auto min-h-[80px] sm:min-h-[140px] object-contain rounded-2xl sm:rounded-3xl" 
+            src="/brand/robustus-laranja.png"
+            alt="RobustUS" 
+            className="w-24 sm:w-32 h-auto object-contain opacity-80" 
             draggable={false}
           />
         </motion.div>
-
-        <div className="opacity-40 flex items-center gap-2 text-white">
-          <PawPrint className="w-4 h-4" />
-          <span className="text-[10px] sm:text-xs font-black tracking-widest uppercase italic">
-            RobustUS Nutrição Animal
-          </span>
-        </div>
       </div>
     </div>
   );
