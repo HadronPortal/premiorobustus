@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import bgHeroAsset from "@/assets/bg-home.jpg.asset.json";
 import fixedBannerAsset from "@/assets/banner-promo.png.asset.json";
-import gameCardAsset from "@/assets/cesta-final.png.asset.json";
+import gameCardAsset from "@/assets/game-card-v3.png.asset.json";
 import confetti from 'canvas-confetti';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from "@/integrations/supabase/client";
@@ -514,20 +514,9 @@ const GameContent = () => {
                 <div className="absolute inset-0 w-full h-full overflow-hidden">
                   <img 
                     src={gameCardAsset.url} 
-                    className="w-full h-[112%] object-cover object-top pointer-events-none" 
+                    className="w-full h-full object-cover pointer-events-none" 
                     alt="Jogo da Cesta" 
                   />
-                </div>
-                {/* Overlay de texto no rodapé para garantir leitura e visual profissional */}
-                <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 via-black/40 to-transparent pt-12 flex flex-col items-center">
-                  <div className="bg-[#f7941d] px-6 py-2 rounded-full shadow-lg border-b-4 border-[#c96f00] mb-1">
-                    <span className="text-white text-xl sm:text-2xl font-black italic uppercase tracking-tighter">
-                      JOGO DA CESTA
-                    </span>
-                  </div>
-                  <span className="text-white/90 text-[10px] sm:text-xs font-bold uppercase tracking-widest italic">
-                    ajude seu pet a pegar a ração
-                  </span>
                 </div>
               </motion.button>
             </div>
