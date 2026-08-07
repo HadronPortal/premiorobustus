@@ -30,17 +30,11 @@ export default function OfflineHome() {
       </div>
 
       <div className="relative z-10 w-full h-full flex flex-col items-center justify-center pt-[10vh] px-6 overflow-y-auto">
-        {/* Botão JOGAR discreto no rodapé, alinhado com o logo admin */}
-        <div className="absolute bottom-[4px] left-1/2 -translate-x-1/2 z-50 flex items-center justify-center">
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={() => navigate("/tablet-offline/cadastro?game=cesta")}
-            className="text-white text-base font-black italic tracking-widest uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] transition-all cursor-pointer px-4 py-2"
-          >
-            JOGAR
-          </motion.button>
-        </div>
+        {/* Área clicável invisível em cima da faixa "JOGO DA CESTA" */}
+        <div 
+          className="absolute top-[45vh] left-1/2 -translate-x-1/2 w-[80%] h-[12vh] z-[60] cursor-pointer"
+          onClick={() => navigate("/tablet-offline/cadastro?game=cesta")}
+        />
 
         {/* Logo RobustUS inferior (Admin) */}
         <div className="absolute bottom-[4px] right-8 z-50">

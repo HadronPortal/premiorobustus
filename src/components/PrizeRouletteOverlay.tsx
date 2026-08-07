@@ -354,8 +354,8 @@ export default function PrizeRouletteOverlay({
   const wheelIsInteractive = phase === "score" && !decidedRef.current;
 
   return (
-    <div className="prize-roulette-overlay relative overflow-hidden">
-      <div className="roulette-pattern" />
+    <div className="prize-roulette-overlay fixed inset-0 h-[100dvh] w-full overflow-hidden flex flex-col items-center justify-center">
+      <div className="roulette-pattern absolute inset-0" />
 
       <div className="absolute bottom-2 right-5 flex flex-col items-center z-[60] opacity-95 pointer-events-none safe-area-bottom">
         <img 
