@@ -476,15 +476,19 @@ const GameContent = () => {
         {gameState === 'START' && (
           <motion.div key="start" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 w-full flex flex-col items-center justify-start z-10 overflow-hidden relative">
             
-            {/* Área clicável invisível sobre "JOGO DA CESTA" */}
+            {/* Área clicável sobre a faixa "JOGO DA CESTA" */}
             <motion.div
-              whileTap={{ scale: 0.98, opacity: 0.8 }}
+              whileTap={{ 
+                scale: 0.98, 
+                backgroundColor: "rgba(255, 255, 255, 0.1)",
+                boxShadow: "0 0 40px rgba(255, 148, 29, 0.4)"
+              }}
               onClick={() => {
                 setSelectedGame('cesta');
                 setGameState('AUTH');
                 initAudio();
               }}
-              className="absolute top-[15%] left-[10%] w-[80%] h-[30%] cursor-pointer z-20 rounded-[3rem]"
+              className="absolute top-[18%] left-[5%] w-[90%] h-[24%] cursor-pointer z-20 rounded-[2rem] transition-all duration-150"
               aria-label="Iniciar Jogo da Cesta"
             />
 
