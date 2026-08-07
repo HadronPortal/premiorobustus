@@ -31,7 +31,7 @@ export default function OfflineHome() {
 
       <div className="relative z-10 w-full h-full flex flex-col items-center justify-center pt-[10vh] px-6 overflow-y-auto">
         {/* Botão JOGAR discreto no rodapé, alinhado com o logo admin */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center justify-center">
+        <div className="absolute bottom-[2px] left-1/2 -translate-x-1/2 z-50 flex items-center justify-center">
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
@@ -43,7 +43,7 @@ export default function OfflineHome() {
         </div>
 
         {/* Logo RobustUS inferior (Admin) */}
-        <div className="absolute bottom-6 right-6 z-50">
+        <div className="absolute bottom-[2px] right-6 z-50">
           <div
             onPointerDown={() => {
               const timer = setTimeout(() => navigate("/admin/relatorio-offline"), 2200);
