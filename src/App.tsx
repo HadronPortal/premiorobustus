@@ -509,20 +509,17 @@ const GameContent = () => {
                   setSelectedGame('cesta');
                   setGameState('AUTH');
                 }}
-                className="group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-all border-4 border-transparent hover:border-[#0047ab] aspect-[9/16] w-full max-w-[min(70vw,360px)] sm:max-w-none"
+                className="group relative flex flex-col overflow-hidden rounded-[2.5rem] shadow-2xl transition-all border-2 border-white/80 hover:border-white aspect-[9/16] w-full max-w-[min(70vw,360px)] sm:max-w-none"
               >
                 <div className="flex-1 w-full overflow-hidden relative">
-                  {/* Background do card com baixa opacidade */}
+                  {/* Background do card com a foto oficial preenchendo tudo */}
                   <img 
-                    src={ASSETS.bgHero} 
-                    className="absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none" 
-                    alt="" 
+                    src={gameCardAsset.url} 
+                    className="absolute inset-0 w-full h-full object-cover pointer-events-none" 
+                    alt="Jogo da Cesta" 
                   />
-                  <div className="absolute inset-0 bg-white/40 pointer-events-none" />
-                  
-                  <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
-                     <img src={gameCardAsset.url} alt="Jogo da Cesta" className="w-full h-full object-contain pointer-events-none relative z-10" draggable={false} />
-                  </div>
+                  {/* Overlay azul muito leve apenas para profundidade */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-blue-900/10 to-blue-900/40 pointer-events-none" />
                 </div>
               </motion.button>
             </div>
