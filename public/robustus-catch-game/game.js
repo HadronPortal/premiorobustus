@@ -387,10 +387,13 @@ class RobustUSCatchGame {
     this.canvas.addEventListener("pointerdown", (event) => {
       this.pointerActive = true;
       this.updateTargetFromPointer(event);
-    });
+    }, { passive: false });
     this.canvas.addEventListener("pointermove", (event) => {
-      if (this.pointerActive) this.updateTargetFromPointer(event);
-    });
+      if (this.pointerActive) {
+        this.updateTargetFromPointer(event);
+        if (event.cancelable) event.preventDefault();
+      }
+    }, { passive: false });
     const releasePointer = () => {
       this.pointerActive = false;
       // Travar target onde esta para parar o movimento imediatamente.
