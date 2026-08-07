@@ -69,17 +69,15 @@ export default function OfflineHome() {
             whileHover={{ scale: 1.05, y: -8 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate("/tablet-offline/cadastro?game=cesta")}
-            className="group relative flex flex-col overflow-hidden rounded-[2.5rem] shadow-2xl transition-all border-2 border-white/80 hover:border-white aspect-[9/16] w-full max-w-[min(70vw,360px)]"
+            className="group relative flex flex-col overflow-hidden rounded-[2.5rem] shadow-2xl transition-all border-2 border-white/80 hover:border-white aspect-[9/16] w-full max-w-[min(70vw,360px)] sm:max-w-[420px]"
           >
             <div className="flex-1 w-full overflow-hidden relative">
               {/* Background do card com a foto oficial preenchendo tudo */}
               <img 
                 src={gameCardAsset.url} 
-                className="absolute inset-0 w-full h-full object-cover pointer-events-none" 
+                className="absolute inset-0 w-full h-full object-contain pointer-events-none" 
                 alt="Jogo da Cesta" 
               />
-              {/* Overlay azul muito leve apenas para profundidade */}
-              <div className="absolute inset-0 bg-gradient-to-b from-blue-900/10 to-blue-900/40 pointer-events-none" />
             </div>
           </motion.button>
         </div>
