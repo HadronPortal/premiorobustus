@@ -509,14 +509,25 @@ const GameContent = () => {
                   setSelectedGame('cesta');
                   setGameState('AUTH');
                 }}
-                className="group relative flex flex-col overflow-hidden rounded-[2.5rem] shadow-2xl transition-all border-2 border-white/80 hover:border-white aspect-[9/16] w-full max-w-[min(70vw,360px)] sm:max-w-[420px] bg-gradient-to-b from-[#0047ab] to-[#003380]"
+                className="group relative flex flex-col overflow-hidden rounded-[2.5rem] shadow-2xl transition-all border-2 border-white/80 hover:border-white aspect-[9/16] w-full max-w-[min(70vw,360px)] sm:max-w-[420px]"
               >
-                <div className="flex-1 w-full h-full overflow-hidden relative flex items-center justify-center">
+                <div className="absolute inset-0 w-full h-full overflow-hidden">
                   <img 
                     src={gameCardAsset.url} 
-                    className="w-full h-full object-contain pointer-events-none" 
+                    className="w-full h-full object-cover pointer-events-none" 
                     alt="Jogo da Cesta" 
                   />
+                </div>
+                {/* Overlay de texto no rodapé para garantir leitura e visual profissional */}
+                <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 via-black/40 to-transparent pt-12 flex flex-col items-center">
+                  <div className="bg-[#f7941d] px-6 py-2 rounded-full shadow-lg border-b-4 border-[#c96f00] mb-1">
+                    <span className="text-white text-xl sm:text-2xl font-black italic uppercase tracking-tighter">
+                      JOGO DA CESTA
+                    </span>
+                  </div>
+                  <span className="text-white/90 text-[10px] sm:text-xs font-bold uppercase tracking-widest italic">
+                    ajude seu pet a pegar a ração
+                  </span>
                 </div>
               </motion.button>
             </div>
