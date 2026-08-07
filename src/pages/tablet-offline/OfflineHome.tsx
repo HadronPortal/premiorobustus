@@ -5,6 +5,7 @@ import { ensureOfflineServiceWorker } from "./registerOfflineSW";
 
 export default function OfflineHome() {
   const navigate = useNavigate();
+  const startGame = () => navigate("/tablet-offline/cadastro?game=cesta");
 
   React.useEffect(() => {
     ensureOfflineServiceWorker();
@@ -29,14 +30,12 @@ export default function OfflineHome() {
         Modo Tablet Offline
       </div>
 
-      <div className="relative z-10 w-full h-full flex flex-col items-center justify-center pt-[10vh] px-6 overflow-hidden">
-        {/* Área clicável invisível em cima da faixa "JOGO DA CESTA" */}
-        <div 
-          className="absolute left-1/2 top-[31%] h-[56%] w-[88%] -translate-x-1/2 z-[60] cursor-pointer"
-          onClick={() => navigate("/tablet-offline/cadastro?game=cesta")}
-          onPointerDown={(event) => event.stopPropagation()}
-          aria-label="Iniciar Jogo da Cesta"
-        />
+      <div
+        className="relative z-10 w-full h-full flex flex-col items-center justify-center pt-[10vh] px-6 overflow-hidden cursor-pointer"
+        onClick={startGame}
+        onPointerUp={startGame}
+        aria-label="Iniciar Jogo da Cesta"
+      >
 
         {/* Logo RobustUS inferior (Admin) */}
         <div className="absolute bottom-[4px] right-8 z-50">
@@ -45,9 +44,13 @@ export default function OfflineHome() {
               const timer = setTimeout(() => navigate("/admin/relatorio-offline"), 2200);
               (window as any).adminTimer = timer;
             }}
-            onPointerUp={() => clearTimeout((window as any).adminTimer)}
+            onPointerUp={(event) => {
+              event.stopPropagation();
+              clearTimeout((window as any).adminTimer);
+            }}
             onPointerCancel={() => clearTimeout((window as any).adminTimer)}
             onPointerLeave={() => clearTimeout((window as any).adminTimer)}
+            onClick={(event) => event.stopPropagation()}
             className="w-24 sm:w-32 hover:scale-105 transition-transform cursor-pointer"
           >
             <img

@@ -462,9 +462,6 @@ class RobustUSCatchGame {
     const ratioX = this.canvas.width / rect.width;
     const pointerX = (event.clientX - rect.left) * ratioX;
     this.targetX = clamp(pointerX, this.player.basketWidth / 2, this.width - this.player.basketWidth / 2);
-    if (this.pointerActive && this.player) {
-      this.player.x = this.targetX;
-    }
   }
 
   loop(time) {
@@ -508,15 +505,17 @@ class RobustUSCatchGame {
       this.targetX = clamp(this.targetX, this.player.basketWidth / 2, this.width - this.player.basketWidth / 2);
     }
 
-    // No toque, o mascote gruda no dedo. Teclado usa suavizacao.
+    // No toque, o mascote segue direto o dedo; teclado usa suavizacao.
     const target = this.targetX ?? this.player.x;
-    const dx = target - this.player.x;
+    const previousX = this.player.x;
     if (this.pointerActive) {
       this.player.x = target;
     } else {
+      const dx = target - this.player.x;
       const follow = Math.min(1, 0.32 * delta);
       this.player.x += dx * follow;
     }
+    const dx = this.player.x - previousX;
     if (Math.abs(dx) < 0.4) this.player.x = target;
     this.player.x = clamp(this.player.x, this.player.basketWidth / 2, this.width - this.player.basketWidth / 2);
 
