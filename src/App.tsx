@@ -15,6 +15,7 @@ import {
   LayoutGrid,
   ShoppingBasket
 } from 'lucide-react';
+import bgHeroAsset from "@/assets/bg-home.jpg.asset.json";
 import confetti from 'canvas-confetti';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from "@/integrations/supabase/client";
@@ -50,7 +51,7 @@ const BRAND = {
 };
 
 const ASSETS = {
-  bgHero: "/brand/cesta-bg.png",
+  bgHero: bgHeroAsset.url,
   logo: "/brand/robustus-laranja.png",
   paw: "/brand/robustus-laranja.png",
 };
@@ -450,12 +451,12 @@ const GameContent = () => {
         {(gameState === 'START' || gameState === 'AUTH') ? (
           <div className="w-full h-full relative overflow-hidden">
             <img 
-              src="/brand/cesta-bg.png" 
+              src={ASSETS.bgHero} 
               alt="Hero" 
               className="absolute inset-0 w-full h-full object-cover object-center" 
               draggable={false}
             />
-            <div className="absolute inset-0 bg-[#0047ab]/30"></div>
+            <div className="absolute inset-0 bg-[#0047ab]/20"></div>
             <div className="absolute inset-0 bg-gradient-to-b from-[#00348c]/25 via-transparent to-[#00348c]/80"></div>
             <div className="absolute inset-0 backdrop-blur-[0.5px]"></div>
           </div>
