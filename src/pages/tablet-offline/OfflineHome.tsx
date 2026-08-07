@@ -31,19 +31,14 @@ export default function OfflineHome() {
         Modo Tablet Offline
       </div>
 
-      <div className="relative z-10 w-full h-full flex flex-col items-center justify-center pt-[15vh] px-6 overflow-y-auto">
-        {/* Botão JOGAR */}
-        <motion.button
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+      <div className="relative z-10 w-full h-full flex flex-col items-center justify-start overflow-y-auto">
+        {/* Área clicável invisível sobre "JOGO DA CESTA" */}
+        <motion.div
+          whileTap={{ scale: 0.98, opacity: 0.8 }}
           onClick={() => navigate("/tablet-offline/cadastro?game=cesta")}
-          className="px-20 py-6 bg-[#f7941d] text-white text-4xl font-black rounded-full shadow-[0_12px_24px_rgba(247,148,29,0.4)] border-b-8 border-[#c96f00] uppercase tracking-wider transition-all"
-        >
-          JOGAR
-        </motion.button>
+          className="absolute top-[15%] left-[10%] w-[80%] h-[30%] cursor-pointer z-20 rounded-[3rem]"
+          aria-label="Iniciar Jogo da Cesta"
+        />
 
         {/* Logo Admin Discreto no Rodapé */}
         <div className="absolute bottom-8 right-8 z-50">
