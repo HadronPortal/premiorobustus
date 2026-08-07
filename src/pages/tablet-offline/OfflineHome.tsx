@@ -69,7 +69,7 @@ export default function OfflineHome() {
             whileHover={{ scale: 1.05, y: -8 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate("/tablet-offline/cadastro?game=cesta")}
-            className="group relative flex flex-col overflow-hidden rounded-[2.5rem] shadow-2xl transition-all border-2 border-white/80 hover:border-white aspect-[9/16] w-full max-w-[min(70vw,360px)]"
+            className="group relative flex flex-col overflow-hidden rounded-[2.5rem] shadow-2xl transition-all border-2 border-white/80 hover:border-white aspect-[9/16] w-full max-w-[min(70vw,360px)] sm:max-w-[420px]"
           >
             <div className="flex-1 w-full overflow-hidden relative">
               {/* Background do card com a foto oficial preenchendo tudo */}
