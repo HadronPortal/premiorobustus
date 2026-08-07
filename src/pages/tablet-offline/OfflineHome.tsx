@@ -30,8 +30,11 @@ export default function OfflineHome() {
       </div>
 
       <div className="relative z-10 w-full h-full flex flex-col items-center justify-center pt-[10vh] px-6 overflow-y-auto">
-        {/* Botão JOGAR discreto no rodapé, alinhado com o logo admin */}
-        <div className="absolute bottom-[2px] right-6 z-50 flex items-center justify-end gap-8">
+        {/* Container Rodapé: JOGAR e Logo Admin alinhados */}
+        <div 
+          className="fixed left-0 right-0 z-50 flex items-center justify-end gap-6 px-6 pb-[env(safe-area-inset-bottom,24px)] mb-2"
+          style={{ bottom: 0 }}
+        >
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
