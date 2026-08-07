@@ -467,12 +467,18 @@ export default function AdminRelatorioOffline() {
                 ))}
               </div>
 
-              <button 
-                onClick={() => setPrizeConfigs([...prizeConfigs, { name: '', chance: 0, enabled: true }])}
-                style={{ ...btnSecondary, marginTop: 16, width: '100%', justifyContent: 'center' }}
-              >
-                <Plus size={16} /> Adicionar Brinde
-              </button>
+              {prizeConfigs.length < 4 ? (
+                <button 
+                  onClick={() => setPrizeConfigs([...prizeConfigs, { name: '', chance: 0, enabled: true }])}
+                  style={{ ...btnSecondary, marginTop: 16, width: '100%', justifyContent: 'center' }}
+                >
+                  <Plus size={16} /> Adicionar Brinde
+                </button>
+              ) : (
+                <div style={{ marginTop: 16, padding: 10, borderRadius: 8, fontSize: 13, background: '#f8fafc', color: '#64748b', border: '1px solid #e2e8f0', textAlign: 'center' }}>
+                  A roleta pode ter no máximo 4 prêmios.
+                </div>
+              )}
 
               <div style={{ 
                 marginTop: 20, padding: 12, borderRadius: 10, 
