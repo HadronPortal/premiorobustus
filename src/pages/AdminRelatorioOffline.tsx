@@ -7,12 +7,21 @@ import {
   getReportStats,
   exportBackup,
   importBackup,
+  clearCestaData,
   type ParticipantReport,
   type ReportStats,
 } from '@/lib/cestaMatches';
 import { hasAdminPin, setAdminPin, verifyAdminPin } from '@/lib/adminPin';
 import { getPrizeSettings, savePrizeSettings, type PrizeConfig, DEFAULT_PRIZES } from '@/lib/prizeSettings';
 import { isNativeOfflineApp } from '@/lib/runtime';
+
+declare global {
+  interface Window {
+    RobustusFiles?: {
+      saveTextFile: (fileName: string, content: string, mimeType: string) => string;
+    };
+  }
+}
 
 function pad(n: number) { return String(n).padStart(2, '0'); }
 function fmtDateBR(iso: string) {
@@ -32,6 +41,12 @@ function csvEscape(v: string) {
 async function handleDownload(name: string, content: string, mime: string): Promise<{ native: boolean; uri?: string }> {
   try {
     if (isNativeOfflineApp()) {
+      if (window.RobustusFiles?.saveTextFile) {
+        const uri = window.RobustusFiles.saveTextFile(name, content, mime);
+        if (uri?.startsWith("ERROR:")) throw new Error(uri.replace("ERROR:", ""));
+        return { native: true, uri };
+      }
+
       const result = await Filesystem.writeFile({
         path: name,
         data: content,
@@ -111,6 +126,9 @@ export default function AdminRelatorioOffline() {
   const [prizeConfigs, setPrizeConfigs] = useState<PrizeConfig[]>([]);
   const [savingSettings, setSavingSettings] = useState(false);
   const [settingsMsg, setSettingsMsg] = useState('');
+  const [newPin, setNewPin] = useState('');
+  const [newPinConfirm, setNewPinConfirm] = useState('');
+  const [dangerConfirm, setDangerConfirm] = useState('');
 
   const reload = async () => {
     setLoading(true);
@@ -234,6 +252,34 @@ export default function AdminRelatorioOffline() {
     }
   };
 
+  const changeAdminPin = async () => {
+    const value = newPin.trim();
+    if (!/^\d{4,6}$/.test(value)) {
+      setMsg('O novo PIN deve ter de 4 a 6 dígitos.');
+      return;
+    }
+    if (value !== newPinConfirm.trim()) {
+      setMsg('A confirmação do novo PIN não confere.');
+      return;
+    }
+    await setAdminPin(value);
+    setNewPin('');
+    setNewPinConfirm('');
+    setMsg('PIN administrativo alterado com sucesso.');
+  };
+
+  const deleteSavedData = async () => {
+    if (dangerConfirm.trim().toUpperCase() !== 'APAGAR') {
+      setMsg('Digite APAGAR para confirmar a exclusão dos dados salvos.');
+      return;
+    }
+    await clearCestaData();
+    setDangerConfirm('');
+    setRows([]);
+    setStats(EMPTY_STATS);
+    setMsg('Dados salvos apagados deste aparelho.');
+  };
+
   if (!authed) {
     const creating = pinExists === false;
     const checking = pinExists === null;
@@ -344,6 +390,44 @@ export default function AdminRelatorioOffline() {
             onChange={(e) => { const f = e.target.files?.[0]; if (f) onImportFile(f); }} />
         </section>
         {msg && <div style={{ background: '#ecfeff', border: '1px solid #67e8f9', color: '#0e7490', padding: 10, borderRadius: 8, marginBottom: 12, fontSize: 13 }}>{msg}</div>}
+
+        <section style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 12, marginBottom: 16 }}>
+          <div style={{ background: 'white', borderRadius: 12, padding: 14, boxShadow: '0 1px 3px rgba(0,0,0,.08)', border: '1px solid #e2e8f0' }}>
+            <div style={{ fontWeight: 800, color: '#0f172a', marginBottom: 10 }}>Trocar PIN</div>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              <input
+                type="password"
+                inputMode="numeric"
+                value={newPin}
+                onChange={(e) => setNewPin(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                placeholder="Novo PIN"
+                style={{ ...inputStyle, flex: '1 1 120px' }}
+              />
+              <input
+                type="password"
+                inputMode="numeric"
+                value={newPinConfirm}
+                onChange={(e) => setNewPinConfirm(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                placeholder="Confirmar PIN"
+                style={{ ...inputStyle, flex: '1 1 120px' }}
+              />
+              <button onClick={changeAdminPin} style={btnPrimary}>Salvar PIN</button>
+            </div>
+          </div>
+
+          <div style={{ background: 'white', borderRadius: 12, padding: 14, boxShadow: '0 1px 3px rgba(0,0,0,.08)', border: '1px solid #fecaca' }}>
+            <div style={{ fontWeight: 800, color: '#991b1b', marginBottom: 10 }}>Apagar dados salvos</div>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              <input
+                value={dangerConfirm}
+                onChange={(e) => setDangerConfirm(e.target.value)}
+                placeholder="Digite APAGAR"
+                style={{ ...inputStyle, flex: '1 1 160px', borderColor: '#fecaca' }}
+              />
+              <button onClick={deleteSavedData} style={{ ...btnPrimary, background: '#dc2626' }}>Apagar dados</button>
+            </div>
+          </div>
+        </section>
 
         <section style={{ background: 'white', borderRadius: 12, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,.08)' }}>
           <div style={{ padding: '12px 14px', fontWeight: 700, color: '#0f172a', borderBottom: '1px solid #e2e8f0' }}>

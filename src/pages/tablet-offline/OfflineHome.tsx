@@ -35,7 +35,7 @@ export default function OfflineHome() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => navigate("/tablet-offline/cadastro?game=cesta")}
-          className="absolute left-1/2 bottom-[20%] -translate-x-1/2 bg-transparent px-8 py-2 text-white text-[clamp(1.7rem,7vw,3rem)] font-black italic leading-none tracking-wide uppercase drop-shadow-[0_5px_0_rgba(0,0,0,0.35)] transition-all z-20"
+          className="absolute left-1/2 bottom-4 -translate-x-1/2 bg-transparent px-8 py-2 text-white text-[clamp(1.7rem,7vw,3rem)] font-black italic leading-none tracking-wide uppercase drop-shadow-[0_5px_0_rgba(0,0,0,0.35)] transition-all z-20"
           aria-label="Iniciar Jogo da Cesta"
         >
           JOGAR
