@@ -1,51 +1,54 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React from "react";
+import { motion } from "framer-motion";
 
-const BANNERS = [
-  "/offline-banners/banner1.jpg",
-  "/offline-banners/banner2.png",
-  "/offline-banners/banner3.png",
-  "/offline-banners/banner4.png"
+const PACKS = [
+  {
+    src: "/brand/product-banner/filhote.png",
+    alt: "RobustUS Filhotes",
+    className: "z-[2] -rotate-[5deg] translate-x-[22%] translate-y-[8%]",
+  },
+  {
+    src: "/brand/product-banner/pequenas-racas.png",
+    alt: "RobustUS Pequenas Raças",
+    className: "z-[3] -rotate-[2deg] translate-x-[10%] translate-y-[1%]",
+  },
+  {
+    src: "/brand/product-banner/gato-adulto.png",
+    alt: "RobustUS Gato Adulto",
+    className: "z-[5] scale-[1.08]",
+  },
+  {
+    src: "/brand/product-banner/gato-castrado.png",
+    alt: "RobustUS Gato Castrado",
+    className: "z-[4] rotate-[2deg] -translate-x-[10%] translate-y-[1%]",
+  },
+  {
+    src: "/brand/product-banner/gato-castrado-salmao.png",
+    alt: "RobustUS Gato Castrado Salmão",
+    className: "z-[2] rotate-[5deg] -translate-x-[22%] translate-y-[8%]",
+  },
 ];
 
 export const BannerCarousel = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % BANNERS.length);
-    }, 4000);
-    return () => clearInterval(timer);
-  }, []);
-
   return (
-    <div className="w-full px-4 mt-[clamp(20px,3vh,36px)] mb-2 flex justify-center">
-      <div className="relative w-[min(94vw,760px)] sm:w-[min(94vw,900px)] h-[clamp(190px,25vh,240px)] sm:h-[clamp(220px,24vh,280px)] rounded-[18px] overflow-hidden shadow-lg border-2 border-white/50 sm:border-[#f7941d]/30 group bg-gradient-to-b from-[#0057b8] to-[#003f95]">
-        <AnimatePresence mode="wait">
-          <motion.img
-            key={currentIndex}
-            src={BANNERS[currentIndex]}
-            alt={`Banner ${currentIndex + 1}`}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.5 }}
-            className="absolute inset-0 w-full h-full object-contain object-center"
+    <div className="w-full mt-[clamp(10px,1.4vh,18px)] mb-1 flex justify-center overflow-visible pointer-events-none">
+      <motion.div
+        initial={{ opacity: 0, y: 22, scale: 0.94 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.45, ease: "easeOut" }}
+        className="relative flex items-end justify-center w-[min(98vw,760px)] h-[clamp(105px,17vh,185px)] overflow-visible"
+      >
+        <div className="absolute bottom-[4%] left-1/2 -translate-x-1/2 w-[82%] h-[18%] bg-black/35 blur-xl rounded-full opacity-60" />
+        {PACKS.map((pack) => (
+          <img
+            key={pack.src}
+            src={pack.src}
+            alt={pack.alt}
+            draggable={false}
+            className={`relative h-[clamp(118px,20vh,220px)] w-auto object-contain drop-shadow-[0_18px_18px_rgba(0,0,0,0.45)] ${pack.className}`}
           />
-        </AnimatePresence>
-        
-        {/* Indicadores (dots) */}
-        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
-          {BANNERS.map((_, idx) => (
-            <div
-              key={idx}
-              className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
-                idx === currentIndex ? 'bg-[#f7941d] w-3' : 'bg-white/50'
-              }`}
-            />
-          ))}
-        </div>
-      </div>
+        ))}
+      </motion.div>
     </div>
   );
 };
