@@ -354,8 +354,8 @@ export default function PrizeRouletteOverlay({
   const wheelIsInteractive = phase === "score" && !decidedRef.current;
 
   return (
-    <div className="prize-roulette-overlay fixed inset-0 h-[100dvh] w-full overflow-hidden flex flex-col items-center justify-center">
-      <div className="roulette-pattern absolute inset-0" />
+    <div className="prize-roulette-overlay relative overflow-hidden">
+      <div className="roulette-pattern" />
 
       <div className="absolute bottom-2 right-5 flex flex-col items-center z-[60] opacity-95 pointer-events-none safe-area-bottom">
         <img 
@@ -547,7 +547,8 @@ export default function PrizeRouletteOverlay({
           align-items: center;
           gap: clamp(10px, 1.9vh, 18px);
           padding: max(16px, env(safe-area-inset-top)) 16px max(18px, env(safe-area-inset-bottom));
-          overflow: hidden;
+          overflow-y: auto;
+          overflow-x: hidden;
           color: #fff;
           text-align: center;
           font-family: Arial, Helvetica, sans-serif;
