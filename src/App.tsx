@@ -474,23 +474,24 @@ const GameContent = () => {
         {gameState === 'START' && (
           <motion.div key="start" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 w-full flex flex-col items-center justify-center pt-[10vh] px-4 z-10 overflow-hidden relative">
             
-            {/* Botão JOGAR centralizado no espaço */}
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => {
-                setSelectedGame('cesta');
-                setGameState('AUTH');
-                initAudio();
-              }}
-              className="absolute left-1/2 bottom-[20%] -translate-x-1/2 bg-transparent px-8 py-2 text-white text-[clamp(1.7rem,7vw,3rem)] font-black italic leading-none tracking-wide uppercase drop-shadow-[0_5px_0_rgba(0,0,0,0.35)] transition-all z-20"
-              aria-label="Iniciar Jogo da Cesta"
-            >
-              JOGAR
-            </motion.button>
+            {/* Botão JOGAR discreto no rodapé, alinhado com o logo admin */}
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-50 flex items-center justify-center">
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => {
+                  setSelectedGame('cesta');
+                  setGameState('AUTH');
+                  initAudio();
+                }}
+                className="text-white text-base font-black italic tracking-widest uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] transition-all cursor-pointer px-4 py-2"
+              >
+                JOGAR
+              </motion.button>
+            </div>
 
-            {/* Logo Admin Discreto no Rodapé */}
-            <div className="absolute bottom-4 right-8 z-50">
+            {/* Logo RobustUS inferior (Admin) */}
+            <div className="absolute bottom-8 right-8 z-50">
               <div
                 onPointerDown={startAdminPress}
                 onPointerUp={cancelAdminPress}
