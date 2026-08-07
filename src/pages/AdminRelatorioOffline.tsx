@@ -48,23 +48,12 @@ async function handleDownload(name: string, content: string, mime: string) {
     setTimeout(() => {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-    }, 200);
-
-    // No APK/Android, o clique pode não disparar o download se não houver um intent
-    // Então oferecemos o fallback de cópia se o usuário estiver num ambiente restrito
+    }, 5000);
   } catch (err) {
     console.error('Download error:', err);
-    await fallbackExport(content);
   }
 }
 
-async function fallbackExport(content: string) {
-  try {
-    await navigator.clipboard.writeText(content);
-  } catch (clipErr) {
-    console.warn('Clipboard export unavailable:', clipErr);
-  }
-}
 function profileLabel(p: string) {
   if (p === 'lojista') return 'Lojista';
   if (p === 'veterinario') return 'Veterinário';
@@ -107,7 +96,6 @@ export default function AdminRelatorioOffline() {
   const [prizeConfigs, setPrizeConfigs] = useState<PrizeConfig[]>([]);
   const [savingSettings, setSavingSettings] = useState(false);
   const [settingsMsg, setSettingsMsg] = useState('');
-  const [exportPreview, setExportPreview] = useState<{ name: string; content: string } | null>(null);
 
   const reload = async () => {
     setLoading(true);
@@ -177,9 +165,7 @@ export default function AdminRelatorioOffline() {
     const csv = '\uFEFF' + [header, ...lines].join('\r\n');
     const name = `robustus-participantes-${todayStamp()}.csv`;
     await handleDownload(name, csv, 'text/csv');
-    await fallbackExport(csv);
-    setExportPreview({ name, content: csv });
-    setMsg('CSV gerado. Se o APK nao abrir o download, os dados aparecem abaixo para copiar.');
+    setMsg(`Download gerado: ${name}`);
   };
 
   const exportTXT = async () => {
@@ -208,9 +194,7 @@ export default function AdminRelatorioOffline() {
     const txt = lines.join('\r\n');
     const name = `robustus-participantes-${todayStamp()}.txt`;
     await handleDownload(name, txt, 'text/plain');
-    await fallbackExport(txt);
-    setExportPreview({ name, content: txt });
-    setMsg('TXT gerado. Se o APK nao abrir o download, os dados aparecem abaixo para copiar.');
+    setMsg(`Download gerado: ${name}`);
   };
 
   const exportJSON = async () => {
@@ -218,9 +202,7 @@ export default function AdminRelatorioOffline() {
     const json = JSON.stringify(payload, null, 2);
     const name = `robustus-backup-${todayStamp()}.json`;
     await handleDownload(name, json, 'application/json');
-    await fallbackExport(json);
-    setExportPreview({ name, content: json });
-    setMsg('Backup JSON gerado. Se o APK nao abrir o download, os dados aparecem abaixo para copiar.');
+    setMsg(`Download gerado: ${name}`);
   };
 
   const onImportFile = async (file: File) => {
@@ -347,34 +329,6 @@ export default function AdminRelatorioOffline() {
             onChange={(e) => { const f = e.target.files?.[0]; if (f) onImportFile(f); }} />
         </section>
         {msg && <div style={{ background: '#ecfeff', border: '1px solid #67e8f9', color: '#0e7490', padding: 10, borderRadius: 8, marginBottom: 12, fontSize: 13 }}>{msg}</div>}
-        {exportPreview && (
-          <section style={{ background: 'white', borderRadius: 12, padding: 12, marginBottom: 16, boxShadow: '0 1px 3px rgba(0,0,0,.08)', border: '1px solid #dbeafe' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: 8, flexWrap: 'wrap' }}>
-              <div style={{ fontWeight: 800, color: '#0047ab' }}>Dados exportados: {exportPreview.name}</div>
-              <div style={{ display: 'flex', gap: 8 }}>
-                <button
-                  type="button"
-                  onClick={async () => {
-                    await fallbackExport(exportPreview.content);
-                    setMsg('Conteudo copiado. Se o Android bloquear, toque no campo abaixo, selecione tudo e copie manualmente.');
-                  }}
-                  style={btnSecondary}
-                >
-                  <Save size={16}/> Copiar
-                </button>
-                <button type="button" onClick={() => setExportPreview(null)} style={btnSecondary}>
-                  <X size={16}/> Fechar
-                </button>
-              </div>
-            </div>
-            <textarea
-              readOnly
-              value={exportPreview.content}
-              onFocus={(e) => e.currentTarget.select()}
-              style={{ width: '100%', minHeight: 180, border: '1px solid #cbd5e1', borderRadius: 10, padding: 10, fontSize: 12, fontFamily: 'monospace', color: '#0f172a', resize: 'vertical' }}
-            />
-          </section>
-        )}
 
         <section style={{ background: 'white', borderRadius: 12, overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,.08)' }}>
           <div style={{ padding: '12px 14px', fontWeight: 700, color: '#0f172a', borderBottom: '1px solid #e2e8f0' }}>
