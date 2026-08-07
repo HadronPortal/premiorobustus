@@ -16,7 +16,8 @@ import {
   ShoppingBasket
 } from 'lucide-react';
 import bgHeroAsset from "@/assets/bg-home.jpg.asset.json";
-import fixedBannerAsset from "@/assets/banner-fixo.png.asset.json";
+import fixedBannerAsset from "@/assets/banner-promo.png.asset.json";
+import gameCardAsset from "@/assets/game-card.png.asset.json";
 import confetti from 'canvas-confetti';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from "@/integrations/supabase/client";
@@ -512,7 +513,7 @@ const GameContent = () => {
               >
                 <div className="flex-1 w-full overflow-hidden relative bg-white">
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
-                     <img src="/brand/cesta-bg.png" alt="Jogo da Cesta" className="w-full h-full object-contain pointer-events-none" draggable={false} />
+                     <img src={gameCardAsset.url} alt="Jogo da Cesta" className="w-full h-full object-contain pointer-events-none" draggable={false} />
                   </div>
                 </div>
               </motion.button>
@@ -522,12 +523,12 @@ const GameContent = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="w-full max-w-[min(94vw,520px)] bg-white rounded-3xl sm:rounded-[2.5rem] overflow-hidden shadow-xl border-2 border-white/20"
+              className="w-full max-w-[min(94vw,620px)] overflow-hidden rounded-[1.5rem] sm:rounded-[2rem] shadow-xl border border-white/20"
             >
               <img 
                 src={ASSETS.banner} 
                 alt="RobustUS Products" 
-                className="w-full h-24 sm:h-40 object-contain p-2" 
+                className="w-full h-auto min-h-[100px] sm:min-h-[160px] object-cover" 
                 draggable={false}
               />
             </motion.div>

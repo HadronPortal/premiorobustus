@@ -1,4 +1,4 @@
-const CACHE_NAME = 'robustus-cesta-v2026-08-07-banner-fix';
+const CACHE_NAME = 'robustus-cesta-v2026-08-07-banner-fix-v2';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -9,6 +9,8 @@ const ASSETS_TO_CACHE = [
   '/brand/cesta-bg.png',
   '/__l5e/assets-v1/9cfffecd-206b-45df-9412-56abe2c437dd/bg-home.jpg',
   '/__l5e/assets-v1/59df2173-b9ee-4ece-8ad2-a35003c12d75/banner-fixo.png',
+  '/__l5e/assets-v1/d4b4f535-64d1-4e7b-b3c9-0a6d1c448107/game-card.png',
+  '/__l5e/assets-v1/6979a405-c1b8-4e89-9a2f-17387f3b89b4/banner-promo.png',
   '/cesta-final.png',
   '/robustus-catch-game/index.html',
   '/robustus-catch-game/game.js',
