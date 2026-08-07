@@ -491,7 +491,7 @@ const GameContent = () => {
             </div>
 
             {/* Logo RobustUS inferior (Admin) */}
-            <div className="absolute bottom-8 right-8 z-50">
+            <div className="absolute bottom-2 right-8 z-50">
               <div
                 onPointerDown={startAdminPress}
                 onPointerUp={cancelAdminPress}
