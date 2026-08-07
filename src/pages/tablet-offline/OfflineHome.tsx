@@ -31,29 +31,18 @@ export default function OfflineHome() {
         Modo Tablet Offline
       </div>
 
-      <div className="relative z-10 w-full h-full flex flex-col items-center justify-end px-6 pb-32 overflow-y-auto">
-        {/* Ícone de Jogar */}
+      <div className="relative z-10 w-full h-full flex flex-col items-center justify-center pt-[15vh] px-6 overflow-y-auto">
+        {/* Botão JOGAR */}
         <motion.button
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.2 }}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           onClick={() => navigate("/tablet-offline/cadastro?game=cesta")}
-          className="group flex flex-col items-center gap-2 mb-8"
+          className="px-20 py-6 bg-[#f7941d] text-white text-4xl font-black rounded-full shadow-[0_12px_24px_rgba(247,148,29,0.4)] border-b-8 border-[#c96f00] uppercase tracking-wider transition-all"
         >
-          <div className="w-24 h-24 bg-[#f7941d] rounded-full flex items-center justify-center shadow-[0_12px_24px_rgba(247,148,29,0.4)] border-b-8 border-[#c96f00] group-active:border-b-0 group-active:translate-y-1 transition-all">
-            <svg 
-              viewBox="0 0 24 24" 
-              className="w-12 h-12 text-white fill-current ml-2"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M8 5v14l11-7z" />
-            </svg>
-          </div>
-          <span className="text-white font-black text-xl uppercase tracking-widest drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
-            JOGAR
-          </span>
+          JOGAR
         </motion.button>
 
         {/* Logo Admin Discreto no Rodapé */}
