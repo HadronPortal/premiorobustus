@@ -68,7 +68,7 @@ const PRIZE_META: Record<Prize, PrizeMeta> = {
 };
 
 const WHEEL_RADIUS = 112;
-const SLICE_ANGLE = 360 / PRIZES.length;
+const SLICE_ANGLE = 360 / 4;
 const FULL_SPINS = 8;
 const SPIN_MS = 6500;
 
@@ -218,7 +218,7 @@ export default function PrizeRouletteOverlay({
   const segments = useMemo(
     () => {
       const configsToUse = activeConfigs.length > 0 ? activeConfigs : DEFAULT_PRIZES;
-      const sliceAngle = 360 / configsToUse.length;
+      const sliceAngle = 360 / Math.max(1, configsToUse.length);
 
       return configsToUse.map((config, index) => {
         const prize = config.name;

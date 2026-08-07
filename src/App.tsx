@@ -50,7 +50,7 @@ const BRAND = {
 };
 
 const ASSETS = {
-  bgHero: "/brand/cesta-capa.png",
+  bgHero: "/brand/cesta-bg.png",
   logo: "/brand/robustus-laranja.png",
   paw: "/brand/robustus-laranja.png",
 };
@@ -449,10 +449,15 @@ const GameContent = () => {
       <div className="absolute inset-0 z-0">
         {(gameState === 'START' || gameState === 'AUTH') ? (
           <div className="w-full h-full relative overflow-hidden">
-            <img src={ASSETS.bgHero} alt="Hero" className="absolute inset-0 w-full h-full object-cover object-[center_30%]" />
-            <div className="absolute inset-0 bg-[#0047ab]/40"></div>
-            <div className="absolute inset-0 bg-gradient-to-b from-[#00348c]/35 via-transparent to-[#00348c]/90"></div>
-            <div className="absolute inset-0 backdrop-blur-[1px]"></div>
+            <img 
+              src="/brand/cesta-bg.png" 
+              alt="Hero" 
+              className="absolute inset-0 w-full h-full object-cover object-center" 
+              draggable={false}
+            />
+            <div className="absolute inset-0 bg-[#0047ab]/30"></div>
+            <div className="absolute inset-0 bg-gradient-to-b from-[#00348c]/25 via-transparent to-[#00348c]/80"></div>
+            <div className="absolute inset-0 backdrop-blur-[0.5px]"></div>
           </div>
         ) : (
           <div className="absolute inset-0 bg-[#0047ab]">
@@ -500,11 +505,11 @@ const GameContent = () => {
                   setSelectedGame('cesta');
                   setGameState('AUTH');
                 }}
-                className="group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-all border-4 border-transparent hover:border-[#0047ab] aspect-[31/40] w-full max-w-[min(74vw,420px)] sm:max-w-none"
+                className="group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-white shadow-2xl transition-all border-4 border-transparent hover:border-[#0047ab] aspect-[9/16] w-full max-w-[min(70vw,360px)] sm:max-w-none"
               >
                 <div className="flex-1 w-full overflow-hidden relative bg-white">
-                  <div className="absolute inset-0 flex flex-col items-center justify-center p-1">
-                     <img src="/brand/cesta-capa.png" alt="Jogo da Cesta" className="w-full h-full object-contain" />
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                     <img src="/brand/cesta-bg.png" alt="Jogo da Cesta" className="w-full h-full object-contain pointer-events-none" draggable={false} />
                   </div>
                 </div>
               </motion.button>
