@@ -515,11 +515,9 @@ const GameContent = () => {
                   {/* Background do card com a foto oficial preenchendo tudo */}
                   <img 
                     src={gameCardAsset.url} 
-                    className="absolute inset-0 w-full h-full object-cover pointer-events-none" 
+                    className="absolute inset-0 w-full h-full object-contain pointer-events-none" 
                     alt="Jogo da Cesta" 
                   />
-                  {/* Overlay azul muito leve apenas para profundidade */}
-                  <div className="absolute inset-0 bg-gradient-to-b from-blue-900/10 to-blue-900/40 pointer-events-none" />
                 </div>
               </motion.button>
             </div>
