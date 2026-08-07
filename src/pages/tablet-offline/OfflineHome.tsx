@@ -5,6 +5,7 @@ import { PawPrint } from "lucide-react";
 import { ensureOfflineServiceWorker } from "./registerOfflineSW";
 import { OfflineBannerCarousel } from "./OfflineBannerCarousel";
 import bgHeroAsset from "@/assets/bg-home.jpg.asset.json";
+import fixedBannerAsset from "@/assets/banner-fixo.png.asset.json";
 
 export default function OfflineHome() {
   const navigate = useNavigate();

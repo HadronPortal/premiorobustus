@@ -16,6 +16,7 @@ import {
   ShoppingBasket
 } from 'lucide-react';
 import bgHeroAsset from "@/assets/bg-home.jpg.asset.json";
+import fixedBannerAsset from "@/assets/banner-fixo.png.asset.json";
 import confetti from 'canvas-confetti';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from "@/integrations/supabase/client";
@@ -53,6 +54,7 @@ const BRAND = {
 const ASSETS = {
   bgHero: bgHeroAsset.url,
   logo: "/brand/robustus-laranja.png",
+  banner: fixedBannerAsset.url,
   paw: "/brand/robustus-laranja.png",
 };
 
@@ -516,7 +518,19 @@ const GameContent = () => {
               </motion.button>
             </div>
 
-            <BannerCarousel />
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="w-full max-w-[min(94vw,520px)] bg-white rounded-3xl sm:rounded-[2.5rem] overflow-hidden shadow-xl border-2 border-white/20"
+            >
+              <img 
+                src={ASSETS.banner} 
+                alt="RobustUS Products" 
+                className="w-full h-24 sm:h-40 object-contain p-2" 
+                draggable={false}
+              />
+            </motion.div>
 
             <AnimatePresence>
               {loadingLeaderboard || leaderboard.length > 0 ? (
