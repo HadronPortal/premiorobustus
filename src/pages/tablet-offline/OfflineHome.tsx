@@ -29,11 +29,13 @@ export default function OfflineHome() {
         Modo Tablet Offline
       </div>
 
-      <div className="relative z-10 w-full h-full flex flex-col items-center justify-center pt-[10vh] px-6 overflow-y-auto">
+      <div className="relative z-10 w-full h-full flex flex-col items-center justify-center pt-[10vh] px-6 overflow-hidden">
         {/* Área clicável invisível em cima da faixa "JOGO DA CESTA" */}
         <div 
-          className="absolute top-[45vh] left-1/2 -translate-x-1/2 w-[80%] h-[12vh] z-[60] cursor-pointer"
+          className="absolute left-1/2 top-[31%] h-[56%] w-[88%] -translate-x-1/2 z-[60] cursor-pointer"
           onClick={() => navigate("/tablet-offline/cadastro?game=cesta")}
+          onPointerDown={(event) => event.stopPropagation()}
+          aria-label="Iniciar Jogo da Cesta"
         />
 
         {/* Logo RobustUS inferior (Admin) */}

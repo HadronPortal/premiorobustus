@@ -385,6 +385,8 @@ class RobustUSCatchGame {
     window.addEventListener("keyup", (event) => this.keys.delete(event.key));
 
     this.canvas.addEventListener("pointerdown", (event) => {
+      if (event.cancelable) event.preventDefault();
+      try { this.canvas.setPointerCapture(event.pointerId); } catch {}
       this.pointerActive = true;
       this.updateTargetFromPointer(event);
     }, { passive: false });
@@ -394,8 +396,9 @@ class RobustUSCatchGame {
         if (event.cancelable) event.preventDefault();
       }
     }, { passive: false });
-    const releasePointer = () => {
+    const releasePointer = (event) => {
       this.pointerActive = false;
+      try { this.canvas.releasePointerCapture(event.pointerId); } catch {}
       // Travar target onde esta para parar o movimento imediatamente.
       this.targetX = this.player.x;
     };
@@ -459,6 +462,9 @@ class RobustUSCatchGame {
     const ratioX = this.canvas.width / rect.width;
     const pointerX = (event.clientX - rect.left) * ratioX;
     this.targetX = clamp(pointerX, this.player.basketWidth / 2, this.width - this.player.basketWidth / 2);
+    if (this.pointerActive && this.player) {
+      this.player.x = this.targetX;
+    }
   }
 
   loop(time) {
@@ -502,11 +508,15 @@ class RobustUSCatchGame {
       this.targetX = clamp(this.targetX, this.player.basketWidth / 2, this.width - this.player.basketWidth / 2);
     }
 
-    // Suavizacao do movimento - segue o dedo sem atraso visivel mas sem trepidacao
+    // No toque, o mascote gruda no dedo. Teclado usa suavizacao.
     const target = this.targetX ?? this.player.x;
     const dx = target - this.player.x;
-    const follow = Math.min(1, 0.32 * delta);
-    this.player.x += dx * follow;
+    if (this.pointerActive) {
+      this.player.x = target;
+    } else {
+      const follow = Math.min(1, 0.32 * delta);
+      this.player.x += dx * follow;
+    }
     if (Math.abs(dx) < 0.4) this.player.x = target;
     this.player.x = clamp(this.player.x, this.player.basketWidth / 2, this.width - this.player.basketWidth / 2);
 
