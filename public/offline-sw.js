@@ -7,6 +7,7 @@ const ASSETS_TO_CACHE = [
   '/brand/robustus-laranja.png',
   '/brand/procion-logo-branco-crop.png',
   '/brand/cesta-bg.png',
+  '/__l5e/assets-v1/9cfffecd-206b-45df-9412-56abe2c437dd/bg-home.jpg',
   '/cesta-final.png',
   '/robustus-catch-game/index.html',
   '/robustus-catch-game/game.js',
