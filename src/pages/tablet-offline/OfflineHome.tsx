@@ -51,7 +51,7 @@ export default function OfflineHome() {
             onPointerUp={() => clearTimeout((window as any).adminTimer)}
             onPointerCancel={() => clearTimeout((window as any).adminTimer)}
             onPointerLeave={() => clearTimeout((window as any).adminTimer)}
-            className="w-20 sm:w-28 hover:scale-105 transition-transform cursor-pointer pointer-events-auto"
+            className="w-20 sm:w-28 hover:scale-105 transition-transform cursor-pointer pointer-events-auto mt-[6px]"
           >
             <img
               src="/brand/robustus-laranja.png"
