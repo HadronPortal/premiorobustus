@@ -1,15 +1,13 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Timer, Volume2, VolumeX, RotateCcw } from "lucide-react";
 import { OFFLINE_LOGO, OFFLINE_CATCH_GAME_URL } from "./offlineAssets";
-import { readOfflineDraft, clearOfflineDraft } from "./OfflineRegister";
-import { saveOfflinePlay, setOfflinePrize, OfflineParticipant } from "@/lib/offlineStorage";
+import { generateOfflinePrizeCode, OfflineParticipant } from "@/lib/offlineStorage";
 import { useOfflineAudio } from "./useOfflineAudio";
 import PrizeRouletteOverlay, { type Prize } from "@/components/PrizeRouletteOverlay";
 
 export default function OfflineCatchGame() {
   const navigate = useNavigate();
-  const draft = useMemo(() => readOfflineDraft(), []);
   const [done, setDone] = useState<OfflineParticipant | null>(null);
   const [score, setScore] = useState(0);
   const [remaining, setRemaining] = useState(30);
@@ -18,10 +16,6 @@ export default function OfflineCatchGame() {
   const lastScoreRef = useRef(0);
 
   useEffect(() => {
-    if (!draft) {
-      navigate("/tablet-offline");
-      return;
-    }
     let saved = false;
     const unlock = () => {
       ensureCtx();
@@ -77,16 +71,19 @@ export default function OfflineCatchGame() {
           const finalElapsed =
             Number(d.elapsedSeconds ?? d.elapsed ?? 0) || 30;
           const won = finalScore >= 200;
-          const entry = saveOfflinePlay({
-            name: draft.name,
-            phone: draft.phone,
+          const entry: OfflineParticipant = {
+            id: `totem-${Date.now()}`,
+            name: "JOGADOR",
+            phone: "",
             game: "cesta",
+            playedAt: new Date().toISOString(),
             score: finalScore,
             attempts: 1,
             timeSeconds: finalElapsed,
             won,
-          });
-          clearOfflineDraft();
+            prizeCode: won ? generateOfflinePrizeCode() : undefined,
+            prizeStatus: won ? "pendente" : undefined,
+          };
           setDone(entry);
         }
       } else if (d.type === "ROBUSTUS_CATCH_NAVIGATE_HOME") {
@@ -100,7 +97,7 @@ export default function OfflineCatchGame() {
       window.removeEventListener("touchstart", unlock);
       window.removeEventListener("keydown", unlock);
     };
-  }, [draft, navigate, ensureCtx, playSound]);
+  }, [navigate, ensureCtx, playSound]);
 
   const toggleMute = () => {
     toggleAudioMute();
@@ -168,7 +165,6 @@ export default function OfflineCatchGame() {
           prizeCode={done.prizeCode ?? null}
           existingPrize={done.prize ?? null}
           onPrizeDecided={(prize: any) => {
-            setOfflinePrize(done.id, prize);
             setDone({ ...done, prize });
           }}
           onPlayAgain={() => navigate("/tablet-offline")}

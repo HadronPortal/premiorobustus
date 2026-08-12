@@ -38,7 +38,7 @@ export default function OfflineHome() {
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
-            onClick={() => navigate("/tablet-offline/cadastro?game=cesta")}
+            onClick={() => navigate("/tablet-offline/jogo-cesta")}
             className="text-white text-base font-black italic tracking-widest uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] transition-all cursor-pointer px-4 py-2 pointer-events-auto"
           >
             JOGAR
