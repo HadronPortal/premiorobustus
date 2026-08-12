@@ -2,12 +2,10 @@ import React, { useMemo, useRef, useState, useEffect } from "react";
 import { getPrizeSettings, type PrizeConfig, DEFAULT_PRIZES } from "@/lib/prizeSettings";
 
 export const PRIZES = [
-  "Copo",
-  "Comedouro gato",
-  "Comedouro cachorro",
-  "Brinde surpresa",
-  "Kit caneta",
-  "Amostras gato e cachorro",
+  "Caneta",
+  "Comedouro",
+  "Surpresa",
+  "Amostra",
 ] as const;
 export type Prize = (typeof PRIZES)[number];
 
@@ -35,35 +33,25 @@ type PrizeMeta = {
 const LOGO_URL = "/brand/procion-logo-branco-crop.png";
 
 const PRIZE_META: Record<Prize, PrizeMeta> = {
-  Copo: {
-    lines: ["Copo"],
+  Caneta: {
+    lines: ["Caneta"],
     colorA: "#0a62d9",
     colorB: "#003f9b",
   },
-  "Comedouro gato": {
-    lines: ["Comedouro", "gato"],
+  Comedouro: {
+    lines: ["Comedouro"],
     colorA: "#ffad35",
     colorB: "#ff8514",
   },
-  "Comedouro cachorro": {
-    lines: ["Comedouro", "cachorro"],
+  Surpresa: {
+    lines: ["Surpresa"],
     colorA: "#0754bd",
     colorB: "#003783",
   },
-  "Brinde surpresa": {
-    lines: ["Brinde", "surpresa"],
+  Amostra: {
+    lines: ["Amostra"],
     colorA: "#ff9c20",
     colorB: "#f07800",
-  },
-  "Kit caneta": {
-    lines: ["Kit", "caneta"],
-    colorA: "#0f6ee6",
-    colorB: "#004cae",
-  },
-  "Amostras gato e cachorro": {
-    lines: ["Amostras", "pet"],
-    colorA: "#ffbd55",
-    colorB: "#ff9118",
   },
 };
 

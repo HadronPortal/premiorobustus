@@ -10,11 +10,23 @@ export interface PrizeConfig {
 }
 
 export const DEFAULT_PRIZES: PrizeConfig[] = [
-  { name: "Copo", chance: 25, enabled: true },
-  { name: "Comedouro gato", chance: 25, enabled: true },
-  { name: "Comedouro cachorro", chance: 25, enabled: true },
-  { name: "Brinde surpresa", chance: 25, enabled: true },
+  { name: "Caneta", chance: 25, enabled: true },
+  { name: "Comedouro", chance: 25, enabled: true },
+  { name: "Surpresa", chance: 25, enabled: true },
+  { name: "Amostra", chance: 25, enabled: true },
 ];
+
+const DEFAULT_PRIZE_NAMES = DEFAULT_PRIZES.map((p) => p.name).join("|");
+
+function shouldUseDefaultPrizes(prizes: unknown): prizes is PrizeConfig[] {
+  if (!Array.isArray(prizes) || prizes.length !== DEFAULT_PRIZES.length) return true;
+  const names = prizes.map((p) => String((p as PrizeConfig).name || "")).join("|");
+  const hasDefaultChances = prizes.every((p, index) => {
+    const prize = p as PrizeConfig;
+    return Number(prize.chance) === DEFAULT_PRIZES[index].chance && prize.enabled === true;
+  });
+  return names !== DEFAULT_PRIZE_NAMES || !hasDefaultChances;
+}
 
 function openDB(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
@@ -34,6 +46,7 @@ export async function getPrizeSettings(): Promise<PrizeConfig[]> {
     const req = db.transaction(STORE, "readonly").objectStore(STORE).get(KEY);
     req.onsuccess = () => {
         if (!req.result) resolve(DEFAULT_PRIZES);
+        else if (shouldUseDefaultPrizes(req.result.prizes)) resolve(DEFAULT_PRIZES);
         else resolve(req.result.prizes);
     };
     req.onerror = () => reject(req.error);
